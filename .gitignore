@@ -1,0 +1,79 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Build directories
+/build/
+out/
+target/
+.gradle/
+
+# Eclipse/IntelliJ/VS Code
+*.iml
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+### Gradle Wrapper ###
+/gradle/wrapper/gradle-wrapper.jar
+
+### Node ###
+/ProductService/node_modules/
+/ProductService/package-lock.json
+/ProductService/npm-debug.log
+/ProductService/yarn.lock
+
+### Spring Boot (local configs) ###
+/ProductService/src/main/resources/application-*.yml
+/ProductService/src/main/resources/application-*.yaml
+/ProductService/src/main/resources/application-*.properties
+
+# Logs
+*.log
+
+# Other
+*.swp
