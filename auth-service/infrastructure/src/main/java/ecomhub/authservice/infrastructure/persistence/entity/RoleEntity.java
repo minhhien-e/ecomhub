@@ -2,10 +2,12 @@ package ecomhub.authservice.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -14,6 +16,7 @@ import java.util.UUID;
                 @Index(name = "idx_role_name", columnList = "name")
         }
 )
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,4 +32,6 @@ public class RoleEntity {
     //mapping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountRoleEntity> accountRoles;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RolePermissionEntity> rolePermissions;
 }

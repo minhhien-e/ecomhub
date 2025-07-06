@@ -1,6 +1,6 @@
 package ecomhub.authservice.infrastructure.persistence.entity;
 
-import ecomhub.authservice.infrastructure.persistence.enums.Provider;
+import ecomhub.authservice.common.enums.Provider;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,8 +55,6 @@ public class AccountEntity {
     //mapping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AccountRoleEntity> accountRoles;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<AccountPermissionEntity> accountPermissions;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RefreshToken> refreshTokens;
 

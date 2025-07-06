@@ -3,9 +3,11 @@ package ecomhub.authservice.infrastructure.persistence.entity;
 import ecomhub.authservice.infrastructure.persistence.entity.id.AccountRoleId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
 @Table(name = "account_role")
 @Data

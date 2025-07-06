@@ -12,11 +12,11 @@ CREATE TABLE account
     CONSTRAINT pk_account PRIMARY KEY (id)
 );
 
-CREATE TABLE account_permission
+CREATE TABLE role_permission
 (
-    account_id    BINARY(16) NOT NULL,
+    role_id    BINARY(16) NOT NULL,
     permission_id BINARY(16) NOT NULL,
-    CONSTRAINT pk_account_permission PRIMARY KEY (account_id, permission_id)
+    CONSTRAINT pk_role_permission PRIMARY KEY (role_id, permission_id)
 );
 
 CREATE TABLE account_role
@@ -72,11 +72,11 @@ ALTER TABLE refresh_token
 ALTER TABLE `role`
     ADD CONSTRAINT uc_role_name UNIQUE (name);
 
-ALTER TABLE account_permission
-    ADD CONSTRAINT FK_ACCOUNT_PERMISSION_ON_ACCOUNT FOREIGN KEY (account_id) REFERENCES account (id);
+ALTER TABLE role_permission
+    ADD CONSTRAINT FK_ROLE_PERMISSION_ON_ACCOUNT FOREIGN KEY (role_id) REFERENCES `role` (id);
 
-ALTER TABLE account_permission
-    ADD CONSTRAINT FK_ACCOUNT_PERMISSION_ON_PERMISSION FOREIGN KEY (permission_id) REFERENCES permission (id);
+ALTER TABLE role_permission
+    ADD CONSTRAINT FK_ROLE_PERMISSION_ON_PERMISSION FOREIGN KEY (permission_id) REFERENCES permission (id);
 
 ALTER TABLE account_role
     ADD CONSTRAINT FK_ACCOUNT_ROLE_ON_ACCOUNT FOREIGN KEY (account_id) REFERENCES account (id);

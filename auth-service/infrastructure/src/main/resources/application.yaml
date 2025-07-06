@@ -1,0 +1,16 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  application:
+    name: auth-service
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+eureka:
+  client:
+    service-url:
+        defaultZone: http://localhost:${EUREKA_PORT:8761}/eureka
+    register-with-eureka: false
+    fetch-registry: true
+

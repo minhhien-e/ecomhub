@@ -2,6 +2,7 @@ package ecomhub.authservice.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
                 @Index(name = "idx_permission_name", columnList = "name")
         }
 )
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,5 +30,5 @@ public class PermissionEntity {
     private String description;
     //maping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "permission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccountPermissionEntity> accountPermissions;
+    private List<RolePermissionEntity> accountPermissions;
 }

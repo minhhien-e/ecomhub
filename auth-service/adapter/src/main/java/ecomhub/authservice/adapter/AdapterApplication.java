@@ -1,0 +1,16 @@
+package ecomhub.authservice.adapter;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication(
+        scanBasePackages = "ecomhub.authservice"
+)
+
+public class AdapterApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AdapterApplication.class, args);
+    }
+
+}
