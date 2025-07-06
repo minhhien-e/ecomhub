@@ -1,0 +1,14 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: ecomhub_auth_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ecomhub_auth
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+volumes:
+  mysql-data:
