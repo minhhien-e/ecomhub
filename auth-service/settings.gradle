@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 rootProject.name = 'auth-service'
-include("infrastructure")
+include("infrastructure", "domain","application","adapter", "common")
