@@ -9,7 +9,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "refresh_token")
+@Table(name = "refresh_token",
+        indexes = {
+                @Index(name = "idx_refresh_token_account", columnList = "account_id"),
+                @Index(name = "idx_refresh_token_expiry", columnList = "expires_at"),
+                @Index(name = "idx_refresh_token_revoked", columnList = "revoked"),
+                @Index(name = "idx_refresh_token_composite", columnList = "account_id, revoked, expires_at")
+        })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

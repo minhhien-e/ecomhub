@@ -15,7 +15,14 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "account")
+@Table(name = "account",
+        indexes = {
+                @Index(name = "idx_account_username", columnList = "username"),
+                @Index(name = "idx_account_email", columnList = "email"),
+                @Index(name = "idx_account_phone", columnList = "phoneNumber")
+
+        }
+)
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @NoArgsConstructor
@@ -29,6 +36,7 @@ public class AccountEntity {
     private String username;
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
     @Column(nullable = false)
     private String passwordHash;

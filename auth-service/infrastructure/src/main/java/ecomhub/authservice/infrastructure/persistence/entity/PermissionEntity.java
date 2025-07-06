@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "permission")
+@Table(name = "permission",
+        indexes = {
+                @Index(name = "idx_permission_name", columnList = "name")
+        }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
