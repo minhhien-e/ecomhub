@@ -1,8 +1,10 @@
 package ecomhub.authservice.application.usecase.account.regiseraccount;
 
+import ecomhub.authservice.application.enums.Role;
 import ecomhub.authservice.common.enums.Provider;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 
@@ -12,7 +14,8 @@ public record RegisterAccountCommand(
         @Email String email,
         @NotBlank @Pattern(regexp = "^[0-9]{8}$", message = "Số điện thoại không hợp lệ")
         String phoneNumber,
-        @NotBlank Provider provider
+        @NotBlank Provider provider,
+        @NotNull Role role
 ) {
 }
 

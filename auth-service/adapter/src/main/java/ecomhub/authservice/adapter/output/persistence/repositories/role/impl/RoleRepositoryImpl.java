@@ -33,6 +33,11 @@ public class RoleRepositoryImpl implements RoleRepository {
         return roleJpaRepository.existsByName(name);
     }
 
+    @Override
+    public UUID findIdByName(String name) {
+        return roleJpaRepository.findIdByName(name);
+    }
+
     /**
      * Tạo danh sách các RolePermissionId từ tập hợp permissionIds và roleId
      *

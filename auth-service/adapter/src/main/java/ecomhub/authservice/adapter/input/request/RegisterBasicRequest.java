@@ -1,5 +1,6 @@
 package ecomhub.authservice.adapter.input.request;
 
+import ecomhub.authservice.application.enums.Role;
 import ecomhub.authservice.common.enums.Provider;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,5 +12,6 @@ public record RegisterBasicRequest(@NotBlank String username,
                                    @Email String email,
                                    @NotBlank @Pattern(regexp = "^[0-9]{8}$", message = "Số điện thoại không hợp lệ")
                                    String phoneNumber,
-                                   @NotNull Provider provider) {
+                                   @NotNull Provider provider,
+                                   Role role) {
 }
