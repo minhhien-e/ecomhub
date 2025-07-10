@@ -3,15 +3,22 @@ package com.ecomhub.cartservice.domain.entity;
 import java.util.Objects;
 
 public class CartItem {
+
     private String productId;
+    private String name;
+    private double price;
     private int quantity;
+    private String image;
 
     public CartItem() {
     }
 
-    public CartItem(String productId, int quantity) {
+    public CartItem(String productId, String name, double price, int quantity, String image) {
         this.productId = productId;
+        this.name = name;
+        this.price = price;
         this.quantity = quantity;
+        this.image = image;
     }
 
     public String getProductId() {
@@ -22,12 +29,36 @@ public class CartItem {
         this.productId = productId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public int getQuantity() {
         return quantity;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override
@@ -41,5 +72,16 @@ public class CartItem {
     @Override
     public int hashCode() {
         return Objects.hash(productId);
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "productId='" + productId + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", image='" + image + '\'' +
+                '}';
     }
 }
