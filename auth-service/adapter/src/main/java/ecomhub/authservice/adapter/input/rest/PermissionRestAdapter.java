@@ -1,10 +1,10 @@
 package ecomhub.authservice.adapter.input.rest;
 
+import ecomhub.authservice.adapter.input.mapper.PermissionAdapterMapper;
 import ecomhub.authservice.adapter.input.request.AddPermissionRequest;
-import ecomhub.authservice.adapter.input.facade.PermissionFacade;
+import ecomhub.authservice.application.bus.ICommandBus;
+import ecomhub.authservice.application.bus.IQueryBus;
 import ecomhub.authservice.common.dto.ApiResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class PermissionRestAdapter {
-    private final PermissionFacade permissionFacade;
-    @Operation(summary = "Thêm quyền hạn")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Thêm quyền thành công")
-    })
-    @PostMapping("/add-permission")
+    private final ICommandBus commandBus;
+    private final IQueryBus queryBus;
+    private final PermissionAdapterMapper mapper;
+
+    @PostMapping("/permission")
     public ResponseEntity<?> addPermission(@Valid @RequestBody AddPermissionRequest request) {
-        permissionFacade.addPermission(request);
+        commandBus.dispatch(mapper.toCommand(request));
         return ResponseEntity.ok(ApiResponse.success(null, "Thêm quyền thành công"));
     }
 }

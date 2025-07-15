@@ -1,0 +1,24 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:ecomhub_auth}
+    username: ${DB_USER:root}
+    password: ${DB_PASS:root}
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:8081
+  jpa:
+    hibernate:
+      ddl-auto: none
+#eureka:
+#  client:
+#    service-url:
+#        defaultZone: http://localhost:${EUREKA_PORT:8761}/eureka
+#    register-with-eureka: false
+#    fetch-registry: true
+#    enabled: false
