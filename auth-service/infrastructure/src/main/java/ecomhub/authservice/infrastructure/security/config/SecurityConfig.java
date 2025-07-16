@@ -13,16 +13,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-    private static final String[] PUBLIC_URLS = {"/actuator/**", "/api/v*/auth/register", "/api/v*/auth/role", "/api/v*/auth/permission"};
+    private static final String[] PUBLIC_URLS = {"/actuator/**", "/login", "/error", "/favicon.ico", "/api/v*/auth/register", "/perform_login", "/api/v*/auth/role", "/api/v*/auth/permission"};
 
     @Bean
     @Order(2)
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -33,23 +34,31 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .userDetailsService(userDetailsService)
                 .build();
     }
 
     @Bean
     @Order(1)
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, AuthorizationServerSettings authorizationServerSettings) throws Exception {
+    public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http, UserDetailsService userDetailsService, AuthorizationServerSettings authorizationServerSettings) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 new OAuth2AuthorizationServerConfigurer();
         http
-                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .securityMatcher(new OrRequestMatcher(
+                        authorizationServerConfigurer.getEndpointsMatcher(),
+                        request -> request.getRequestURI().startsWith("/login")
+                ))
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/login", "/error", "/favicon.ico").permitAll()
+                                .anyRequest().authenticated())
+                .formLogin(login -> login.loginPage("/login")
+                        .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
+                        .permitAll())
+
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
+                .userDetailsService(userDetailsService)
                 .with(authorizationServerConfigurer, config ->
                         config.authorizationServerSettings(authorizationServerSettings)
                 );
-
         return http.build();
     }
 

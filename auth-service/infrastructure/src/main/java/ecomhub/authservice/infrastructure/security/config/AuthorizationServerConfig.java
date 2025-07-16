@@ -24,7 +24,7 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:8081/callback")
+                .redirectUri("http://localhost:8080/callback")
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(false)
                         .requireProofKey(true)
@@ -46,10 +46,6 @@ public class AuthorizationServerConfig {
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
                 .issuer("http://localhost:8081")
-                .authorizationEndpoint("/api/v1/auth/oauth2/authorize")
-                .tokenEndpoint("/api/v1/auth/token")
-                .jwkSetEndpoint("/api/v1/auth/jwts")
-                .tokenRevocationEndpoint("/api/v1/auth/revoke")
                 .build();
     }
 }

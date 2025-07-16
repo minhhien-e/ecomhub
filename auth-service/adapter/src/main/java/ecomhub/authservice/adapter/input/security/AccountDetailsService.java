@@ -2,8 +2,10 @@ package ecomhub.authservice.adapter.input.security;
 
 import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
 import ecomhub.authservice.application.port.security.LoadAccountByIdentifierPort;
+import ecomhub.authservice.common.enums.Provider;
 import ecomhub.authservice.common.exception.concrete.role.notfound.RoleNotFoundException;
 import ecomhub.authservice.domain.entity.Account;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,16 +24,21 @@ public class AccountDetailsService implements UserDetailsService {
     private final RoleRepositoryPort roleRepository;
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         Account account = loadAccountByIdentifier
                 .loadByIdentifier(identifier)
                 .orElseThrow(
                         () -> new UsernameNotFoundException(identifier)
                 );
+        if (!account.getProvider().equals(Provider.LOCAL)) {
+            throw new UsernameNotFoundException(identifier);
+        }
         Set<String> rolesName = convertRoleIdToNames(account.getRoleIds());
 
         return User.builder()
                 .username(account.getEmail())
+                .password(account.getPasswordHash().orElse(""))
                 .roles(rolesName.toArray(new String[0]))
                 .build();
     }
@@ -42,7 +49,7 @@ public class AccountDetailsService implements UserDetailsService {
     private Set<String> convertRoleIdToNames(Set<UUID> roles) {
         return roles.stream()
                 .map(id ->
-                        "ROLE_" + roleRepository.findById(id)
+                        roleRepository.findById(id)
                                 .orElseThrow(
                                         () -> new RoleNotFoundException(id))
                                 .getName())

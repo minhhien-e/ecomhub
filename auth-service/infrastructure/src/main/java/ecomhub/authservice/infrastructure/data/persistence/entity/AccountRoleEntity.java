@@ -21,7 +21,7 @@ public class AccountRoleEntity {
     @JoinColumn(name = "account_id", nullable = false)
     private AccountEntity account;
     @MapsId("roleId")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private RoleEntity role;
 }
