@@ -1,10 +1,10 @@
 package ecomhub.authservice.adapter.input.rest;
 
+import ecomhub.authservice.adapter.input.mapper.RoleAdapterMapper;
 import ecomhub.authservice.adapter.input.request.AddRoleRequest;
-import ecomhub.authservice.adapter.input.facade.RoleFacade;
+import ecomhub.authservice.application.bus.ICommandBus;
+import ecomhub.authservice.application.bus.IQueryBus;
 import ecomhub.authservice.common.dto.ApiResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class RoleRestAdapter {
-    private final RoleFacade roleFacade;
+    private final ICommandBus commandBus;
+    private final IQueryBus queryBus;
+    private final RoleAdapterMapper mapper;
 
-    @Operation(summary = "Thêm vai trò")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Thêm vai trò thành công")
-    })
-    @PostMapping("/add-role")
+    @PostMapping("/role")
     public ResponseEntity<?> addRole(@Valid @RequestBody AddRoleRequest request) {
-        roleFacade.addRole(request);
+        commandBus.dispatch(mapper.toCommand(request));
         return ResponseEntity.ok(ApiResponse.success(null, "Thêm vai trò thành công"));
     }
 }

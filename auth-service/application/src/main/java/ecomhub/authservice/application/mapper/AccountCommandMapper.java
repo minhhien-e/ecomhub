@@ -1,10 +1,18 @@
 package ecomhub.authservice.application.mapper;
 
-import ecomhub.authservice.application.usecase.account.regiseraccount.RegisterAccountCommand;
-import ecomhub.authservice.domain.entities.Account;
+import ecomhub.authservice.application.command.account.register.RegisterAccountCommand;
+import ecomhub.authservice.domain.entity.Account;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AccountCommandMapper {
-    Account toDomain(RegisterAccountCommand command);
+    default Account toDomain(RegisterAccountCommand command) {
+        return new Account(
+                command.getEmail(),
+                command.getUsername(),
+                command.getPhoneNumber(),
+                command.getPassword(),
+                command.getProvider()
+        );
+    }
 }
