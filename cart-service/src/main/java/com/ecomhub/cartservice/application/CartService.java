@@ -18,6 +18,7 @@ public class CartService {
         Cart cart = cartCache.get(userId);
         if (cart == null) cart = cartRepository.findByUserId(userId);
         cart.addItem(item);
+        // làm rollback, dùng kiểu <Optional>
         cartCache.set(userId, cart);
         cartRepository.save(cart);
     }

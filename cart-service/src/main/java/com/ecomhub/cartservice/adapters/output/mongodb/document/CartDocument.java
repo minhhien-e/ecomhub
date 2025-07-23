@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartDocument {
+    // tách class(mapper)
     @Id
     private String userId;
     private List<CartItem> items;
@@ -22,7 +23,6 @@ public class CartDocument {
     public static CartDocument fromDomain(Cart cart) {
         return new CartDocument(cart.getUserId(), cart.getItems());
     }
-
     public Cart toDomain() {
         return new Cart(userId, items);
     }

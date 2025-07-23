@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 @Repository
 @RequiredArgsConstructor
+// Chỉ thực hiện truy vấn ko cần bắt TH sai
 public class MongoCartRepository implements CartRepository {
 
     private final SpringCartMongoRepository mongoRepo;

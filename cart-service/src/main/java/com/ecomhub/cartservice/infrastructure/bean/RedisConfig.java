@@ -17,6 +17,7 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
 
         // 💡 Giải quyết lỗi thiếu @class bằng serializer này
+        // Còn hạn chế chỉ dùng đc JAVA
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return template;
