@@ -8,6 +8,7 @@ import ecomhub.authservice.infrastructure.security.provider.PublicClientRefreshT
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -74,7 +75,6 @@ public class SecurityConfig {
                         auth.requestMatchers(PUBLIC_AUTH_URLS).permitAll()
                                 .anyRequest().authenticated())
                 .formLogin(login -> login.loginPage("/login")
-                        .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
                         .permitAll())
 
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
@@ -83,12 +83,12 @@ public class SecurityConfig {
                 .with(authorizationServerConfigurer, authorizationServer ->
                         authorizationServer
                                 .authorizationServerSettings(authorizationServerSettings)
+                                .tokenEndpoint(tokenEndpointConfigurer ->
+                                        tokenEndpointConfigurer
+                                                .authenticationProvider(publicClientRefreshTokenAuthenticationProvider)
+                                                .accessTokenRequestConverter(new PublicClientRefreshTokenAuthenticationConverter()))
                                 .tokenGenerator(tokenGenerator)
-                                .clientAuthentication(clientAuthenticationConfigurer -> clientAuthenticationConfigurer
-                                        .authenticationConverter(new PublicClientRefreshTokenAuthenticationConverter())
-                                        .authenticationProvider(publicClientRefreshTokenAuthenticationProvider))
                 ).authenticationProvider(daoAuthenticationProvider);
-
         return http.build();
     }
 

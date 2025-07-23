@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class RefreshTokenValidator {
 
-    public void validate(OAuth2Authorization authorization, RegisteredClient registeredClient) {
+    public void validate(OAuth2Authorization authorization, RegisteredClient registeredClient)throws OAuth2AuthenticationException {
         if (authorization == null)
             throwInvalidGrant("Refresh token không tồn tại");
-        if (!registeredClient.getClientId().equals(authorization.getRegisteredClientId()))
+        if (!registeredClient.getId().equals(authorization.getRegisteredClientId()))
             throwInvalidGrant("Client Id không khớp");
         OAuth2Authorization.Token<OAuth2RefreshToken> auth2RefreshToken = authorization.getRefreshToken();
         if (auth2RefreshToken == null)
