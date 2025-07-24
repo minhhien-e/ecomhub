@@ -17,6 +17,9 @@ public class Cart {
         this.items = (items != null) ? items : new ArrayList<>();
     }
 
+    public Cart(String userId) {
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -42,4 +45,19 @@ public class Cart {
         }
         items.add(item);
     }
+
+    public void removeItem(String productId) {
+        items.removeIf(item -> item.getProductId().equals(productId));
+    }
+
+    public void updateItem(CartItem updatedItem) {
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getProductId().equals(updatedItem.getProductId())) {
+                items.set(i, updatedItem);
+                return;
+            }
+        }
+        addItem(updatedItem);
+    }
+
 }

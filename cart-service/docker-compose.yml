@@ -8,10 +8,10 @@ services:
       dockerfile: Dockerfile
     container_name: cart-service
     ports:
-      - "8085:8083"  # Host:Container → tránh trùng cổng host
+      - "8085:8083"  # 8085 là cổng host, 8083 là cổng trong container
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/cartdb?authSource=admin
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin123@mongodb:27017/cartdb?authSource=admin
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
     depends_on:
