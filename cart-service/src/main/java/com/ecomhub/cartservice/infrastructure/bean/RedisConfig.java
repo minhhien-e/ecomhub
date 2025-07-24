@@ -15,9 +15,7 @@ public class RedisConfig {
         org.springframework.data.redis.core.RedisTemplate<String, Cart> template = new org.springframework.data.redis.core.RedisTemplate<>();
         template.setConnectionFactory(factory);
         template.setKeySerializer(new StringRedisSerializer());
-
-        // 💡 Giải quyết lỗi thiếu @class bằng serializer này
-        // Còn hạn chế chỉ dùng đc JAVA
+        
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return template;

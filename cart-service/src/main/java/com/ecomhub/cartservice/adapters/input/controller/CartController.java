@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
 
     private final CartService cartService;
-    @GetMapping("/ping")
-    public String ping() {
-        return "pong";
-    }
+ 
     /**
      * Thêm sản phẩm vào giỏ hàng
      */
