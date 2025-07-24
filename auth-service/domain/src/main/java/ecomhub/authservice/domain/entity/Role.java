@@ -54,7 +54,7 @@ public class Role {
             throw new MissingPermissionException();
         }
         if (this.permissions.contains(permission)) {
-            throw new PermissionAlreadyAssignedException(permission.getName());
+            throw new PermissionAlreadyAssignedException(permission.getName().getValue());
         }
         this.permissions.add(permission);
     }
@@ -64,7 +64,7 @@ public class Role {
             throw new MissingPermissionException();
         }
         if (!this.permissions.contains(permission)) {
-            throw new PermissionNotAssignedException(permission.getName());
+            throw new PermissionNotAssignedException(permission.getName().getValue());
         }
         this.permissions.remove(permission);
     }

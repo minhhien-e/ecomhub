@@ -23,6 +23,10 @@ public class Provider {
         return value;
     }
 
+    public boolean isSame(Provider provider) {
+        return this.equals(provider);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

@@ -35,8 +35,9 @@ public class RoleRepository implements RoleRepositoryPort {
     }
 
     @Override
-    public Optional<UUID> findIdByName(String name) {
-        return roleJpaRepository.findIdByName(name);
+    public Optional<Role> findByName(String name) {
+        var entity = roleJpaRepository.findByName(name);
+        return entity.map(RolePersistenceMapper::toDomain);
     }
 
     @Override

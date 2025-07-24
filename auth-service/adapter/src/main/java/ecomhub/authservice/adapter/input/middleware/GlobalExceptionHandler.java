@@ -2,7 +2,7 @@ package ecomhub.authservice.adapter.input.middleware;
 
 import ecomhub.authservice.common.dto.ApiResponse;
 import ecomhub.authservice.common.enums.ErrorCode;
-import ecomhub.authservice.common.exception.HttpException;
+import ecomhub.authservice.common.exception.abstracts.HttpException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -83,7 +83,7 @@ public class Account {
             throw new MissingRoleException();
         }
         if (this.roles.contains(role)) {
-            throw new RoleAlreadyAssignedException(role.getName());
+            throw new RoleAlreadyAssignedException(role.getName().getValue());
         }
         this.roles.add(role);
     }
@@ -93,7 +93,7 @@ public class Account {
             throw new MissingRoleException();
         }
         if (!this.roles.contains(role)) {
-            throw new RoleNotAssignedException(role.getName());
+            throw new RoleNotAssignedException(role.getName().getValue());
         }
         this.roles.remove(role);
     }
