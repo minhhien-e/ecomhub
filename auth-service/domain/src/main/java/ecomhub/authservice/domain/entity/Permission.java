@@ -1,34 +1,39 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.common.exception.concrete.permission.validation.PermissionIdRequiredException;
-import ecomhub.authservice.common.exception.concrete.permission.validation.PermissionNameRequiredException;
+import ecomhub.authservice.common.exception.concrete.permission.MissingIdInPermissionException;
+import ecomhub.authservice.domain.valueobject.Name;
+import ecomhub.authservice.domain.valueobject.PermissionKey;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class Permission {
     private UUID id;
-    private String name;
+    private Name name;
+    private PermissionKey key;
     private String description;
 
     /**
      * Lấy dữ liệu từ db
      */
-    public Permission(UUID id, String name, String description) {
-        validateForLoad(id, name);
+    public Permission(UUID id, String name, String key, String description) {
+        if (id == null) {
+            throw new MissingIdInPermissionException();
+        }
         this.id = id;
-        this.name = name;
+        this.name = new Name(name, "quyền");
+        this.key = new PermissionKey(key);
         this.description = description;
     }
 
     /**
      * Tạo permission
      */
-    public Permission(String name, String description) {
-        validateForCreate(name);
+    public Permission(String name, String key, String description) {
         this.id = UUID.randomUUID();
-        this.name = name;
+        this.name = new Name(name, "quyền");
+        this.key = new PermissionKey(key);
         this.description = description;
     }
 
@@ -36,7 +41,7 @@ public class Permission {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -44,17 +49,9 @@ public class Permission {
         return Optional.ofNullable(description);
     }
 
-    //Kiểm tra thông tin để tạo
-    private void validateForCreate(String name) {
-        if (name == null || name.isBlank()) {
-            throw new PermissionNameRequiredException();
-        }
+    public PermissionKey getKey() {
+        return key;
     }
 
-    private void validateForLoad(UUID id, String name) {
-        validateForCreate(name);
-        if (id == null) {
-            throw new PermissionIdRequiredException();
-        }
-    }
+
 }
