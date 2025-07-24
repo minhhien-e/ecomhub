@@ -18,7 +18,10 @@ public class Cart {
     }
 
     public Cart(String userId) {
+        this.userId = userId;
+        this.items = new ArrayList<>();
     }
+
 
     public String getUserId() {
         return userId;

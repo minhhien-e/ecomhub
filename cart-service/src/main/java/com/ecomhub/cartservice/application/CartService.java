@@ -19,38 +19,58 @@ public class CartService {
 
     @Transactional
     public void addItemToCart(CartItem item, String userId) {
-        Cart cart = Optional.ofNullable(cartCache.get(userId))
-                .orElseGet(() -> cartRepository.findByUserId(userId));
+        Cart cart = getOrCreateCart(userId);
         cart.addItem(item);
-        cartCache.set(userId, cart);
         cartRepository.save(cart);
+        cartCache.set(userId, cart);
     }
 
     @Transactional
     public void clearCart(String userId) {
         Cart cart = new Cart(userId);
-        cartCache.set(userId, cart);
         cartRepository.save(cart);
+        cartCache.set(userId, cart);
     }
 
     @Transactional
     public void removeItem(String userId, String productId) {
-        Cart cart = Optional.ofNullable(cartCache.get(userId))
-                .orElseGet(() -> cartRepository.findByUserId(userId));
-
+        Cart cart = getOrCreateCart(userId);
         cart.removeItem(productId);
-        cartCache.set(userId, cart);
         cartRepository.save(cart);
+        cartCache.set(userId, cart);
     }
 
     @Transactional
     public void updateItem(String userId, CartItem updatedItem) {
-        Cart cart = Optional.ofNullable(cartCache.get(userId))
-                .orElseGet(() -> cartRepository.findByUserId(userId));
-
+        Cart cart = getOrCreateCart(userId);
         cart.updateItem(updatedItem);
-        cartCache.set(userId, cart);
         cartRepository.save(cart);
+        cartCache.set(userId, cart);
     }
 
+    public Cart getCart(String userId) {
+        Cart cart = cartCache.get(userId);
+        if (cart != null) {
+            return cart;
+        }
+        cart = cartRepository.findByUserId(userId);
+        if (cart != null) {
+            cartCache.set(userId, cart);
+        }
+        return cart;
+    }
+
+    private Cart getOrCreateCart(String userId) {
+        Cart cart = cartCache.get(userId);
+        if (cart != null) {
+            return cart;
+        }
+
+        cart = cartRepository.findByUserId(userId);
+        if (cart != null) {
+            return cart;
+        }
+
+        return new Cart(userId);
+    }
 }
