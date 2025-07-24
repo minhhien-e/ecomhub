@@ -1,6 +1,6 @@
 package ecomhub.authservice.infrastructure.data.persistence.entity;
 
-import ecomhub.authservice.common.enums.Provider;
+import ecomhub.authservice.common.enums.ProviderType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -38,12 +38,10 @@ public class AccountEntity {
     private String phoneNumber;
     @Column(nullable = false)
     private String passwordHash;
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Provider provider;
+    private String provider;
     @Column(nullable = false)
-    @Builder.Default
-    private boolean active = true;
+    private boolean active;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

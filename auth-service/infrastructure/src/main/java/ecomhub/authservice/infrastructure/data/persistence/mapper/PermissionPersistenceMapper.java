@@ -7,13 +7,14 @@ public class PermissionPersistenceMapper {
     public static PermissionEntity toEntity(Permission permission) {
         return PermissionEntity.builder()
                 .id(permission.getId())
-                .name(permission.getName())
+                .name(permission.getName().getValue())
+                .key(permission.getKey().getValue())
                 .description(permission.getDescription().orElse(null))
                 .build();
     }
 
     public static Permission toDomain(PermissionEntity permissionEntity) {
-        return new Permission(permissionEntity.getId(),
+        return new Permission(permissionEntity.getKey(),
                 permissionEntity.getName(),
                 permissionEntity.getDescription());
     }
