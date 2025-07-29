@@ -1,11 +1,8 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.common.exception.concrete.account.conflict.RoleAlreadyAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.notfound.RoleNotAssignedException;
-import ecomhub.authservice.common.exception.concrete.role.business.NoPermissionAssignedException;
-import ecomhub.authservice.common.exception.concrete.role.validation.RoleIdRequiredException;
-import ecomhub.authservice.common.exception.concrete.role.validation.RoleNameRequiredException;
+import ecomhub.authservice.common.exception.concrete.role.*;
+import ecomhub.authservice.domain.valueobject.Name;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -14,34 +11,33 @@ import java.util.UUID;
 
 public class Role {
     private UUID id;
-    private String name;
+    private Name name;
     private String description;
-    private Set<UUID> permissionIds;
+    private Set<Permission> permissions;
 
     /**
      * Lấy thông tin từ db
      */
-    public Role(UUID id, String name, String description, Set<UUID> permissionIds) {
-        validateForLoad(id, name, permissionIds);
+    public Role(UUID id, String name, String description, Set<Permission> permissions) {
+        validateForLoad(id, name, permissions);
         this.id = id;
-        this.name = name;
+        this.name = new Name(name, "vai trò");
         this.description = description;
-        this.permissionIds = permissionIds;
+        this.permissions = permissions;
     }
 
     public Role(String name, String description) {
-        validateForCreate(name);
         this.id = UUID.randomUUID();
-        this.name = name;
+        this.name = new Name(name, "vai trò");
         this.description = description;
-        this.permissionIds = new HashSet<>();
+        this.permissions = new HashSet<>();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -49,45 +45,36 @@ public class Role {
         return Optional.ofNullable(description);
     }
 
-    public Set<UUID> getPermissionIds() {
-        return permissionIds;
+    public Set<Permission> getPermissions() {
+        return Set.copyOf(permissions);
     }
 
-    public void grantPermission(UUID permissionId) {
-        if (permissionId == null) {
-            throw new RoleIdRequiredException();
+    public void grantPermission(Permission permission) {
+        if (permission == null) {
+            throw new MissingPermissionException();
         }
-        if (this.permissionIds.contains(permissionId)) {
-            throw new RoleAlreadyAssignedException(permissionId);
+        if (this.permissions.contains(permission)) {
+            throw new PermissionAlreadyAssignedException(permission.getName().getValue());
         }
-        this.permissionIds.add(permissionId);
+        this.permissions.add(permission);
     }
 
-    public void revokePermission(UUID permissionId) {
-        if (permissionId == null) {
-            throw new RoleIdRequiredException();
+    public void revokePermission(Permission permission) {
+        if (permission == null) {
+            throw new MissingPermissionException();
         }
-        if (!this.permissionIds.contains(permissionId)) {
-            throw new RoleNotAssignedException(permissionId);
+        if (!this.permissions.contains(permission)) {
+            throw new PermissionNotAssignedException(permission.getName().getValue());
         }
-        this.permissionIds.remove(permissionId);
+        this.permissions.remove(permission);
     }
 
-    /**
-     * Kiểm tra để tạo
-     */
-    private void validateForCreate(String name) {
-        if (name == null || name.isBlank()) {
-            throw new RoleNameRequiredException();
-        }
-    }
 
-    private void validateForLoad(UUID id, String name, Set<UUID> permissionIds) {
-        validateForCreate(name);
+    private void validateForLoad(UUID id, String name, Set<Permission> permissions) {
         if (id == null) {
-            throw new RoleIdRequiredException();
+            throw new MissingIdInRoleException();
         }
-        if (permissionIds.isEmpty()) {
+        if (permissions.isEmpty()) {
             throw new NoPermissionAssignedException();
         }
     }

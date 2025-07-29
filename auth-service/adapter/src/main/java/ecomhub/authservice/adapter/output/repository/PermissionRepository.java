@@ -7,6 +7,8 @@ import ecomhub.authservice.infrastructure.data.persistence.repository.Permission
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 public class PermissionRepository implements PermissionRepositoryPort {
@@ -21,5 +23,10 @@ public class PermissionRepository implements PermissionRepositoryPort {
     @Override
     public boolean existsByName(String name) {
         return permissionJpaRepository.existsByName(name);
+    }
+
+    @Override
+    public List<Permission> findAllByKeyIn(List<String> permissionKeys) {
+        return permissionJpaRepository.findAllByKeyIn(permissionKeys);
     }
 }

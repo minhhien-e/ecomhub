@@ -1,8 +1,8 @@
 package ecomhub.authservice.infrastructure.bus;
 
 import ecomhub.authservice.application.bus.ICommandBus;
-import ecomhub.authservice.application.command.interfaces.ICommand;
-import ecomhub.authservice.application.command.interfaces.ICommandHandler;
+import ecomhub.authservice.application.command.abstracts.ICommand;
+import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

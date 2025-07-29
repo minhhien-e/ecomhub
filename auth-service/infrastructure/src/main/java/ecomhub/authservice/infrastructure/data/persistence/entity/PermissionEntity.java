@@ -9,7 +9,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "permission",
         indexes = {
-                @Index(name = "idx_permission_name", columnList = "name")
+                @Index(name = "idx_permission_key", columnList = "key"),
         }
 )
 @Builder
@@ -23,6 +23,8 @@ public class PermissionEntity {
     private UUID id;
     @Column(nullable = false, unique = true, length = 100)
     private String name;
+    @Column(nullable = false, unique = true, length = 100)
+    private String key;
     @Lob
     @Column
     private String description;

@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface PermissionCommandMapper {
     default Permission toDomain(AddPermissionCommand command) {
-        return new Permission(command.getName(), command.getDescription());
+        return new Permission(command.getName(), command.getKey(), command.getDescription());
     }
 
 }

@@ -2,9 +2,11 @@ package ecomhub.authservice.adapter.input.security;
 
 import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
 import ecomhub.authservice.application.port.security.LoadAccountByIdentifierPort;
-import ecomhub.authservice.common.enums.Provider;
-import ecomhub.authservice.common.exception.concrete.role.notfound.RoleNotFoundException;
+import ecomhub.authservice.common.enums.ProviderType;
+import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
 import ecomhub.authservice.domain.entity.Account;
+import ecomhub.authservice.domain.entity.Role;
+import ecomhub.authservice.domain.valueobject.Provider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -31,28 +33,16 @@ public class AccountDetailsService implements UserDetailsService {
                 .orElseThrow(
                         () -> new UsernameNotFoundException(identifier)
                 );
-        if (!account.getProvider().equals(Provider.LOCAL)) {
+        if (!account.getProvider().isSame(new Provider(ProviderType.LOCAL.name()))) {
             throw new UsernameNotFoundException(identifier);
         }
-        Set<String> rolesName = convertRoleIdToNames(account.getRoleIds());
 
         return User.builder()
-                .username(account.getEmail())
-                .password(account.getPasswordHash().orElse(""))
-                .roles(rolesName.toArray(new String[0]))
+                .username(account.getEmail().getValue())
+                .roles(account.getRoles()
+                        .stream().map(role -> role.getName().getValue())
+                        .distinct().toArray(String[]::new))
                 .build();
     }
 
-    /**
-     * Chuyển roleId thành roleName
-     */
-    private Set<String> convertRoleIdToNames(Set<UUID> roles) {
-        return roles.stream()
-                .map(id ->
-                        roleRepository.findById(id)
-                                .orElseThrow(
-                                        () -> new RoleNotFoundException(id))
-                                .getName())
-                .collect(Collectors.toSet());
-    }
 }

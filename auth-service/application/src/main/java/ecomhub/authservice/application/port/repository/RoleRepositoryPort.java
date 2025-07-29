@@ -12,7 +12,7 @@ public interface RoleRepositoryPort {
 
     boolean existsByName(String name);
 
-    Optional<UUID> findIdByName(String name);
+    Optional<Role> findByName(String name);
 
     Optional<Role> findById(@NotNull UUID id);
 

@@ -1,14 +1,15 @@
 package ecomhub.authservice.application.command.account.register;
 
-import ecomhub.authservice.application.command.interfaces.ICommandHandler;
+import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.enums.RoleName;
 import ecomhub.authservice.application.mapper.AccountCommandMapper;
 import ecomhub.authservice.application.port.repository.AccountRepositoryPort;
 import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
-import ecomhub.authservice.common.exception.concrete.account.conflict.EmailAlreadyExistsException;
-import ecomhub.authservice.common.exception.concrete.account.conflict.PhoneNumberAlreadyExistsException;
-import ecomhub.authservice.common.exception.concrete.account.conflict.UsernameAlreadyExistsException;
-import ecomhub.authservice.common.exception.concrete.role.notfound.RoleNotFoundException;
+import ecomhub.authservice.common.exception.concrete.account.EmailAlreadyExistsException;
+import ecomhub.authservice.common.exception.concrete.account.PhoneNumberAlreadyExistsException;
+import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExistsException;
+import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
+import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.service.PasswordHashService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,16 +40,15 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
             throw new UsernameAlreadyExistsException(command.getUsername());
         }
         //Hash password
-        command.setPassword(passwordHashService.hash(command.getPassword()));
-        var account = accountCommandMapper.toDomain(command);
+        var account = accountCommandMapper.toDomain(command, passwordHashService);
         //Gán role
-        Set<UUID> roleIds = getRoleIds(command.getRoles());
+        Set<Role> roleIds = getRoles(command.getRoles());
         roleIds.forEach(account::grantRole);
         accountRepository.save(account);
     }
 
-    private Set<UUID> getRoleIds(List<RoleName> roleNames) {
-        return roleNames.stream().map(name -> roleRepository.findIdByName(name.name())
+    private Set<Role> getRoles(List<RoleName> roleNames) {
+        return roleNames.stream().map(name -> roleRepository.findByName(name.name())
                         .orElseThrow(() -> new RoleNotFoundException(name.name())))
                 .collect(Collectors.toSet());
     }

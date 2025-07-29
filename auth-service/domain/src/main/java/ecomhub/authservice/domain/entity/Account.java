@@ -1,70 +1,68 @@
 package ecomhub.authservice.domain.entity;
 
-import ecomhub.authservice.common.enums.Provider;
-import ecomhub.authservice.common.exception.concrete.account.business.NoRoleAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.conflict.RoleAlreadyAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.notfound.RoleNotAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.validation.*;
-import ecomhub.authservice.common.exception.concrete.role.validation.RoleIdRequiredException;
+import ecomhub.authservice.common.enums.ProviderType;
+import ecomhub.authservice.common.exception.concrete.account.NoRoleAssignedException;
+import ecomhub.authservice.common.exception.concrete.account.RoleAlreadyAssignedException;
+import ecomhub.authservice.common.exception.concrete.account.RoleNotAssignedException;
+import ecomhub.authservice.common.exception.concrete.account.MissingIdInAccountException;
+import ecomhub.authservice.common.exception.concrete.account.MissingRoleException;
+import ecomhub.authservice.domain.service.PasswordHashService;
+import ecomhub.authservice.domain.valueobject.*;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 public class Account {
     private UUID id;
-    private String email;
-    private String username;
-    private String phoneNumber;
-    private String passwordHash;
+    private Email email;
+    private Username username;
+    private PhoneNumber phoneNumber;
+    private Password passwordHash;
     private Provider provider;
     private boolean active;
-    private Set<UUID> roleIds;
+    private Set<Role> roles;
 
     //Constructor lấy dữ liệu từ DB
-    public Account(UUID id, String email, String username, String phoneNumber, String passwordHash, Provider provider, boolean active, Set<UUID> roleIds) {
-        validateForLoad(id, roleIds, email, username, phoneNumber, passwordHash, provider);
+    public Account(UUID id, String email, String username, String phoneNumber, String passwordHash, String provider, boolean active, Set<Role> roles) {
+        validateForLoad(id, roles);
         this.id = id;
-        this.email = email;
-        this.username = username;
-        this.phoneNumber = phoneNumber;
-        this.passwordHash = passwordHash;
-        this.provider = provider;
+        this.email = new Email(email, "tài khoản");
+        this.username = new Username(username);
+        this.phoneNumber = new PhoneNumber(phoneNumber, "tài khoản");
+        this.passwordHash = new Password(passwordHash);
+        this.provider = new Provider(provider);
         this.active = active;
-        this.roleIds = roleIds;
+        this.roles = roles;
     }
 
-    public Account(String email, String username, String phoneNumber, String passwordHash, Provider provider) {
-        validateForCreate(email, username, phoneNumber, passwordHash, provider);
+    public Account(String email, String username, String phoneNumber, String rawPassword, String provider, PasswordHashService passwordHashService) {
         this.id = UUID.randomUUID();
-        this.email = email;
-        this.username = username;
-        this.phoneNumber = phoneNumber;
-        this.passwordHash = passwordHash;
-        this.provider = provider == null ? Provider.LOCAL : provider;
+        this.email = new Email(email, "tài khoản");
+        this.username = new Username(username);
+        this.phoneNumber = new PhoneNumber(phoneNumber, "tài khoản");
+        this.passwordHash = new Password(rawPassword, passwordHashService);
+        this.provider = provider == null ? new Provider(ProviderType.LOCAL.name()) : new Provider(provider);
         this.active = true;
-        this.roleIds = new HashSet<>();
+        this.roles = new HashSet<>();
     }
 
     public UUID getId() {
         return id;
     }
 
-    public String getEmail() {
+    public Email getEmail() {
         return email;
     }
 
-    public Optional<String> getUsername() {
+    public Optional<Username> getUsername() {
         return Optional.ofNullable(username);
     }
 
-    public String getPhoneNumber() {
+    public PhoneNumber getPhoneNumber() {
         return phoneNumber;
     }
 
-    public Optional<String> getPasswordHash() {
+    public Optional<Password> getPasswordHash() {
         return Optional.ofNullable(passwordHash);
     }
 
@@ -76,62 +74,50 @@ public class Account {
         return active;
     }
 
-    public Set<UUID> getRoleIds() {
-        return Set.copyOf(roleIds);
+    public Set<Role> getRoles() {
+        return Set.copyOf(roles);
     }
 
-    public void grantRole(UUID roleId) {
-        if (roleId == null) {
-            throw new RoleIdRequiredException();
+    public void grantRole(Role role) {
+        if (role == null) {
+            throw new MissingRoleException();
         }
-        if (this.roleIds.contains(roleId)) {
-            throw new RoleAlreadyAssignedException(roleId);
+        if (this.roles.contains(role)) {
+            throw new RoleAlreadyAssignedException(role.getName().getValue());
         }
-        this.roleIds.add(roleId);
+        this.roles.add(role);
     }
 
-    public void revokeRole(UUID roleId) {
-        if (roleId == null) {
-            throw new RoleIdRequiredException();
+    public void revokeRole(Role role) {
+        if (role == null) {
+            throw new MissingRoleException();
         }
-        if (!this.roleIds.contains(roleId)) {
-            throw new RoleNotAssignedException(roleId);
+        if (!this.roles.contains(role)) {
+            throw new RoleNotAssignedException(role.getName().getValue());
         }
-        this.roleIds.remove(roleId);
+        this.roles.remove(role);
     }
 
-    /**
-     * Kiểm tra tính hợp lệ của thông tin khi tạo
-     */
-    private void validateForCreate(String email, String username, String phoneNumber, String passwordHash, Provider provider) {
-        if (email == null || email.isBlank()) {
-            throw new EmailRequiredException();
-        }
-        if (phoneNumber == null || phoneNumber.isBlank()) {
-            throw new PhoneNumberRequiredException();
-        }
-        if (provider == Provider.LOCAL) {
-            if (username == null || username.isBlank()) {
-                throw new UsernameRequiredException();
-            }
-            if (passwordHash == null || passwordHash.isBlank()) {
-                throw new PasswordRequiredException();
-            }
-        }
-        if (passwordHash == null || passwordHash.isBlank()) {
-            throw new PasswordRequiredException();
-        }
-    }
 
-    private void validateForLoad(UUID id, Set<UUID> roleIds, String email, String username, String phoneNumber, String passwordHash, Provider provider) {
-        validateForCreate(email, username, phoneNumber, passwordHash, provider);
+    private void validateForLoad(UUID id, Set<Role> roles) {
         if (id == null) {
-            throw new AccountIdRequiredException();
+            throw new MissingIdInAccountException();
         }
-        if (roleIds.isEmpty()) {
+        if (roles.isEmpty()) {
             throw new NoRoleAssignedException();
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(id, account.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
 
