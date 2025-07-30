@@ -4,8 +4,10 @@ import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
 import ecomhub.authservice.application.port.security.LoadAccountByIdentifierPort;
 import ecomhub.authservice.common.enums.ProviderType;
 import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
+import ecomhub.authservice.common.exception.concrete.valueobject.password.MissingPasswordException;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
+import ecomhub.authservice.domain.valueobject.Password;
 import ecomhub.authservice.domain.valueobject.Provider;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +38,12 @@ public class AccountDetailsService implements UserDetailsService {
         if (!account.getProvider().isSame(new Provider(ProviderType.LOCAL.name()))) {
             throw new UsernameNotFoundException(identifier);
         }
+        if (account.getPasswordHash().isEmpty())
+            throw new MissingPasswordException();
 
         return User.builder()
                 .username(account.getEmail().getValue())
+                .password(account.getPasswordHash().get().getHashedValue())
                 .roles(account.getRoles()
                         .stream().map(role -> role.getName().getValue())
                         .distinct().toArray(String[]::new))
