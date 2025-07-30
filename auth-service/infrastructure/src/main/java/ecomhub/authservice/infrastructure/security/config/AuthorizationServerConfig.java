@@ -54,7 +54,7 @@ public class AuthorizationServerConfig {
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
                 .issuer("http://localhost:8081")
-                .jwkSetEndpoint("/oauth2/jwts")
+                .jwkSetEndpoint("/oauth2/jwks")
                 .build();
     }
 }

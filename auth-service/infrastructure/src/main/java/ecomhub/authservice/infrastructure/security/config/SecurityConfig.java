@@ -77,8 +77,7 @@ public class SecurityConfig {
                                                               OAuth2TokenGenerator<OAuth2Token> tokenGenerator,
                                                               DelegatingPublicClientTokenAuthenticationProvider delegatingPublicClientTokenAuthenticationProvider,
                                                               DaoAuthenticationProvider daoAuthenticationProvider,
-                                                              PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider,
-                                                              JwtDecoder jwtDecoder
+                                                              PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider
     ) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http
