@@ -14,8 +14,8 @@ public class PermissionPersistenceMapper {
     }
 
     public static Permission toDomain(PermissionEntity permissionEntity) {
-        return new Permission(permissionEntity.getKey(),
-                permissionEntity.getName(),
+        return new Permission(permissionEntity.getName(),
+                permissionEntity.getKey(),
                 permissionEntity.getDescription());
     }
 }

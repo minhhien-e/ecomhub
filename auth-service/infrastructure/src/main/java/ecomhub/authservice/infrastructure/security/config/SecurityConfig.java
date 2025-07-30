@@ -2,13 +2,15 @@ package ecomhub.authservice.infrastructure.security.config;
 
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import ecomhub.authservice.infrastructure.security.service.OAuth2PublicClientRefreshTokenGenerator;
-import ecomhub.authservice.infrastructure.security.converter.PublicClientRefreshTokenAuthenticationConverter;
+import ecomhub.authservice.infrastructure.security.converter.DelegatingPublicClientTokenAuthenticationConverter;
+import ecomhub.authservice.infrastructure.security.converter.PublicClientTokenRevocationAuthenticationConverter;
+import ecomhub.authservice.infrastructure.security.provider.DelegatingPublicClientTokenAuthenticationProvider;
 import ecomhub.authservice.infrastructure.security.provider.PublicClientRefreshTokenAuthenticationProvider;
+import ecomhub.authservice.infrastructure.security.provider.PublicClientTokenRevocationAuthenticationProvider;
+import ecomhub.authservice.infrastructure.security.service.OAuth2PublicClientRefreshTokenGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +29,6 @@ import org.springframework.security.oauth2.server.authorization.token.Delegating
 import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
     private static final String[] PUBLIC_API_URLS = {"/api/v*/auth/register", "/actuator/**"};
-    private static final String[] PUBLIC_AUTH_URLS = {"/login", "/favicon.ico", "/oauth2/token"};
+    private static final String[] PUBLIC_AUTH_URLS = {"/login", "/favicon.ico", "/oauth2/token", "/oauth2/revoke"};
 
     @Bean
     @Order(2)
@@ -61,8 +62,9 @@ public class SecurityConfig {
                                                               UserDetailsService userDetailsService,
                                                               AuthorizationServerSettings authorizationServerSettings,
                                                               OAuth2TokenGenerator<OAuth2Token> tokenGenerator,
-                                                              PublicClientRefreshTokenAuthenticationProvider publicClientRefreshTokenAuthenticationProvider,
-                                                              DaoAuthenticationProvider daoAuthenticationProvider
+                                                              DelegatingPublicClientTokenAuthenticationProvider delegatingPublicClientTokenAuthenticationProvider,
+                                                              DaoAuthenticationProvider daoAuthenticationProvider,
+                                                              PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider
     ) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http
@@ -85,8 +87,12 @@ public class SecurityConfig {
                                 .authorizationServerSettings(authorizationServerSettings)
                                 .tokenEndpoint(tokenEndpointConfigurer ->
                                         tokenEndpointConfigurer
-                                                .authenticationProvider(publicClientRefreshTokenAuthenticationProvider)
-                                                .accessTokenRequestConverter(new PublicClientRefreshTokenAuthenticationConverter()))
+                                                .authenticationProvider(delegatingPublicClientTokenAuthenticationProvider)
+                                                .accessTokenRequestConverter(new DelegatingPublicClientTokenAuthenticationConverter()))
+                                .tokenRevocationEndpoint(tokenRevocationEndpointConfigurer ->
+                                        tokenRevocationEndpointConfigurer
+                                                .authenticationProvider(publicClientTokenRevocationAuthenticationProvider)
+                                                .revocationRequestConverter(new PublicClientTokenRevocationAuthenticationConverter()))
                                 .tokenGenerator(tokenGenerator)
                 ).authenticationProvider(daoAuthenticationProvider);
         return http.build();

@@ -1,6 +1,5 @@
 package ecomhub.authservice.infrastructure.security.provider;
 
-import ecomhub.authservice.infrastructure.security.validator.RefreshTokenValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,12 +20,14 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.stereotype.Component;
 
+import static ecomhub.authservice.infrastructure.security.utils.OAuth2ThrowExceptionHelper.throwException;
+import static ecomhub.authservice.infrastructure.security.utils.OAuthorizationHelper.getOAuth2Token;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class PublicClientRefreshTokenAuthenticationProvider implements AuthenticationProvider {
     private final OAuth2TokenGenerator<OAuth2Token> tokenGenerator;
-    private final RefreshTokenValidator refreshTokenValidator;
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationService authorizationService;
 
@@ -36,11 +37,9 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
         OAuth2ClientAuthenticationToken clientPrincipal = (OAuth2ClientAuthenticationToken) refreshAuth.getPrincipal();
         RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientPrincipal.getPrincipal().toString());
         if (registeredClient == null)
-            throwInvalidGrant("Không tìm thấy client", OAuth2ErrorCodes.INVALID_CLIENT);
+            throwException("Không tìm thấy client", OAuth2ErrorCodes.INVALID_CLIENT);
         OAuth2Authorization authorization = authorizationService.findByToken(refreshAuth.getRefreshToken(), OAuth2TokenType.REFRESH_TOKEN);
-        if (authorization == null)
-            throwInvalidGrant("Không tìm thấy thông tin xác thực", OAuth2ErrorCodes.INVALID_GRANT);
-        refreshTokenValidator.validate(authorization, registeredClient);
+        getOAuth2Token(authorization, registeredClient.getId(), refreshAuth.getRefreshToken());
         OAuth2TokenContext tokenContext = DefaultOAuth2TokenContext.builder()
                 .registeredClient(registeredClient)
                 .principal(clientPrincipal)
@@ -52,7 +51,7 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
                 .build();
         OAuth2Token generatedAccessToken = tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null)
-            throwInvalidGrant("Tạo token không thành công", OAuth2ErrorCodes.INVALID_REQUEST);
+            throwException("Tạo token không thành công", OAuth2ErrorCodes.INVALID_REQUEST);
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 generatedAccessToken.getTokenValue(), generatedAccessToken.getIssuedAt(),
                 generatedAccessToken.getExpiresAt(), null);
@@ -64,9 +63,4 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
         return OAuth2RefreshTokenAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private void throwInvalidGrant(String message, String code) throws OAuth2AuthenticationException {
-        throw new OAuth2AuthenticationException(
-                new OAuth2Error(code, message, null)
-        );
-    }
 }
