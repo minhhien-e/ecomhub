@@ -8,6 +8,9 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import ecomhub.authservice.infrastructure.security.converter.DelegatingPublicClientTokenAuthenticationConverter;
 import ecomhub.authservice.infrastructure.security.converter.PublicClientTokenRevocationAuthenticationConverter;
+import ecomhub.authservice.infrastructure.security.exception.CustomAccessDeniedHandler;
+import ecomhub.authservice.infrastructure.security.exception.CustomAuthenticationEntryPoint;
+import ecomhub.authservice.infrastructure.security.exception.CustomAuthenticationFailureHandler;
 import ecomhub.authservice.infrastructure.security.provider.DelegatingPublicClientTokenAuthenticationProvider;
 import ecomhub.authservice.infrastructure.security.provider.PublicClientRefreshTokenAuthenticationProvider;
 import ecomhub.authservice.infrastructure.security.provider.PublicClientTokenRevocationAuthenticationProvider;
@@ -77,7 +80,10 @@ public class SecurityConfig {
                                                               OAuth2TokenGenerator<OAuth2Token> tokenGenerator,
                                                               DelegatingPublicClientTokenAuthenticationProvider delegatingPublicClientTokenAuthenticationProvider,
                                                               DaoAuthenticationProvider daoAuthenticationProvider,
-                                                              PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider
+                                                              PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider,
+                                                              CustomAccessDeniedHandler customAccessDeniedHandler,
+                                                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
+                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler
     ) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http
@@ -90,8 +96,8 @@ public class SecurityConfig {
                         auth.requestMatchers(PUBLIC_AUTH_URLS).permitAll()
                                 .anyRequest().authenticated())
                 .formLogin(login -> login.loginPage("/login")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll())
-
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
                 .cors(Customizer.withDefaults())
                 .userDetailsService(userDetailsService)
@@ -107,7 +113,11 @@ public class SecurityConfig {
                                                 .authenticationProvider(publicClientTokenRevocationAuthenticationProvider)
                                                 .revocationRequestConverter(new PublicClientTokenRevocationAuthenticationConverter()))
                                 .tokenGenerator(tokenGenerator)
-                ).authenticationProvider(daoAuthenticationProvider);
+                ).authenticationProvider(daoAuthenticationProvider)
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
+                );
         return http.build();
     }
 

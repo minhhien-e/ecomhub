@@ -18,6 +18,7 @@ public enum ErrorCode {
     //  AUTHORIZATION
     UNAUTHORIZED,                         // Chưa đăng nhập
     FORBIDDEN,                              // Không có quyền truy cập
+    INVALID_CREDENTIALS,
 
     //  NOT FOUND
     RESOURCE_NOT_FOUND,             // Không tìm thấy tài nguyên
