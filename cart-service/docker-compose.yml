@@ -1,28 +1,6 @@
-version: "3.9"
+version: '3.8'
 
 services:
-  cart-service:
-    image: ecomhub/cart-service
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: cart-service
-    ports:
-      - "8085:8083"  # 8085 là cổng host, 8083 là cổng trong container
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin123@mongodb:27017/cartdb?authSource=admin
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_DATA_REDIS_PORT=6379
-    depends_on:
-      mongodb:
-        condition: service_started
-      redis:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: on-failure
-
   mongodb:
     image: mongo:7.0
     container_name: mongodb
@@ -37,7 +15,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -52,7 +30,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5

@@ -42,12 +42,6 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- Actuator (optional) -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
         <!-- Spring Security (optional) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,7 +75,8 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
+
+        <!-- Jakarta Validation API -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
@@ -93,7 +88,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>false</filtering> <!-- ✅ Tắt filtering để tránh lỗi biến ${...} -->
+                <filtering>false</filtering> <!-- Tắt filtering tránh lỗi biến ${...} -->
             </resource>
         </resources>
 
@@ -116,11 +111,11 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot plugin -->
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.5.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -131,6 +126,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>
