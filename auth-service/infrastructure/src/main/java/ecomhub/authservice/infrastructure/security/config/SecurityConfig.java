@@ -1,9 +1,5 @@
 package ecomhub.authservice.infrastructure.security.config;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import ecomhub.authservice.infrastructure.security.converter.DelegatingPublicClientTokenAuthenticationConverter;
@@ -12,7 +8,6 @@ import ecomhub.authservice.infrastructure.security.exception.CustomAccessDeniedH
 import ecomhub.authservice.infrastructure.security.exception.CustomAuthenticationEntryPoint;
 import ecomhub.authservice.infrastructure.security.exception.CustomAuthenticationFailureHandler;
 import ecomhub.authservice.infrastructure.security.provider.DelegatingPublicClientTokenAuthenticationProvider;
-import ecomhub.authservice.infrastructure.security.provider.PublicClientRefreshTokenAuthenticationProvider;
 import ecomhub.authservice.infrastructure.security.provider.PublicClientTokenRevocationAuthenticationProvider;
 import ecomhub.authservice.infrastructure.security.service.OAuth2PublicClientRefreshTokenGenerator;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +23,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -38,16 +31,10 @@ import org.springframework.security.oauth2.server.authorization.token.Delegating
 import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.UUID;
 
 @EnableWebSecurity
 @Configuration
@@ -83,8 +70,8 @@ public class SecurityConfig {
                                                               PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider,
                                                               CustomAccessDeniedHandler customAccessDeniedHandler,
                                                               CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler
-    ) throws Exception {
+                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
+                                                              AccessDeniedHandler accessDeniedHandler) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http
                 .securityMatcher(new OrRequestMatcher(
@@ -107,11 +94,15 @@ public class SecurityConfig {
                                 .tokenEndpoint(tokenEndpointConfigurer ->
                                         tokenEndpointConfigurer
                                                 .authenticationProvider(delegatingPublicClientTokenAuthenticationProvider)
-                                                .accessTokenRequestConverter(new DelegatingPublicClientTokenAuthenticationConverter()))
+                                                .accessTokenRequestConverter(new DelegatingPublicClientTokenAuthenticationConverter())
+                                                .errorResponseHandler(customAuthenticationFailureHandler)
+                                )
                                 .tokenRevocationEndpoint(tokenRevocationEndpointConfigurer ->
                                         tokenRevocationEndpointConfigurer
                                                 .authenticationProvider(publicClientTokenRevocationAuthenticationProvider)
-                                                .revocationRequestConverter(new PublicClientTokenRevocationAuthenticationConverter()))
+                                                .revocationRequestConverter(new PublicClientTokenRevocationAuthenticationConverter())
+                                                .errorResponseHandler(customAuthenticationFailureHandler)
+                                )
                                 .tokenGenerator(tokenGenerator)
                 ).authenticationProvider(daoAuthenticationProvider)
                 .exceptionHandling(exception ->

@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +20,19 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        if (request.getRequestURI().startsWith("/oauth2/authorize") && request.getMethod().equals("GET")) {
+            response.sendRedirect("/login");
+            return;
+        }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         ApiResponse<?> apiResponse;
-
-        if (authException instanceof OAuth2AuthenticationException oAuth2Ex) {
-            apiResponse = ApiResponse.error(
-                    response.getStatus(),
-                    oAuth2Ex.getError().getErrorCode(),
-                    oAuth2Ex.getError().getDescription()
-            );
-        } else {
-            apiResponse = ApiResponse.error(
-                    response.getStatus(),
-                    ErrorCode.UNAUTHORIZED.name(),
-                    authException.getMessage()
-            );
-        }
+        apiResponse = ApiResponse.error(
+                response.getStatus(),
+                ErrorCode.UNAUTHORIZED.name(),
+                authException.getMessage()
+        );
         response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
         response.getWriter().flush();
     }
