@@ -7,6 +7,7 @@ import ecomhub.authservice.infrastructure.data.persistence.entity.RoleEntity;
 import ecomhub.authservice.infrastructure.data.persistence.entity.RolePermissionEntity;
 import ecomhub.authservice.infrastructure.data.persistence.entity.id.RolePermissionId;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,9 @@ public class RolePersistenceMapper {
     }
 
     private static Set<Permission> convertPermissionToDomain(Set<RolePermissionEntity> permissions) {
+        if (permissions == null) {
+            return new HashSet<>();
+        }
         return permissions
                 .stream()
                 .map(permission -> PermissionPersistenceMapper.toDomain(permission.getPermission()))

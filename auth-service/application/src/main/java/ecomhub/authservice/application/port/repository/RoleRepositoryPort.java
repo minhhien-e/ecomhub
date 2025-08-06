@@ -1,7 +1,6 @@
 package ecomhub.authservice.application.port.repository;
 
 import ecomhub.authservice.domain.entity.Role;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Optional;
 import java.util.Set;
@@ -14,7 +13,9 @@ public interface RoleRepositoryPort {
 
     Optional<Role> findByName(String name);
 
-    Optional<Role> findById(@NotNull UUID id);
+    Optional<Role> findById(UUID id);
+
+    int updateActive(UUID id, boolean isActive);
 
     void grantPermissions(UUID roleId, Set<UUID> permissionIds);
 

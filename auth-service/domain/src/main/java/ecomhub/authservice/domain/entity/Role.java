@@ -21,7 +21,9 @@ public class Role {
 
     //region constructor
     public Role(UUID id, String name, String description, Set<Permission> permissions, boolean active, int level) {
-        validateForLoad(id, permissions);
+        if (id == null) {
+            throw new MissingIdInRoleException();
+        }
         this.id = id;
         this.name = new Name(name, "vai trò");
         this.description = description;
@@ -108,14 +110,4 @@ public class Role {
     }
 
     //endregion
-//region validate
-    private void validateForLoad(UUID id, Set<Permission> permissions) {
-        if (id == null) {
-            throw new MissingIdInRoleException();
-        }
-        if (permissions.isEmpty()) {
-            throw new NoPermissionAssignedException();
-        }
-    }
-//endregion
 }
