@@ -35,7 +35,7 @@ public class AddRoleHandler implements ICommandHandler<AddRoleCommand> {
         roleRepository.save(role);
     }
 
-    private Set<Permission> getPermissions(List<String> permissionKeys) {
+    private Set<Permission> getPermissions(Set<String> permissionKeys) {
         return new HashSet<>(permissionRepository.findAllByKeyIn(permissionKeys));
     }
 

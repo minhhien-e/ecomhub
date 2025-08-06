@@ -1,7 +1,9 @@
 package ecomhub.authservice.domain.entity;
 
 
+import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.common.exception.concrete.role.*;
+import ecomhub.authservice.domain.valueobject.Level;
 import ecomhub.authservice.domain.valueobject.Name;
 
 import java.util.HashSet;
@@ -14,25 +16,32 @@ public class Role {
     private Name name;
     private String description;
     private Set<Permission> permissions;
+    private boolean active;
+    private Level level;
 
-    /**
-     * Lấy thông tin từ db
-     */
-    public Role(UUID id, String name, String description, Set<Permission> permissions) {
-        validateForLoad(id, name, permissions);
+    //region constructor
+    public Role(UUID id, String name, String description, Set<Permission> permissions, boolean active, int level) {
+        validateForLoad(id, permissions);
         this.id = id;
         this.name = new Name(name, "vai trò");
         this.description = description;
         this.permissions = permissions;
+        this.active = active;
+        this.level = new Level(level);
     }
 
-    public Role(String name, String description) {
+    public Role(String name, String description, int level) {
         this.id = UUID.randomUUID();
         this.name = new Name(name, "vai trò");
         this.description = description;
         this.permissions = new HashSet<>();
+        this.active = true;
+        this.level = new Level(level);
+
     }
 
+    //endregion
+//region getter
     public UUID getId() {
         return id;
     }
@@ -49,6 +58,16 @@ public class Role {
         return Set.copyOf(permissions);
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    //endregion
+//region permission
     public void grantPermission(Permission permission) {
         if (permission == null) {
             throw new MissingPermissionException();
@@ -63,14 +82,34 @@ public class Role {
         if (permission == null) {
             throw new MissingPermissionException();
         }
-        if (!this.permissions.contains(permission)) {
+        if (!this.getPermissions().contains(permission)) {
             throw new PermissionNotAssignedException(permission.getName().getValue());
         }
         this.permissions.remove(permission);
     }
 
+    //endregion
+//region active
+    public void setActive(boolean active, Role requesterRole) {
+        if (requesterRole.canModify(this) && requesterRole.canInactiveRole()) {
+            this.active = active;
+        } else throw new ForbiddenException("xóa vai trò " + name.getValue());
+    }
 
-    private void validateForLoad(UUID id, String name, Set<Permission> permissions) {
+    private boolean canInactiveRole() {
+        for (Permission permission : permissions) {
+            if (permission.hasKey("role.delete")) return true;
+        }
+        return false;
+    }
+
+    private boolean canModify(Role editedRole) {
+        return this.active && this.level.greaterThan(editedRole.level);
+    }
+
+    //endregion
+//region validate
+    private void validateForLoad(UUID id, Set<Permission> permissions) {
         if (id == null) {
             throw new MissingIdInRoleException();
         }
@@ -78,4 +117,5 @@ public class Role {
             throw new NoPermissionAssignedException();
         }
     }
+//endregion
 }

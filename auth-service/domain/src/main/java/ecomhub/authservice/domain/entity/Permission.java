@@ -54,4 +54,7 @@ public class Permission {
     }
 
 
+    public boolean hasKey(String key) {
+        return this.key.equals(new PermissionKey(key));
+    }
 }

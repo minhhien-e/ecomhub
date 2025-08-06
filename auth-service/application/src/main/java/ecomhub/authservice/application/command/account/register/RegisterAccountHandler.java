@@ -47,9 +47,9 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
         accountRepository.save(account);
     }
 
-    private Set<Role> getRoles(List<RoleName> roleNames) {
-        return roleNames.stream().map(name -> roleRepository.findByName(name.name())
-                        .orElseThrow(() -> new RoleNotFoundException(name.name())))
+    private Set<Role> getRoles(List<String> roleNames) {
+        return roleNames.stream().map(name -> roleRepository.findByName(name)
+                        .orElseThrow(() -> new RoleNotFoundException(name)))
                 .collect(Collectors.toSet());
     }
 }

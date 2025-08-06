@@ -27,6 +27,10 @@ public class RoleEntity {
     @Lob
     @Column
     private String description;
+    @Column(nullable = false)
+    private boolean active;
+    @Column(nullable = false)
+    private int level;
     //mapping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountRoleEntity> accountRoles;

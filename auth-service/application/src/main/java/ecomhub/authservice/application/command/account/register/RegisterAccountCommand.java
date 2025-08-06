@@ -1,7 +1,6 @@
 package ecomhub.authservice.application.command.account.register;
 
 import ecomhub.authservice.application.command.abstracts.ICommand;
-import ecomhub.authservice.application.enums.RoleName;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,6 +22,6 @@ public class RegisterAccountCommand implements ICommand {
     @Pattern(regexp = "^[0-9]{8}$", message = "Số điện thoại không hợp lệ")
     private String phoneNumber;
     private @NotBlank String provider;
-    private @NotNull List<RoleName> roles;
+    private @NotNull List<String> roles;
 }
 

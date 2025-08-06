@@ -1,7 +1,7 @@
 package ecomhub.authservice.adapter.input.rest;
 
 import ecomhub.authservice.adapter.input.mapper.PermissionAdapterMapper;
-import ecomhub.authservice.adapter.input.request.AddPermissionRequest;
+import ecomhub.authservice.adapter.input.request.permisison.AddPermissionRequest;
 import ecomhub.authservice.application.bus.ICommandBus;
 import ecomhub.authservice.application.bus.IQueryBus;
 import ecomhub.authservice.common.dto.ApiResponse;

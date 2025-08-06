@@ -46,7 +46,7 @@ class RegisterAccountHandlerTest {
         cmd.setEmail("user@example.com");
         cmd.setUsername("username");
         cmd.setPhoneNumber("123456789");
-        cmd.setRoles(List.of(RoleName.CUSTOMER));
+        cmd.setRoles(List.of(RoleName.CUSTOMER.name()));
         return cmd;
     }
 

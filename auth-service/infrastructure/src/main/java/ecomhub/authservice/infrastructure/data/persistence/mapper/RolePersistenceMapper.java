@@ -6,10 +6,7 @@ import ecomhub.authservice.infrastructure.data.persistence.entity.PermissionEnti
 import ecomhub.authservice.infrastructure.data.persistence.entity.RoleEntity;
 import ecomhub.authservice.infrastructure.data.persistence.entity.RolePermissionEntity;
 import ecomhub.authservice.infrastructure.data.persistence.entity.id.RolePermissionId;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,10 +24,13 @@ public class RolePersistenceMapper {
         return new Role(roleEntity.getId(),
                 roleEntity.getName(),
                 roleEntity.getDescription(),
-                convertPermissionToDomain(roleEntity.getRolePermissions())
+                convertPermissionToDomain(roleEntity.getRolePermissions()),
+                roleEntity.isActive(),
+                roleEntity.getLevel()
         );
 
     }
+
     private static Set<Permission> convertPermissionToDomain(Set<RolePermissionEntity> permissions) {
         return permissions
                 .stream()
