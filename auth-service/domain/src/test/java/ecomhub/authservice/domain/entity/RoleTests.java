@@ -148,7 +148,7 @@ class RoleTests {
         requester.grantPermission(deletePermission);
 
         // Act
-        role.setActive(false, requester);
+        role.deactivateBy(false, requester);
 
         // Assert
         assertFalse(role.isActive());
@@ -162,7 +162,7 @@ class RoleTests {
         requester.grantPermission(editPermission);
 
         // Act & Assert
-        role.setActive(false, requester);
+        role.deactivateBy(false, requester);
 
         assertTrue(role.isActive());
     }
@@ -175,7 +175,7 @@ class RoleTests {
         requester.grantPermission(deletePermission);
 
         // Act & Assert
-        role.setActive(false, requester);
+        role.deactivateBy(false, requester);
 
         assertTrue(role.isActive());
     }

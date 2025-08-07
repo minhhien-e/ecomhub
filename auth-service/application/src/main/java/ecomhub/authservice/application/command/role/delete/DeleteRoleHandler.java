@@ -21,7 +21,7 @@ public class DeleteRoleHandler implements ICommandHandler<DeleteRoleCommand> {
         var requesterRoles = roleRepository
                 .findByAccountIdAndHigherLevelThan(command.getRequesterId(), roleTarget.getLevel().value());
         for (Role role : requesterRoles) {
-            roleTarget.setActive(false, role);
+            roleTarget.deactivateBy(false, role);
             if (!role.isActive()) {
                 break;
             }

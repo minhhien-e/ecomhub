@@ -70,6 +70,10 @@ public class Role {
 
     //endregion
 //region permission
+    public boolean hasPermission(String key) {
+        return permissions.stream().anyMatch(p -> p.hasKey(key));
+    }
+
     public void grantPermission(Permission permission) {
         if (permission == null) {
             throw new MissingPermissionException();
@@ -92,17 +96,10 @@ public class Role {
 
     //endregion
 //region active
-    public void setActive(boolean active, Role requesterRole) {
-        if (requesterRole.canModify(this) && requesterRole.canInactiveRole())
+    public void deactivateBy(boolean active, Role requesterRole) {
+        if (requesterRole.canModify(this) && !requesterRole.hasPermission("role.delete"))
             this.active = active;
 
-    }
-
-    private boolean canInactiveRole() {
-        for (Permission permission : permissions) {
-            if (permission.hasKey("role.delete")) return true;
-        }
-        return false;
     }
 
     private boolean canModify(Role editedRole) {
