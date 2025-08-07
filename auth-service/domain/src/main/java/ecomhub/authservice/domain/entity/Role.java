@@ -93,9 +93,9 @@ public class Role {
     //endregion
 //region active
     public void setActive(boolean active, Role requesterRole) {
-        if (requesterRole.canModify(this) && requesterRole.canInactiveRole()) {
+        if (requesterRole.canModify(this) && requesterRole.canInactiveRole())
             this.active = active;
-        } else throw new ForbiddenException("xóa vai trò " + name.getValue());
+
     }
 
     private boolean canInactiveRole() {

@@ -155,29 +155,27 @@ class RoleTests {
     }
 
     @Test
-    void setActive_WhenRequesterLacksDeletePermission_ShouldThrowForbiddenException() {
+    void setActive_WhenRequesterLacksDeletePermission_ShouldDoNothing() {
         // Arrange
         Permission editPermission = new Permission("Edit role", "role.edit", null);
         Role requester = new Role("Requester", "Cannot delete", 6);
         requester.grantPermission(editPermission);
 
         // Act & Assert
-        assertThrows(ForbiddenException.class,
-                () -> role.setActive(false, requester));
+        role.setActive(false, requester);
 
         assertTrue(role.isActive());
     }
 
     @Test
-    void setActive_WhenRequesterLevelTooHigh_ShouldThrowForbiddenException() {
+    void setActive_WhenRequesterLevelTooHigh_ShouldDoNothing() {
         // Arrange
         Permission deletePermission = new Permission("Delete role", "role.delete", null);
         Role requester = new Role("Requester", "High level", 4);
         requester.grantPermission(deletePermission);
 
         // Act & Assert
-        assertThrows(ForbiddenException.class,
-                () -> role.setActive(false, requester));
+        role.setActive(false, requester);
 
         assertTrue(role.isActive());
     }
