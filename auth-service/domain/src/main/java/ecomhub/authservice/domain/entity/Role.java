@@ -5,6 +5,7 @@ import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.common.exception.concrete.role.*;
 import ecomhub.authservice.domain.valueobject.Level;
 import ecomhub.authservice.domain.valueobject.Name;
+import jdk.jfr.Description;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -97,7 +98,7 @@ public class Role {
     //endregion
 //region active
     public void deactivateBy(boolean active, Role requesterRole) {
-        if (requesterRole.canModify(this) && !requesterRole.hasPermission("role.delete"))
+        if (canBeModifiedBy(requesterRole, "role.delete"))
             this.active = active;
 
     }
@@ -106,5 +107,25 @@ public class Role {
         return this.active && this.level.greaterThan(editedRole.level);
     }
 
+    private boolean canBeModifiedBy(Role requesterRole, String permission) {
+        return requesterRole.canModify(this) && requesterRole.hasPermission(permission);
+    }
+
+    //endregion
+    //region update
+    public void updateName(String newName, Role requesterRole) {
+        if (canBeModifiedBy(requesterRole, "role.edit"))
+            this.name = new Name(newName, "vai trò");
+    }
+
+    public void updateLevel(int newLevel, Role requesterRole) {
+        if (canBeModifiedBy(requesterRole, "role.edit"))
+            this.level = new Level(newLevel);
+    }
+
+    public void updateDescription(String newDescription, Role requesterRole) {
+        if (canBeModifiedBy(requesterRole, "role.edit"))
+            this.description = newDescription;
+    }
     //endregion
 }

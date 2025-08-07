@@ -13,6 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -44,6 +45,12 @@ public class RoleRepository implements RoleRepositoryPort {
     public Optional<Role> findByName(String name) {
         var entity = roleJpaRepository.findByName(name);
         return entity.map(RolePersistenceMapper::toDomain);
+    }
+
+    @Override
+    public List<Role> findByAccountIdAndLevelGreaterThan(UUID accountId, int level) {
+        var entities = roleJpaRepository.findByAccountIdAndLevelGreaterThan(accountId, level);
+        return entities.stream().map(RolePersistenceMapper::toDomain).collect(Collectors.toList());
     }
 
     @Override

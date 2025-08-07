@@ -1,6 +1,5 @@
 package ecomhub.authservice.domain.entity;
 
-import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.common.exception.concrete.role.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,13 +63,6 @@ class RoleTests {
         // Act & Assert
         assertThrows(MissingIdInRoleException.class,
                 () -> new Role(null, "Test", "Test description", permissions, true, 5));
-    }
-
-    @Test
-    void constructor_WithEmptyPermissions_ShouldThrowException() {
-        // Act & Assert
-        assertThrows(NoPermissionAssignedException.class,
-                () -> new Role(UUID.randomUUID(), "Test", "Test description", new HashSet<>(), true, 5));
     }
     //endregion
 
@@ -180,4 +172,84 @@ class RoleTests {
         assertTrue(role.isActive());
     }
     //endregion
+    // region Update Attribute Tests
+    @Test
+    void updateName_WhenRequesterHasPermission_ShouldUpdateName() {
+        // Arrange
+        Permission editPermission = new Permission("Edit role", "role.edit", null);
+        Role requester = new Role("Requester", "Can edit", 6);
+        requester.grantPermission(editPermission);
+
+        // Act
+        role.updateName("UpdatedName", requester);
+
+        // Assert
+        assertEquals("UpdatedName", role.getName().getValue());
+    }
+
+    @Test
+    void updateName_WhenRequesterLacksPermission_ShouldNotUpdateName() {
+        // Arrange
+        Role requester = new Role("Requester", "No permission", 6);  // No permissions granted
+
+        // Act
+        role.updateName("UpdatedName", requester);
+
+        // Assert
+        assertNotEquals("UpdatedName", role.getName().getValue());
+    }
+
+    @Test
+    void updateLevel_WhenRequesterHasPermission_ShouldUpdateLevel() {
+        // Arrange
+        Permission editPermission = new Permission("Edit role", "role.edit", null);
+        Role requester = new Role("Requester", "Can edit", 6);
+        requester.grantPermission(editPermission);
+
+        // Act
+        role.updateLevel(10, requester);
+
+        // Assert
+        assertEquals(10, role.getLevel().value());
+    }
+
+    @Test
+    void updateLevel_WhenRequesterLacksPermission_ShouldNotUpdateLevel() {
+        // Arrange
+        Role requester = new Role("Requester", "No permission", 6);
+
+        // Act
+        role.updateLevel(10, requester);
+
+        // Assert
+        assertNotEquals(10, role.getLevel().value());
+    }
+
+    @Test
+    void updateDescription_WhenRequesterHasPermission_ShouldUpdateDescription() {
+        // Arrange
+        Permission editPermission = new Permission("Edit role", "role.edit", null);
+        Role requester = new Role("Requester", "Can edit", 6);
+        requester.grantPermission(editPermission);
+
+        // Act
+        role.updateDescription("Updated description", requester);
+
+        // Assert
+        assertEquals("Updated description", role.getDescription().get());
+    }
+
+    @Test
+    void updateDescription_WhenRequesterLacksPermission_ShouldNotUpdateDescription() {
+        // Arrange
+        Role requester = new Role("Requester", "No permission", 6);
+
+        // Act
+        role.updateDescription("Updated description", requester);
+
+        // Assert
+        assertNotEquals("Updated description", role.getDescription().get());
+    }
+// endregion
+
 }

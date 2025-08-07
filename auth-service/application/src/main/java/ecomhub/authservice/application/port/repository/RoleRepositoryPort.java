@@ -13,7 +13,7 @@ public interface RoleRepositoryPort {
     boolean existsByName(String name);
 
     Optional<Role> findByName(String name);
-    List<Role> findByAccountIdAndHigherLevelThan(UUID accountId, int level);
+    List<Role> findByAccountIdAndLevelGreaterThan(UUID accountId, int level);
 
     Optional<Role> findById(UUID id);
 

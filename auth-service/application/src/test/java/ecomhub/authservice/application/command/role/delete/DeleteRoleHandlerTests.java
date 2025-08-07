@@ -49,7 +49,7 @@ class DeleteRoleHandlerTests {
         command.setRequesterId(requesterId);
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndHigherLevelThan(requesterId, 50)).thenReturn(List.of(higherRole));
+        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of(higherRole));
         doNothing().when(targetRole).deactivateBy(false, higherRole);
         when(targetRole.isActive()).thenReturn(false);
         when(roleRepository.updateActive(roleId, false)).thenReturn(1);
@@ -59,7 +59,7 @@ class DeleteRoleHandlerTests {
 
         // Verify
         verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndHigherLevelThan(requesterId, 50);
+        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
         verify(targetRole).deactivateBy(false, higherRole);
         verify(targetRole).isActive();
         verify(roleRepository).updateActive(roleId, false);
@@ -72,14 +72,14 @@ class DeleteRoleHandlerTests {
         command.setRequesterId(requesterId);
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndHigherLevelThan(requesterId, 50)).thenReturn(List.of());
+        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of());
 
         // Act & Assert
         assertThrows(ForbiddenException.class, () -> handler.handle(command));
 
         // Verify
         verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndHigherLevelThan(requesterId, 50);
+        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
         verifyNoMoreInteractions(roleRepository);
     }
 
@@ -107,7 +107,7 @@ class DeleteRoleHandlerTests {
         command.setRequesterId(requesterId);
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndHigherLevelThan(requesterId, 50)).thenReturn(List.of(higherRole));
+        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of(higherRole));
         doNothing().when(targetRole).deactivateBy(false, higherRole);
         when(targetRole.isActive()).thenReturn(false);
         when(roleRepository.updateActive(roleId, false)).thenReturn(0);
@@ -117,7 +117,7 @@ class DeleteRoleHandlerTests {
 
         // Verify
         verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndHigherLevelThan(requesterId, 50);
+        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
         verify(targetRole).deactivateBy(false, higherRole);
         verify(targetRole).isActive();
         verify(roleRepository).updateActive(roleId, false);

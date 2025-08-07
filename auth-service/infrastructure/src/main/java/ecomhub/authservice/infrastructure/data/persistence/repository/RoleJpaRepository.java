@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,4 +25,17 @@ public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
     @EntityGraph(attributePaths = {"rolePermissions.permission"})
     @NonNull
     Optional<RoleEntity> findById(@NonNull UUID id);
+
+    @Query("""
+            SELECT DISTINCT r FROM RoleEntity r
+            JOIN r.accountRoles ac
+            JOIN FETCH r.rolePermissions rp
+            JOIN FETCH rp.permission
+            WHERE ac.id.accountId = :accountId
+            AND r.level > :level
+            """)
+    List<RoleEntity> findByAccountIdAndLevelGreaterThan(
+            @Param("accountId") UUID accountId,
+            @Param("level") int level
+    );
 }
