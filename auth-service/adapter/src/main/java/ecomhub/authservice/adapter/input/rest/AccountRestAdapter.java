@@ -1,7 +1,7 @@
 package ecomhub.authservice.adapter.input.rest;
 
 import ecomhub.authservice.adapter.input.mapper.AccountAdapterMapper;
-import ecomhub.authservice.adapter.input.request.RegisterBasicRequest;
+import ecomhub.authservice.adapter.input.request.account.RegisterBasicRequest;
 import ecomhub.authservice.application.bus.ICommandBus;
 import ecomhub.authservice.application.bus.IQueryBus;
 import ecomhub.authservice.common.dto.ApiResponse;

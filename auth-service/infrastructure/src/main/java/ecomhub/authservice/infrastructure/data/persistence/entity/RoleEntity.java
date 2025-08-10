@@ -3,9 +3,7 @@ package ecomhub.authservice.infrastructure.data.persistence.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "role",
@@ -27,10 +25,14 @@ public class RoleEntity {
     @Lob
     @Column
     private String description;
+    @Column(nullable = false)
+    private boolean active;
+    @Column(nullable = false)
+    private int level;
     //mapping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccountRoleEntity> accountRoles;
+    private List<AccountRoleEntity> accountRoles = new ArrayList<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<RolePermissionEntity> rolePermissions;
+    private Set<RolePermissionEntity> rolePermissions = new HashSet<>();
 
 }

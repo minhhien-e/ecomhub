@@ -10,5 +10,5 @@ public interface PermissionRepositoryPort {
 
     boolean existsByName(String name);
 
-    List<Permission> findAllByKeyIn(List<String> permissionKeys);
+    List<Permission> findAllByKeyIn(Set<String> permissionKeys);
 }

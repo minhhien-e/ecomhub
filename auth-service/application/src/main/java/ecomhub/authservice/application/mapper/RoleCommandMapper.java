@@ -7,6 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface RoleCommandMapper {
     default Role toDomain(AddRoleCommand command) {
-        return new Role(command.getName(), command.getDescription());
+        return new Role(command.getName(), command.getDescription(),command.getLevel());
     }
 }

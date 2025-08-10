@@ -14,9 +14,6 @@ public class Permission {
     private PermissionKey key;
     private String description;
 
-    /**
-     * Lấy dữ liệu từ db
-     */
     public Permission(UUID id, String name, String key, String description) {
         if (id == null) {
             throw new MissingIdInPermissionException();
@@ -27,9 +24,6 @@ public class Permission {
         this.description = description;
     }
 
-    /**
-     * Tạo permission
-     */
     public Permission(String name, String key, String description) {
         this.id = UUID.randomUUID();
         this.name = new Name(name, "quyền");
@@ -54,4 +48,7 @@ public class Permission {
     }
 
 
+    public boolean hasKey(String key) {
+        return this.key.equals(new PermissionKey(key));
+    }
 }

@@ -1,6 +1,7 @@
 package ecomhub.authservice.application.command.role.add;
 
 import ecomhub.authservice.application.command.abstracts.ICommand;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,8 @@ public class AddRoleCommand implements ICommand {
     @NotBlank
     private String name;
     private String description;
+    @Min(value = 0,message = "Cấp độ vai trò phải là số dương")
+    private int level;
     @NotEmpty(message = "Quyền không được bỏ trống")
-    private List<@NotNull(message = "Khóa quyền không không được bỏ trống") String> permissionKeys;
+    private Set<@NotNull(message = "Khóa quyền không không được bỏ trống") String> permissionKeys;
 }

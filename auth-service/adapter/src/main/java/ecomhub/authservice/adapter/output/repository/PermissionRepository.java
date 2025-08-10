@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
-    public List<Permission> findAllByKeyIn(List<String> permissionKeys) {
+    public List<Permission> findAllByKeyIn(Set<String> permissionKeys) {
         return permissionJpaRepository.findAllByKeyIn(permissionKeys);
     }
 }

@@ -1,6 +1,6 @@
 package ecomhub.authservice.infrastructure.security.service;
 
-import ecomhub.authservice.domain.service.PasswordHashService;
+import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -7,11 +7,12 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -24,8 +25,8 @@ public class JwtSourceConfig {
 
     @Bean
     public RSAKey rsaKey() throws Exception {
-        RSAPublicKey publicKey = loadPublicKey("adapter/src/main/resources/keys/public.pem");
-        RSAPrivateKey privateKey = loadPrivateKey("adapter/src/main/resources/keys/private.pem");
+        RSAPublicKey publicKey = loadPublicKey("keys/public.pem");
+        RSAPrivateKey privateKey = loadPrivateKey("keys/private.pem");
 
         return new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
@@ -45,7 +46,8 @@ public class JwtSourceConfig {
     }
 
     private RSAPublicKey loadPublicKey(String path) throws Exception {
-        String key = Files.readString(Paths.get(path))
+        Resource resource = new ClassPathResource(path);
+        String key = resource.getContentAsString(StandardCharsets.UTF_8)
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
                 .replaceAll("\\s+", "");
@@ -56,7 +58,8 @@ public class JwtSourceConfig {
     }
 
     private RSAPrivateKey loadPrivateKey(String path) throws Exception {
-        String key = Files.readString(Paths.get(path))
+        Resource resource = new ClassPathResource(path);
+        String key = resource.getContentAsString(StandardCharsets.UTF_8)
                 .replace("-----BEGIN RSA PRIVATE KEY-----", "")
                 .replace("-----END RSA PRIVATE KEY-----", "")
                 .replaceAll("\\s+", "");

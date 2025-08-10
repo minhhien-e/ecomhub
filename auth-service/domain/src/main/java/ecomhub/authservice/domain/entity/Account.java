@@ -1,12 +1,6 @@
 package ecomhub.authservice.domain.entity;
 
-import ecomhub.authservice.common.enums.ProviderType;
-import ecomhub.authservice.common.exception.concrete.account.NoRoleAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.RoleAlreadyAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.RoleNotAssignedException;
-import ecomhub.authservice.common.exception.concrete.account.MissingIdInAccountException;
-import ecomhub.authservice.common.exception.concrete.account.MissingRoleException;
-import ecomhub.authservice.domain.service.PasswordHashService;
+import ecomhub.authservice.common.exception.concrete.account.*;
 import ecomhub.authservice.domain.valueobject.*;
 
 import java.util.*;
@@ -22,9 +16,13 @@ public class Account {
     private boolean active;
     private Set<Role> roles;
 
-    //Constructor lấy dữ liệu từ DB
     public Account(UUID id, String email, String username, String phoneNumber, String passwordHash, String provider, boolean active, Set<Role> roles) {
-        validateForLoad(id, roles);
+        if (id == null) {
+            throw new MissingIdInAccountException();
+        }
+        if (roles.isEmpty()) {
+            throw new NoRoleAssignedException();
+        }
         this.id = id;
         this.email = new Email(email, "tài khoản");
         this.username = new Username(username);
@@ -32,16 +30,16 @@ public class Account {
         this.passwordHash = new Password(passwordHash);
         this.provider = new Provider(provider);
         this.active = active;
-        this.roles = roles;
+        this.roles = new HashSet<>(roles);
     }
 
-    public Account(String email, String username, String phoneNumber, String rawPassword, String provider, PasswordHashService passwordHashService) {
+    public Account(String email, String username, String phoneNumber, String passwordHash, String provider) {
         this.id = UUID.randomUUID();
         this.email = new Email(email, "tài khoản");
         this.username = new Username(username);
         this.phoneNumber = new PhoneNumber(phoneNumber, "tài khoản");
-        this.passwordHash = new Password(rawPassword, passwordHashService);
-        this.provider = provider == null ? new Provider(ProviderType.LOCAL.name()) : new Provider(provider);
+        this.passwordHash = new Password(passwordHash);
+        this.provider = new Provider(provider);
         this.active = true;
         this.roles = new HashSet<>();
     }
@@ -98,15 +96,6 @@ public class Account {
         this.roles.remove(role);
     }
 
-
-    private void validateForLoad(UUID id, Set<Role> roles) {
-        if (id == null) {
-            throw new MissingIdInAccountException();
-        }
-        if (roles.isEmpty()) {
-            throw new NoRoleAssignedException();
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
