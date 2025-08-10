@@ -47,11 +47,6 @@ public class RoleRepository implements RoleRepositoryPort {
         return entity.map(RolePersistenceMapper::toDomain);
     }
 
-    @Override
-    public List<Role> findByAccountIdAndLevelGreaterThan(UUID accountId, int level) {
-        var entities = roleJpaRepository.findByAccountIdAndLevelGreaterThan(accountId, level);
-        return entities.stream().map(RolePersistenceMapper::toDomain).collect(Collectors.toList());
-    }
 
     @Override
     public Optional<Role> findById(UUID id) {
@@ -64,6 +59,21 @@ public class RoleRepository implements RoleRepositoryPort {
     @Override
     public int updateActive(UUID id, boolean isActive) {
         return roleJpaRepository.updateActive(id, isActive);
+    }
+
+    @Override
+    public int updateDescription(UUID id, String newDescription) {
+        return roleJpaRepository.updateDescription(id,newDescription);
+    }
+
+    @Override
+    public int updateLevel(UUID id, Integer newLevel) {
+        return roleJpaRepository.updateLevel(id,newLevel);
+    }
+
+    @Override
+    public int updateName(UUID id, String newName) {
+        return roleJpaRepository.updateName(id,newName);
     }
 
     //endregion

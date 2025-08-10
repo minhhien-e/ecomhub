@@ -1,7 +1,6 @@
 package ecomhub.authservice.application.command.account.register;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
-import ecomhub.authservice.application.enums.RoleName;
 import ecomhub.authservice.application.mapper.AccountCommandMapper;
 import ecomhub.authservice.application.port.repository.AccountRepositoryPort;
 import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
@@ -10,7 +9,7 @@ import ecomhub.authservice.common.exception.concrete.account.PhoneNumberAlreadyE
 import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
 import ecomhub.authservice.domain.entity.Role;
-import ecomhub.authservice.domain.service.PasswordHashService;
+import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +39,8 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
             throw new UsernameAlreadyExistsException(command.getUsername());
         }
         //Hash password
-        var account = accountCommandMapper.toDomain(command, passwordHashService);
+        command.setPassword(passwordHashService.hash(command.getPassword()));
+        var account = accountCommandMapper.toDomain(command);
         //Gán role
         Set<Role> roleIds = getRoles(command.getRoles());
         roleIds.forEach(account::grantRole);

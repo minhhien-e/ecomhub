@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -22,6 +23,13 @@ public class AccountRepository implements AccountRepositoryPort {
         accountJpaRepository.save(accountEntity);
     }
 
+
+    @Override
+    public boolean existsByIdentifier(String identifier) {
+        return accountJpaRepository.exists(AccountSpecification.byIdentifier(identifier));
+    }
+
+    //region find
     @Override
     public Optional<Account> findByIdentifier(String identifier) {
         Optional<AccountEntity> account = accountJpaRepository.findOne(AccountSpecification.byIdentifier(identifier));
@@ -29,7 +37,9 @@ public class AccountRepository implements AccountRepositoryPort {
     }
 
     @Override
-    public boolean existsByIdentifier(String identifier) {
-        return accountJpaRepository.exists(AccountSpecification.byIdentifier(identifier));
+    public Optional<Account> findById(UUID id) {
+        return accountJpaRepository.findById(id).map(AccountPersistenceMapper::toDomain);
     }
+    //endregion
+
 }

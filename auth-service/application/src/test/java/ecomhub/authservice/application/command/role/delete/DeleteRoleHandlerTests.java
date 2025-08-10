@@ -41,47 +41,7 @@ class DeleteRoleHandlerTests {
         targetRole = Mockito.spy(new Role(roleId, "Test", "Test Role", Set.of(), true, 50));
     }
 
-    @Test
-    void handle_WhenRoleExistsAndRequesterHasHigherRole_ShouldDeleteSuccessfully() {
-        // Arrange
-        Role higherRole = mock(Role.class);
-        DeleteRoleCommand command = new DeleteRoleCommand(roleId);
-        command.setRequesterId(requesterId);
 
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of(higherRole));
-        doNothing().when(targetRole).deactivateBy(false, higherRole);
-        when(targetRole.isActive()).thenReturn(false);
-        when(roleRepository.updateActive(roleId, false)).thenReturn(1);
-
-        // Act & Assert
-        assertDoesNotThrow(() -> handler.handle(command));
-
-        // Verify
-        verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
-        verify(targetRole).deactivateBy(false, higherRole);
-        verify(targetRole).isActive();
-        verify(roleRepository).updateActive(roleId, false);
-    }
-
-    @Test
-    void handle_WhenNoRoleHigherThanTargetRole_ShouldThrowForbiddenException() {
-        // Arrange
-        DeleteRoleCommand command = new DeleteRoleCommand(roleId);
-        command.setRequesterId(requesterId);
-
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of());
-
-        // Act & Assert
-        assertThrows(ForbiddenException.class, () -> handler.handle(command));
-
-        // Verify
-        verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
-        verifyNoMoreInteractions(roleRepository);
-    }
 
     @Test
     void handle_WhenRoleNotFound_ShouldThrowRoleNotFoundException() {
@@ -99,27 +59,4 @@ class DeleteRoleHandlerTests {
         verify(roleRepository, never()).updateActive(any(), anyBoolean());
     }
 
-    @Test
-    void handle_WhenUpdateFails_ShouldThrowUpdateFailureException() {
-        // Arrange
-        Role higherRole = mock(Role.class);
-        DeleteRoleCommand command = new DeleteRoleCommand(roleId);
-        command.setRequesterId(requesterId);
-
-        when(roleRepository.findById(roleId)).thenReturn(Optional.of(targetRole));
-        when(roleRepository.findByAccountIdAndLevelGreaterThan(requesterId, 50)).thenReturn(List.of(higherRole));
-        doNothing().when(targetRole).deactivateBy(false, higherRole);
-        when(targetRole.isActive()).thenReturn(false);
-        when(roleRepository.updateActive(roleId, false)).thenReturn(0);
-
-        // Act & Assert
-        assertThrows(UpdateFailureException.class, () -> handler.handle(command));
-
-        // Verify
-        verify(roleRepository).findById(roleId);
-        verify(roleRepository).findByAccountIdAndLevelGreaterThan(requesterId, 50);
-        verify(targetRole).deactivateBy(false, higherRole);
-        verify(targetRole).isActive();
-        verify(roleRepository).updateActive(roleId, false);
-    }
 }

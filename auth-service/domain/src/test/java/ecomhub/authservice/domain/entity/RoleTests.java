@@ -1,10 +1,14 @@
 package ecomhub.authservice.domain.entity;
 
-import ecomhub.authservice.common.exception.concrete.role.*;
+import ecomhub.authservice.common.exception.concrete.role.MissingIdInRoleException;
+import ecomhub.authservice.common.exception.concrete.role.MissingPermissionException;
+import ecomhub.authservice.common.exception.concrete.role.PermissionAlreadyAssignedException;
+import ecomhub.authservice.common.exception.concrete.role.PermissionNotAssignedException;
+import ecomhub.authservice.domain.valueobject.Level;
+import ecomhub.authservice.domain.valueobject.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -131,125 +135,151 @@ class RoleTests {
     }
     //endregion
 
-    //region Set Active Tests
+    //region Has Permission Tests
     @Test
-    void setActive_WhenRequesterHasPermissionAndCanModify_ShouldChangeActiveStatus() {
+    void hasPermission_WhenPermissionExists_ShouldReturnTrue() {
         // Arrange
-        Permission deletePermission = new Permission("Delete role", "role.delete", null);
-        Role requester = new Role("Requester", "Can modify", 7);
-        requester.grantPermission(deletePermission);
+        Permission permission = new Permission("Test permission", "perm.test", null);
+        role.grantPermission(permission);
 
         // Act
-        role.deactivateBy(false, requester);
+        boolean hasPermission = role.hasPermission("perm.test");
+
+        // Assert
+        assertTrue(hasPermission);
+    }
+
+    @Test
+    void hasPermission_WhenPermissionNotExists_ShouldReturnFalse() {
+        // Act
+        boolean hasPermission = role.hasPermission("perm.nonexistent");
+
+        // Assert
+        assertFalse(hasPermission);
+    }
+    //endregion
+
+    //region Active State Tests
+    @Test
+    void deactivate_WhenRoleIsActive_ShouldSetActiveToFalse() {
+        // Arrange
+        assertTrue(role.isActive());
+
+        // Act
+        role.deactivate();
 
         // Assert
         assertFalse(role.isActive());
     }
+    //endregion
 
+    //region Update Tests
     @Test
-    void setActive_WhenRequesterLacksDeletePermission_ShouldDoNothing() {
+    void updateName_WhenValidName_ShouldUpdateName() {
         // Arrange
-        Permission editPermission = new Permission("Edit role", "role.edit", null);
-        Role requester = new Role("Requester", "Cannot delete", 6);
-        requester.grantPermission(editPermission);
+        String newName = "UpdatedRoleName";
 
-        // Act & Assert
-        role.deactivateBy(false, requester);
+        // Act
+        role.updateName(newName);
 
-        assertTrue(role.isActive());
+        // Assert
+        assertEquals(newName, role.getName().getValue());
     }
 
     @Test
-    void setActive_WhenRequesterLevelTooHigh_ShouldDoNothing() {
+    void updateLevel_WhenValidLevel_ShouldUpdateLevel() {
         // Arrange
-        Permission deletePermission = new Permission("Delete role", "role.delete", null);
-        Role requester = new Role("Requester", "High level", 4);
-        requester.grantPermission(deletePermission);
+        int newLevel = 10;
 
-        // Act & Assert
-        role.deactivateBy(false, requester);
+        // Act
+        role.updateLevel(newLevel);
 
-        assertTrue(role.isActive());
+        // Assert
+        assertEquals(newLevel, role.getLevel().value());
+    }
+
+    @Test
+    void updateDescription_WhenValidDescription_ShouldUpdateDescription() {
+        // Arrange
+        String newDescription = "Updated description";
+
+        // Act
+        role.updateDescription(newDescription);
+
+        // Assert
+        assertEquals(newDescription, role.getDescription().get());
     }
     //endregion
-    // region Update Attribute Tests
-    @Test
-    void updateName_WhenRequesterHasPermission_ShouldUpdateName() {
-        // Arrange
-        Permission editPermission = new Permission("Edit role", "role.edit", null);
-        Role requester = new Role("Requester", "Can edit", 6);
-        requester.grantPermission(editPermission);
 
+    //region Getter Tests
+    @Test
+    void getId_WhenRoleExists_ShouldReturnId() {
         // Act
-        role.updateName("UpdatedName", requester);
+        UUID id = role.getId();
 
         // Assert
-        assertEquals("UpdatedName", role.getName().getValue());
+        assertNotNull(id);
     }
 
     @Test
-    void updateName_WhenRequesterLacksPermission_ShouldNotUpdateName() {
-        // Arrange
-        Role requester = new Role("Requester", "No permission", 6);  // No permissions granted
-
+    void getName_WhenRoleExists_ShouldReturnName() {
         // Act
-        role.updateName("UpdatedName", requester);
+        Name name = role.getName();
 
         // Assert
-        assertNotEquals("UpdatedName", role.getName().getValue());
+        assertNotNull(name);
+        assertEquals("TestRole", name.getValue());
     }
 
     @Test
-    void updateLevel_WhenRequesterHasPermission_ShouldUpdateLevel() {
-        // Arrange
-        Permission editPermission = new Permission("Edit role", "role.edit", null);
-        Role requester = new Role("Requester", "Can edit", 6);
-        requester.grantPermission(editPermission);
-
+    void getDescription_WhenRoleExists_ShouldReturnDescription() {
         // Act
-        role.updateLevel(10, requester);
+        String description = role.getDescription().orElse(null);
 
         // Assert
-        assertEquals(10, role.getLevel().value());
+        assertEquals("Test description", description);
     }
 
     @Test
-    void updateLevel_WhenRequesterLacksPermission_ShouldNotUpdateLevel() {
-        // Arrange
-        Role requester = new Role("Requester", "No permission", 6);
-
+    void getPermissions_WhenRoleHasNoPermissions_ShouldReturnEmptySet() {
         // Act
-        role.updateLevel(10, requester);
+        Set<Permission> permissions = role.getPermissions();
 
         // Assert
-        assertNotEquals(10, role.getLevel().value());
+        assertTrue(permissions.isEmpty());
     }
 
     @Test
-    void updateDescription_WhenRequesterHasPermission_ShouldUpdateDescription() {
+    void getPermissions_WhenRoleHasPermissions_ShouldReturnCopyOfPermissions() {
         // Arrange
-        Permission editPermission = new Permission("Edit role", "role.edit", null);
-        Role requester = new Role("Requester", "Can edit", 6);
-        requester.grantPermission(editPermission);
+        Permission permission = new Permission("Test permission", "perm.test", null);
+        role.grantPermission(permission);
 
         // Act
-        role.updateDescription("Updated description", requester);
+        Set<Permission> permissions = role.getPermissions();
 
         // Assert
-        assertEquals("Updated description", role.getDescription().get());
+        assertEquals(1, permissions.size());
+        assertTrue(permissions.contains(permission));
     }
 
     @Test
-    void updateDescription_WhenRequesterLacksPermission_ShouldNotUpdateDescription() {
-        // Arrange
-        Role requester = new Role("Requester", "No permission", 6);
-
+    void isActive_WhenRoleIsActive_ShouldReturnTrue() {
         // Act
-        role.updateDescription("Updated description", requester);
+        boolean isActive = role.isActive();
 
         // Assert
-        assertNotEquals("Updated description", role.getDescription().get());
+        assertTrue(isActive);
     }
-// endregion
 
+    @Test
+    void getLevel_WhenRoleExists_ShouldReturnLevel() {
+        // Act
+        Level level = role.getLevel();
+
+        // Assert
+        assertNotNull(level);
+        assertEquals(5, level.value());
+    }
+    //endregion
 }

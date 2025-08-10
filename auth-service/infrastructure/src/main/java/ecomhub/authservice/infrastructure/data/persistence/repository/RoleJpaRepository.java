@@ -15,27 +15,31 @@ import java.util.UUID;
 public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
     boolean existsByName(String name);
 
-    Optional<RoleEntity> findByName(String name);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE RoleEntity r SET r.active = :active WHERE r.id = :id")
-    int updateActive(@Param("id") UUID id, @Param("active") boolean active);
-
+    //region find
     @Override
     @EntityGraph(attributePaths = {"rolePermissions.permission"})
     @NonNull
     Optional<RoleEntity> findById(@NonNull UUID id);
 
-    @Query("""
-            SELECT DISTINCT r FROM RoleEntity r
-            JOIN r.accountRoles ac
-            JOIN FETCH r.rolePermissions rp
-            JOIN FETCH rp.permission
-            WHERE ac.id.accountId = :accountId
-            AND r.level > :level
-            """)
-    List<RoleEntity> findByAccountIdAndLevelGreaterThan(
-            @Param("accountId") UUID accountId,
-            @Param("level") int level
-    );
+    Optional<RoleEntity> findByName(String name);
+
+    //endregion
+    //region update
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE RoleEntity r SET r.active = :active WHERE r.id = :id")
+    int updateActive(@Param("id") UUID id, @Param("active") boolean active);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE RoleEntity r SET r.description = :newDescription WHERE r.id = :id")
+    int updateDescription(UUID id, String newDescription);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE RoleEntity r SET r.level = :newLevel WHERE r.id = :id")
+    int updateLevel(UUID id, Integer newLevel);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE RoleEntity r SET r.name = :newName WHERE r.id = :id")
+    int updateName(UUID id, String newName);
+    //endregion
+
 }

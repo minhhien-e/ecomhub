@@ -1,11 +1,9 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.common.exception.concrete.role.*;
 import ecomhub.authservice.domain.valueobject.Level;
 import ecomhub.authservice.domain.valueobject.Name;
-import jdk.jfr.Description;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -97,34 +95,22 @@ public class Role {
 
     //endregion
 //region active
-    public void deactivateBy(boolean active, Role requesterRole) {
-        if (canBeModifiedBy(requesterRole, "role.delete"))
-            this.active = active;
+    public void deactivate() {
+            this.active = false;
 
-    }
-
-    private boolean canModify(Role editedRole) {
-        return this.active && this.level.greaterThan(editedRole.level);
-    }
-
-    private boolean canBeModifiedBy(Role requesterRole, String permission) {
-        return requesterRole.canModify(this) && requesterRole.hasPermission(permission);
     }
 
     //endregion
     //region update
-    public void updateName(String newName, Role requesterRole) {
-        if (canBeModifiedBy(requesterRole, "role.edit"))
+    public void updateName(String newName) {
             this.name = new Name(newName, "vai trò");
     }
 
-    public void updateLevel(int newLevel, Role requesterRole) {
-        if (canBeModifiedBy(requesterRole, "role.edit"))
+    public void updateLevel(int newLevel) {
             this.level = new Level(newLevel);
     }
 
-    public void updateDescription(String newDescription, Role requesterRole) {
-        if (canBeModifiedBy(requesterRole, "role.edit"))
+    public void updateDescription(String newDescription) {
             this.description = newDescription;
     }
     //endregion

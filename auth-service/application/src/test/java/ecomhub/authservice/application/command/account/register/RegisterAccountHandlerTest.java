@@ -8,7 +8,7 @@ import ecomhub.authservice.common.exception.concrete.account.EmailAlreadyExistsE
 import ecomhub.authservice.common.exception.concrete.account.PhoneNumberAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
-import ecomhub.authservice.domain.service.PasswordHashService;
+import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
