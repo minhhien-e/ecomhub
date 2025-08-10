@@ -1,8 +1,8 @@
 package ecomhub.authservice.application.command.role.delete;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
-import ecomhub.authservice.application.port.repository.AccountRepositoryPort;
-import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
+import ecomhub.authservice.domain.repository.AccountRepositoryPort;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.common.exception.abstracts.UpdateFailureException;
 import ecomhub.authservice.common.exception.concrete.account.AccountNotFoundException;

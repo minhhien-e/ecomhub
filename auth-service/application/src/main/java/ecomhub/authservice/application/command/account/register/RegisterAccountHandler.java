@@ -2,8 +2,8 @@ package ecomhub.authservice.application.command.account.register;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.mapper.AccountCommandMapper;
-import ecomhub.authservice.application.port.repository.AccountRepositoryPort;
-import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
+import ecomhub.authservice.domain.repository.AccountRepositoryPort;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.common.exception.concrete.account.EmailAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.account.PhoneNumberAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExistsException;

@@ -2,8 +2,8 @@ package ecomhub.authservice.application.command.role.update.level;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.command.role.update.abstracts.AbstractRoleUpdateHandler;
-import ecomhub.authservice.application.port.repository.AccountRepositoryPort;
-import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
+import ecomhub.authservice.domain.repository.AccountRepositoryPort;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.entity.Role;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

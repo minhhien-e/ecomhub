@@ -2,7 +2,7 @@ package ecomhub.authservice.application.command.permission.add;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.mapper.PermissionCommandMapper;
-import ecomhub.authservice.application.port.repository.PermissionRepositoryPort;
+import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.common.exception.concrete.permission.PermissionAlreadyExistsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

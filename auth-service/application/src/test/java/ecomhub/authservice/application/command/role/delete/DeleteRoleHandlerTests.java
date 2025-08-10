@@ -1,8 +1,6 @@
 package ecomhub.authservice.application.command.role.delete;
 
-import ecomhub.authservice.application.port.repository.RoleRepositoryPort;
-import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
-import ecomhub.authservice.common.exception.abstracts.UpdateFailureException;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
 import ecomhub.authservice.domain.entity.Role;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
