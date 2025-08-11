@@ -35,6 +35,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 @EnableWebSecurity
 @Configuration
@@ -70,8 +71,7 @@ public class SecurityConfig {
                                                               PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider,
                                                               CustomAccessDeniedHandler customAccessDeniedHandler,
                                                               CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler,
-                                                              AccessDeniedHandler accessDeniedHandler) throws Exception {
+                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http
                 .securityMatcher(new OrRequestMatcher(
