@@ -15,21 +15,21 @@ import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestM
 
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/auth/role")
 @RequiredArgsConstructor
 public class RoleRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
     @PreAuthorize("hasAuthority('role.create')")
-    @PostMapping("/role")
+    @PostMapping()
     public ResponseEntity<?> addRole(@RequestBody AddRoleRequest request) {
         commandBus.dispatch(toCommand(request));
         return ResponseEntity.ok(ApiResponse.success(null, "Thêm vai trò thành công"));
     }
 
     @PreAuthorize("hasAuthority('role.delete')")
-    @DeleteMapping("/role/{roleId}")
+    @DeleteMapping("/{roleId}")
     public ResponseEntity<?> deleteRole(@PathVariable UUID roleId, @RequestAttribute("accountId") UUID accountId) {
         var request = new DeleteRoleRequest(roleId);
         var input = toCommand(request, roleId);
@@ -38,7 +38,7 @@ public class RoleRestAdapter {
     }
 
     @PreAuthorize("hasAuthority('role.edit')")
-    @PatchMapping("/role/{roleId}/name")
+    @PatchMapping("/{roleId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID roleId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateNameRoleRequest(newName);
         var input = toCommand(request, roleId, accountId);
@@ -47,7 +47,7 @@ public class RoleRestAdapter {
     }
 
     @PreAuthorize("hasAuthority('role.edit')")
-    @PatchMapping("/role/{roleId}/level")
+    @PatchMapping("/{roleId}/level")
     public ResponseEntity<?> updateLevel(@PathVariable UUID roleId, @RequestBody int newLevel, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateLevelRoleRequest(newLevel);
         var input = toCommand(request, roleId, accountId);
@@ -56,7 +56,7 @@ public class RoleRestAdapter {
     }
 
     @PreAuthorize("hasAuthority('role.edit')")
-    @PatchMapping("/role/{roleId}/description")
+    @PatchMapping("/{roleId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable UUID roleId, @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateDescriptionRoleRequest(newDescription);
         var input = toCommand(request, roleId, accountId);
