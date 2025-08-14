@@ -39,6 +39,11 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
+    public List<Permission> findAll() {
+        return permissionJpaRepository.findAll().stream().map(PermissionConverter::toDomain).toList();
+    }
+
+    @Override
     public void deleteById(UUID id) {
         permissionJpaRepository.deleteById(id);
     }

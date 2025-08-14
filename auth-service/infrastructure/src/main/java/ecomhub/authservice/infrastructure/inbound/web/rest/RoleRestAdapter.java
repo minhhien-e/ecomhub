@@ -1,5 +1,6 @@
 package ecomhub.authservice.infrastructure.inbound.web.rest;
 
+import ecomhub.authservice.application.dto.RoleDto;
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
 import ecomhub.authservice.common.dto.request.role.*;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toCommand;
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toQuery;
@@ -74,7 +76,8 @@ public class RoleRestAdapter {
         var request = new GetAllRoleRequest();
         var query = toQuery(request);
         var result = queryBus.dispatch(query);
-        return ResponseEntity.ok(ApiResponse.success(result, "Lấy danh sách vai trò thành công"));
+        var response = result.stream().map(RoleDto::toResponse).toList();
+        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách vai trò thành công"));
     }
     //endregion
 }

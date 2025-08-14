@@ -12,6 +12,7 @@ import ecomhub.authservice.infrastructure.outbound.persistence.repository.role.R
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -61,17 +62,17 @@ public class RoleRepository implements RoleRepositoryPort {
 
     @Override
     public int updateDescription(UUID id, String newDescription) {
-        return roleJpaRepository.updateDescription(id,newDescription);
+        return roleJpaRepository.updateDescription(id, newDescription);
     }
 
     @Override
     public int updateLevel(UUID id, Integer newLevel) {
-        return roleJpaRepository.updateLevel(id,newLevel);
+        return roleJpaRepository.updateLevel(id, newLevel);
     }
 
     @Override
     public int updateName(UUID id, String newName) {
-        return roleJpaRepository.updateName(id,newName);
+        return roleJpaRepository.updateName(id, newName);
     }
 
     //endregion
@@ -98,6 +99,13 @@ public class RoleRepository implements RoleRepositoryPort {
                         .build())
                 .collect(Collectors.toSet());
         rolePermissionJpaRepository.deleteAll(entities);
+    }
+
+    //endregion
+    //region Find All
+    @Override
+    public List<Role> findAll() {
+        return roleJpaRepository.findAll().stream().map(RoleConverter::toDomain).toList();
     }
     //endregion
 }

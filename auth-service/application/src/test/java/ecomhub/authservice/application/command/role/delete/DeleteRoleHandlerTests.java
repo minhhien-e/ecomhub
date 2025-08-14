@@ -43,8 +43,7 @@ class DeleteRoleHandlerTests {
     @Test
     void handle_WhenRoleNotFound_ShouldThrowRoleNotFoundException() {
         // Arrange
-        DeleteRoleCommand command = new DeleteRoleCommand(roleId);
-        command.setRequesterId(requesterId);
+        DeleteRoleCommand command = new DeleteRoleCommand(roleId,requesterId);
 
         when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
 

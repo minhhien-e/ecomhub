@@ -1,12 +1,13 @@
 package ecomhub.authservice.infrastructure.inbound.web.rest;
 
+import ecomhub.authservice.application.dto.PermissionDto;
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
-import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.dto.request.permisison.AddPermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.DeletePermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.GetAllPermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.UpdateNamePermissionRequest;
+import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
-import static ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper.toCommand;
 
 @RestController
 @RequestMapping("/api/v1/auth/permissions")
@@ -67,7 +66,8 @@ public class PermissionRestAdapter {
         var request = new GetAllPermissionRequest();
         var query = PermissionRequestMapper.toQuery(request);
         var result = queryBus.dispatch(query);
-        return ResponseEntity.ok(ApiResponse.success(result, "Lấy danh sách quyền thành công"));
+        var response = result.stream().map(PermissionDto::toResponse).toList();
+        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách quyền thành công"));
     }
     //endregion
 }

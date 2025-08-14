@@ -2,6 +2,7 @@ package ecomhub.authservice.domain.repository;
 
 import ecomhub.authservice.domain.entity.Role;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -32,11 +33,12 @@ public interface RoleRepositoryPort {
 
 
     //endregion
-    //region permission
+    //region permission management
     void grantPermissions(UUID roleId, Set<UUID> permissionIds);
 
     void revokePermissions(UUID roleId, Set<UUID> permissionIds);
-
-
+    //endregion
+    //region find all
+    List<Role> findAll();
     //endregion
 }
