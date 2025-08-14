@@ -1,6 +1,6 @@
 package ecomhub.authservice.infrastructure.inbound.web.middleware;
 
-import ecomhub.authservice.common.dto.ApiResponse;
+import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.enums.ErrorCode;
 import ecomhub.authservice.common.exception.abstracts.HttpException;
 import org.springframework.http.ResponseEntity;

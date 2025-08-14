@@ -3,7 +3,7 @@ package ecomhub.authservice.infrastructure.inbound.web.mapper;
 import ecomhub.authservice.application.command.account.register.RegisterAccountCommand;
 import ecomhub.authservice.common.enums.ProviderType;
 import ecomhub.authservice.common.utils.StringUtils;
-import ecomhub.authservice.infrastructure.inbound.web.dto.request.account.RegisterBasicRequest;
+import ecomhub.authservice.common.dto.request.account.RegisterBasicRequest;
 
 public class AccountRequestMapper {
     public static RegisterAccountCommand toCommand(RegisterBasicRequest request) {

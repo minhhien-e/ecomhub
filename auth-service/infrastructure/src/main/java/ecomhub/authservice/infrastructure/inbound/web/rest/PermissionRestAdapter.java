@@ -2,10 +2,11 @@ package ecomhub.authservice.infrastructure.inbound.web.rest;
 
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
-import ecomhub.authservice.common.dto.ApiResponse;
-import ecomhub.authservice.infrastructure.inbound.web.dto.request.permisison.AddPermissionRequest;
-import ecomhub.authservice.infrastructure.inbound.web.dto.request.permisison.DeletePermissionRequest;
-import ecomhub.authservice.infrastructure.inbound.web.dto.request.permisison.UpdateNamePermissionRequest;
+import ecomhub.authservice.common.dto.response.ApiResponse;
+import ecomhub.authservice.common.dto.request.permisison.AddPermissionRequest;
+import ecomhub.authservice.common.dto.request.permisison.DeletePermissionRequest;
+import ecomhub.authservice.common.dto.request.permisison.GetAllPermissionRequest;
+import ecomhub.authservice.common.dto.request.permisison.UpdateNamePermissionRequest;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class PermissionRestAdapter {
     @PreAuthorize("hasAuthority('permission.create')")
     @PostMapping()
     public ResponseEntity<?> addPermission(@RequestBody AddPermissionRequest request) {
-        commandBus.dispatch(toCommand(request));
+        commandBus.dispatch(PermissionRequestMapper.toCommand(request));
         return ResponseEntity.ok(ApiResponse.success(null, "Thêm quyền thành công"));
     }
 
@@ -39,6 +40,7 @@ public class PermissionRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Xóa quyền thành công"));
     }
 
+    //region Update
     @PreAuthorize("hasAuthority('permission.edit')")
     @PatchMapping("/{permissionId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID permissionId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
@@ -56,4 +58,16 @@ public class PermissionRestAdapter {
         commandBus.dispatch(command);
         return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi miêu tả quyền thành công"));
     }
+
+    //endregion
+    //region Read
+    @PreAuthorize("hasAuthority('permission.read')")
+    @GetMapping
+    public ResponseEntity<?> getAllPermission() {
+        var request = new GetAllPermissionRequest();
+        var query = PermissionRequestMapper.toQuery(request);
+        var result = queryBus.dispatch(query);
+        return ResponseEntity.ok(ApiResponse.success(result, "Lấy danh sách quyền thành công"));
+    }
+    //endregion
 }

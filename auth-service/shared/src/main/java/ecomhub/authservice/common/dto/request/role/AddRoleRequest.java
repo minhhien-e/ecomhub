@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.inbound.web.dto.request.role;
+package ecomhub.authservice.common.dto.request.role;
 
 import java.util.Set;
 import java.util.UUID;

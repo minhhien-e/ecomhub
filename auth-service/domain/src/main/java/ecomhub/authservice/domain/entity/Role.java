@@ -96,22 +96,22 @@ public class Role {
     //endregion
 //region active
     public void deactivate() {
-            this.active = false;
+        this.active = false;
 
     }
 
     //endregion
     //region update
     public void updateName(String newName) {
-            this.name = new Name(newName, "vai trò");
+        this.name = new Name(newName, "vai trò");
     }
 
     public void updateLevel(int newLevel) {
-            this.level = new Level(newLevel);
+        this.level = new Level(newLevel);
     }
 
     public void updateDescription(String newDescription) {
-            this.description = newDescription;
+        this.description = newDescription;
     }
     //endregion
 }

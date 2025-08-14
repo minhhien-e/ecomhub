@@ -2,10 +2,11 @@ package ecomhub.authservice.infrastructure.inbound.web.mapper;
 
 import ecomhub.authservice.application.command.role.add.AddRoleCommand;
 import ecomhub.authservice.application.command.role.delete.DeleteRoleCommand;
+import ecomhub.authservice.application.query.role.getall.GetAllRoleQuery;
 import ecomhub.authservice.application.command.role.update.description.UpdateDescriptionRoleCommand;
 import ecomhub.authservice.application.command.role.update.level.UpdateLevelRoleCommand;
 import ecomhub.authservice.application.command.role.update.name.UpdateNameRoleCommand;
-import ecomhub.authservice.infrastructure.inbound.web.dto.request.role.*;
+import ecomhub.authservice.common.dto.request.role.*;
 
 import java.util.UUID;
 
@@ -36,6 +37,10 @@ public class RoleRequestMapper {
         return new DeleteRoleCommand(request.roleId(), requesterId);
     }
     //endregion
-
+    //region get all
+    public static GetAllRoleQuery toQuery(GetAllRoleRequest request) {
+        return new GetAllRoleQuery();
+    }
+    //endregion
 
 }

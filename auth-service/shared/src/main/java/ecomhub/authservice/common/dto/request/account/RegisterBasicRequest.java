@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.inbound.web.dto.request.account;
+package ecomhub.authservice.common.dto.request.account;
 
 import java.util.List;
 

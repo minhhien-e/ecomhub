@@ -1,7 +1,7 @@
 package ecomhub.authservice.infrastructure.inbound.security.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ecomhub.authservice.common.dto.ApiResponse;
+import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.enums.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

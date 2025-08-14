@@ -1,4 +1,4 @@
-package ecomhub.authservice.common.dto;
+package ecomhub.authservice.common.dto.response;
 
 public record ApiResponse<T>(
         int statusCode,

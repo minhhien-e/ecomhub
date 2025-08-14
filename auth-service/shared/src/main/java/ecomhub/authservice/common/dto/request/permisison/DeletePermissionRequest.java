@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.inbound.web.dto.request.permisison;
+package ecomhub.authservice.common.dto.request.permisison;
 
 import java.util.UUID;
 
