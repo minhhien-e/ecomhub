@@ -20,7 +20,6 @@ public class AccountRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody RegisterBasicRequest request) {
         commandBus.dispatch(toCommand(request));
