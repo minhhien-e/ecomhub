@@ -51,4 +51,12 @@ public class Permission {
     public boolean hasKey(String key) {
         return this.key.equals(new PermissionKey(key));
     }
+
+    public void updateDescription(String newDescription) {
+        this.description = newDescription;
+    }
+
+    public void updateName(String newName) {
+        this.name = new Name(newName, "quyền");
+    }
 }

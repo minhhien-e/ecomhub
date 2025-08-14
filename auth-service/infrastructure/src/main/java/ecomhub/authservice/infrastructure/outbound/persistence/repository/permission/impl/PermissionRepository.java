@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -17,8 +19,8 @@ public class PermissionRepository implements PermissionRepositoryPort {
 
     @Override
     public Permission save(Permission permission) {
-     var permissionEntity= permissionJpaRepository.save(PermissionConverter.toEntity(permission));
-     return PermissionConverter.toDomain(permissionEntity);
+        var permissionEntity = permissionJpaRepository.save(PermissionConverter.toEntity(permission));
+        return PermissionConverter.toDomain(permissionEntity);
     }
 
     @Override
@@ -27,7 +29,32 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
+    public boolean existsById(UUID id) {
+        return permissionJpaRepository.existsById(id);
+    }
+
+    @Override
     public List<Permission> findAllByKeyIn(Set<String> permissionKeys) {
         return permissionJpaRepository.findAllByKeyIn(permissionKeys);
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        permissionJpaRepository.deleteById(id);
+    }
+
+    @Override
+    public int updateDescription(UUID id, String newDescription) {
+        return permissionJpaRepository.updateDescription(id, newDescription);
+    }
+
+    @Override
+    public int updateName(UUID id, String newName) {
+        return permissionJpaRepository.updateName(id, newName);
+    }
+
+    @Override
+    public Optional<Permission> findById(UUID permissionId) {
+        return permissionJpaRepository.findById(permissionId).map(PermissionConverter::toDomain);
     }
 }
