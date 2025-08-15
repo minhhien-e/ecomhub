@@ -36,7 +36,7 @@ public interface RoleRepositoryPort {
     //region permission management
     void grantPermissions(UUID roleId, Set<UUID> permissionIds);
 
-    void revokePermissions(UUID roleId, Set<UUID> permissionIds);
+    void revokePermissions(UUID roleId, UUID permissionId);
     //endregion
     //region find all
     List<Role> findAll();

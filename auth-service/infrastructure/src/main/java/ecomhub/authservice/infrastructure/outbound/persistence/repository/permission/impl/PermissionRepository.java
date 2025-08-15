@@ -24,9 +24,15 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
-    public boolean existsByName(String name) {
-        return permissionJpaRepository.existsByName(name);
+    public boolean existsByNameOrKey(String name, String key) {
+        return permissionJpaRepository.existsByNameOrKey(name, key);
     }
+
+    @Override
+    public boolean existsByKey(String key) {
+        return permissionJpaRepository.existsByKey(key);
+    }
+
 
     @Override
     public boolean existsById(UUID id) {
@@ -61,5 +67,10 @@ public class PermissionRepository implements PermissionRepositoryPort {
     @Override
     public Optional<Permission> findById(UUID permissionId) {
         return permissionJpaRepository.findById(permissionId).map(PermissionConverter::toDomain);
+    }
+
+    @Override
+    public Optional<Permission> findByKey(String permissionKey) {
+        return permissionJpaRepository.findByKey(permissionKey).map(PermissionConverter::toDomain);
     }
 }

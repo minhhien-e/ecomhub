@@ -16,8 +16,8 @@ public class AddPermissionHandler implements ICommandHandler<AddPermissionComman
     @Transactional
     @Override
     public void handle(AddPermissionCommand command) {
-        if (permissionRepository.existsByName(command.getName())) {
-            throw new PermissionAlreadyExistsException(command.getName());
+        if (permissionRepository.existsByNameOrKey(command.getName(), command.getKey())) {
+            throw new PermissionAlreadyExistsException(command.getName(), command.getKey());
         }
         permissionRepository.save(PermissionMapper.toDomain(command));
     }

@@ -6,6 +6,10 @@ import java.util.UUID;
 
 public class PermissionNotFoundException extends ResourceNotFoundException {
     public PermissionNotFoundException(UUID id) {
-        super("Quyền với ID '" + id+"'");
+        super("Quyền với ID '" + id + "'");
+    }
+
+    public PermissionNotFoundException(String key) {
+        super("Quyền với khóa '" + key + "'");
     }
 }

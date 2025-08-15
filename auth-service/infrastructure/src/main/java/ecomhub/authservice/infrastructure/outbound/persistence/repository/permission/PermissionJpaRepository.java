@@ -7,11 +7,14 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 public interface PermissionJpaRepository extends JpaRepository<PermissionEntity, UUID> {
-    boolean existsByName(String name);
+    boolean existsByNameOrKey(String name, String key);
+
+    boolean existsByKey(String key);
 
     List<Permission> findAllByKeyIn(Set<String> permissionKeys);
 
@@ -22,4 +25,6 @@ public interface PermissionJpaRepository extends JpaRepository<PermissionEntity,
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE PermissionEntity p SET p.name = :newName WHERE p.id = :id")
     int updateName(UUID id, String newName);
+
+    Optional<PermissionEntity> findByKey(String permissionKey);
 }

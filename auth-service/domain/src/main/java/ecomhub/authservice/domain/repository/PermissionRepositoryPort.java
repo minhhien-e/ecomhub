@@ -1,7 +1,6 @@
 package ecomhub.authservice.domain.repository;
 
 import ecomhub.authservice.domain.entity.Permission;
-import ecomhub.authservice.domain.entity.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,9 @@ public interface PermissionRepositoryPort {
 
     //endregion
     //region exists
-    boolean existsByName(String name);
+    boolean existsByNameOrKey(String name, String key);
+
+    boolean existsByKey(String key);
 
     boolean existsById(UUID id);
 
@@ -37,5 +38,7 @@ public interface PermissionRepositoryPort {
     //endregion
     //region find
     Optional<Permission> findById(UUID permissionId);
+
+    Optional<Permission> findByKey(String permissionKey);
     //endregion
 }
