@@ -11,7 +11,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toCommand;
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toQuery;
@@ -26,16 +25,16 @@ public class RoleRestAdapter {
 
     @PreAuthorize("hasAuthority('role.create')")
     @PostMapping()
-    public ResponseEntity<?> addRole(@RequestBody AddRoleRequest request) {
+    public ResponseEntity<?> add(@RequestBody AddRoleRequest request) {
         commandBus.dispatch(toCommand(request));
         return ResponseEntity.ok(ApiResponse.success(null, "Thêm vai trò thành công"));
     }
 
     @PreAuthorize("hasAuthority('role.delete')")
     @DeleteMapping("/{roleId}")
-    public ResponseEntity<?> deleteRole(@PathVariable UUID roleId, @RequestAttribute("accountId") UUID accountId) {
+    public ResponseEntity<?> delete(@PathVariable UUID roleId, @RequestAttribute("accountId") UUID accountId) {
         var request = new DeleteRoleRequest(roleId);
-        var input = toCommand(request, roleId);
+        var input = toCommand(request, accountId);
         commandBus.dispatch(input);
         return ResponseEntity.ok(ApiResponse.success(null, "Xóa vai trò thành công"));
     }
@@ -79,5 +78,24 @@ public class RoleRestAdapter {
         var response = result.stream().map(RoleDto::toResponse).toList();
         return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách vai trò thành công"));
     }
+
     //endregion
+    //region Permission Management
+    @PreAuthorize("hasAuthority('role.permission.grant')")
+    @PutMapping("/{roleId}/grant")
+    public ResponseEntity<?> grantPermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @RequestBody GrantPermissionRequest request) {
+        var command = toCommand(request, roleId, accountId);
+        commandBus.dispatch(command);
+        return ResponseEntity.ok(ApiResponse.success(null, "Gán quyền thành công"));
+    }
+
+    @PreAuthorize("hasAuthority('role.permission.revoke')")
+    @DeleteMapping("/{roleId}/revoke/{permissionKey}")
+    public ResponseEntity<?> revokePermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @PathVariable("permissionKey") String permissionKey) {
+        var request = new RevokePermissionRequest(permissionKey);
+        var command = toCommand(request, roleId, accountId);
+        commandBus.dispatch(command);
+        return ResponseEntity.ok(ApiResponse.success(null, "Xóa quyền thành công"));
+    }
+    // endregion
 }

@@ -16,6 +16,16 @@ public class RoleServiceImpl implements RoleService {
         return canPerformAction(targetRole, requester, "role.delete");
     }
 
+    @Override
+    public boolean canBeGrantPermissionBy(Role targetRole, Account requester) {
+        return canPerformAction(targetRole, requester, "role.permission.grant");
+    }
+
+    @Override
+    public boolean canBeRevokePermissionBy(Role targetRole, Account requester) {
+        return canPerformAction(targetRole, requester, "role.permission.revoke");
+    }
+
     //Kiểm tra có thực thi một quyền cụ thể
     private boolean canPerformAction(Role targetRole, Account requester, String permissionKey) {
         return requester.getRoles().stream().anyMatch(role ->
