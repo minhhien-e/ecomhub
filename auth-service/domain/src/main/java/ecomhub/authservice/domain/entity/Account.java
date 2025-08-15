@@ -86,6 +86,12 @@ public class Account {
         this.roles.add(role);
     }
 
+    public Role getHighestRole() {
+        return getRoles().stream()
+                .max(Comparator.comparingInt(r -> r.getLevel().value()))
+                .orElse(null);
+    }
+
     public void revokeRole(Role role) {
         if (role == null) {
             throw new MissingRoleException();

@@ -42,7 +42,7 @@ public class Role {
     }
 
     //endregion
-//region getter
+    //region getter
     public UUID getId() {
         return id;
     }
@@ -68,7 +68,7 @@ public class Role {
     }
 
     //endregion
-//region permission
+    //region permission
     public boolean hasPermission(String key) {
         return permissions.stream().anyMatch(p -> p.hasKey(key));
     }
@@ -94,7 +94,7 @@ public class Role {
     }
 
     //endregion
-//region active
+    //region active
     public void deactivate() {
         this.active = false;
 
@@ -114,4 +114,7 @@ public class Role {
         this.description = newDescription;
     }
     //endregion
+    public boolean greaterThan(Role role) {
+        return this.level.value() > role.getLevel().value();
+    }
 }
