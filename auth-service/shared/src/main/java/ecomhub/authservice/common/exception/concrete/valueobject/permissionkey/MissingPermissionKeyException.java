@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingPermissionKeyException extends RequiredFieldMissingException {
     public MissingPermissionKeyException() {
-        super("khóa quyền");
+        super("permission key", true);
     }
 }

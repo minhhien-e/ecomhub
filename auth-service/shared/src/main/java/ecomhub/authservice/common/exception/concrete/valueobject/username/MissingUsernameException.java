@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingUsernameException extends RequiredFieldMissingException {
     public MissingUsernameException() {
-        super("tên đăng nhập");
+        super("your username", true);
     }
 }

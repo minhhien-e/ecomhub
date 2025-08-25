@@ -1,7 +1,7 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.domain.valueobject.PermissionKey;
+import ecomhub.authservice.domain.valueobject.key.PermissionKey;
 import ecomhub.authservice.domain.valueobject.name.Name;
 import ecomhub.authservice.domain.valueobject.name.PermissionName;
 

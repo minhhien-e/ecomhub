@@ -81,7 +81,7 @@ class RegisterAccountHandlerTest {
     void shouldThrow_WhenRoleNotFound() {
         var command = createValidCommand();
         when(accountRepository.existsByIdentifier(any())).thenReturn(false);
-        when(roleRepository.findByName(RoleName.CUSTOMER.name())).thenReturn(Optional.empty());
+        when(roleRepository.getByRoleKey(RoleName.CUSTOMER.name())).thenReturn(Optional.empty());
         assertThrows(RoleNotFoundException.class, () -> handler.handle(command));
     }
 

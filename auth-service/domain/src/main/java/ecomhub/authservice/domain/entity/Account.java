@@ -15,8 +15,9 @@ public class Account {
     private Email email;
     private Username username;
     private PhoneNumber phoneNumber;
-    private Password passwordHash;
+    private Password hashedPassword;
     private final Provider provider;
+    private String rawPassword;
     private boolean active;
     private final Set<Role> roles;
 
@@ -28,18 +29,18 @@ public class Account {
         this.email = new Email(email);
         this.username = new Username(username);
         this.phoneNumber = new PhoneNumber(phoneNumber);
-        this.passwordHash = new Password(passwordHash);
+        this.hashedPassword = new Password(passwordHash);
         this.provider = new Provider(provider);
         this.active = active;
         this.roles = new HashSet<>(roles);
     }
 
-    public Account(String email, String username, String phoneNumber, String passwordHash, String provider) {
+    public Account(String email, String username, String phoneNumber, String rawPassword, String provider) {
         this.id = UUID.randomUUID();
         this.email = new Email(email);
         this.username = new Username(username);
         this.phoneNumber = new PhoneNumber(phoneNumber);
-        this.passwordHash = new Password(passwordHash);
+        this.rawPassword = rawPassword;
         this.provider = new Provider(provider);
         this.active = true;
         this.roles = new HashSet<>();
@@ -84,7 +85,11 @@ public class Account {
     }
 
     public void updatePassword(String newPassword) {
-        this.passwordHash = new Password(newPassword);
+        this.hashedPassword = new Password(newPassword);
+    }
+
+    public void hashPassword(String password) {
+        this.hashedPassword = new Password(password);
     }
 
     public void activate() {
@@ -111,8 +116,8 @@ public class Account {
         return phoneNumber;
     }
 
-    public Optional<Password> getPasswordHash() {
-        return Optional.ofNullable(passwordHash);
+    public Optional<Password> getHashedPassword() {
+        return Optional.ofNullable(hashedPassword);
     }
 
     public Provider getProvider() {
@@ -125,6 +130,10 @@ public class Account {
 
     public Set<Role> getRoles() {
         return Set.copyOf(roles);
+    }
+
+    public String getRawPassword() {
+        return rawPassword;
     }
 
     @Override

@@ -4,7 +4,6 @@ import ecomhub.authservice.application.port.security.LoadAccountByIdentifierPort
 import ecomhub.authservice.common.enums.ProviderType;
 import ecomhub.authservice.common.exception.concrete.valueobject.password.MissingPasswordException;
 import ecomhub.authservice.domain.entity.Account;
-import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.valueobject.Provider;
 import jakarta.transaction.Transactional;
@@ -33,12 +32,12 @@ public class AccountDetailsService implements UserDetailsService {
         if (!account.getProvider().isSame(new Provider(ProviderType.LOCAL.name()))) {
             throw new UsernameNotFoundException("Tài khoản hoặc mật khẩu không đúng");
         }
-        if (account.getPasswordHash().isEmpty())
+        if (account.getHashedPassword().isEmpty())
             throw new MissingPasswordException();
 
         return User.builder()
                 .username(account.getId().toString())
-                .password(account.getPasswordHash().get().getHashedValue())
+                .password(account.getHashedPassword().get().getHashedValue())
                 .roles(account.getRoles()
                         .stream().map(Role::getPermissions)
                         .flatMap(Collection::stream)

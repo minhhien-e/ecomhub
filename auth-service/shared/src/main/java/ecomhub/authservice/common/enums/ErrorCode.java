@@ -4,6 +4,7 @@ public enum ErrorCode {
     // VALIDATION
     REQUIRED_FIELD_MISSING,    // Thiếu trường bắt buộc
     INVALID_FORMAT,                     // Sai định dạng (email, số, date,...)
+    INVALID_VALUE,
     UPDATE_FAILURE,
 
     //  BUSINESS RULE

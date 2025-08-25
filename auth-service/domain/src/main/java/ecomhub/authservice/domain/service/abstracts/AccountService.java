@@ -8,4 +8,5 @@ public interface AccountService {
 
     boolean canBeRevokedRoleBy(Account targetAccount, Role targetRole, Account requester);
 
+    void register(Account account, Role role);
 }

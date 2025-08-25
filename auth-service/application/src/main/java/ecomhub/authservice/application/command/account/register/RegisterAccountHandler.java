@@ -2,21 +2,17 @@ package ecomhub.authservice.application.command.account.register;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.mapper.AccountCommandMapper;
-import ecomhub.authservice.domain.repository.AccountRepositoryPort;
-import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.common.exception.concrete.account.EmailAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.account.PhoneNumberAlreadyExistsException;
 import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExistsException;
-import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
-import ecomhub.authservice.domain.entity.Role;
-import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
+import ecomhub.authservice.domain.repository.AccountRepositoryPort;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
+import ecomhub.authservice.domain.service.abstracts.AccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import static ecomhub.authservice.domain.constant.RoleKeyConstants.CUSTOMER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +20,7 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
     private final AccountRepositoryPort accountRepository;
     private final RoleRepositoryPort roleRepository;
     private final AccountCommandMapper accountCommandMapper;
-    private final PasswordHashService passwordHashService;
+    private final AccountService accountService;
 
     @Override
     @Transactional
@@ -38,18 +34,9 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
         if (accountRepository.existsByIdentifier(command.getUsername())) {
             throw new UsernameAlreadyExistsException(command.getUsername());
         }
-        //Hash password
-        command.setPassword(passwordHashService.hash(command.getPassword()));
         var account = accountCommandMapper.toDomain(command);
-        //Gán role
-        Set<Role> roleIds = getRoles(command.getRoles());
-        roleIds.forEach(account::grantRole);
+        accountService.register(account, roleRepository.getByRoleKey(CUSTOMER));
         accountRepository.save(account);
     }
 
-    private Set<Role> getRoles(List<String> roleNames) {
-        return roleNames.stream().map(name -> roleRepository.findByName(name)
-                        .orElseThrow(() -> new RoleNotFoundException(name)))
-                .collect(Collectors.toSet());
-    }
 }

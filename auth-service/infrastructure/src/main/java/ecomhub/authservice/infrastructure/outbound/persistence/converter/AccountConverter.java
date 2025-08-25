@@ -19,7 +19,7 @@ public class AccountConverter {
                 .username(account.getUsername().map(Username::getValue).orElse(null))
                 .email(account.getEmail().getValue())
                 .phoneNumber(account.getPhoneNumber().getValue())
-                .passwordHash(account.getPasswordHash().map(Password::getHashedValue).orElse(null))
+                .passwordHash(account.getHashedPassword().map(Password::getHashedValue).orElse(null))
                 .active(account.isActive())
                 .provider(account.getProvider().getValue())
                 .accountRoles(convertRoleToEntities(account))

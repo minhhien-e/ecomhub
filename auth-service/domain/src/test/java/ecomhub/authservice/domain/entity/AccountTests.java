@@ -41,7 +41,7 @@ class AccountTests {
         assertEquals("test@example.com", constructedAccount.getEmail().getValue());
         assertEquals("testuser", constructedAccount.getUsername().get().getValue());
         assertEquals("0939346634", constructedAccount.getPhoneNumber().getValue());
-        assertEquals("hashedPassword123", constructedAccount.getPasswordHash().get().getHashedValue());
+        assertEquals("hashedPassword123", constructedAccount.getHashedPassword().get().getHashedValue());
         assertEquals("LOCAL", constructedAccount.getProvider().getValue());
         assertTrue(constructedAccount.isActive());
         assertEquals(1, constructedAccount.getRoles().size());
@@ -59,7 +59,7 @@ class AccountTests {
         assertEquals("new@example.com", constructedAccount.getEmail().getValue());
         assertEquals("newuser", constructedAccount.getUsername().get().getValue());
         assertEquals("0987654321", constructedAccount.getPhoneNumber().getValue());
-        assertEquals("rawPassword", constructedAccount.getPasswordHash().get().getHashedValue());
+        assertEquals("rawPassword", constructedAccount.getHashedPassword().get().getHashedValue());
         assertEquals("LOCAL", constructedAccount.getProvider().getValue());
         assertTrue(constructedAccount.isActive());
         assertTrue(constructedAccount.getRoles().isEmpty());

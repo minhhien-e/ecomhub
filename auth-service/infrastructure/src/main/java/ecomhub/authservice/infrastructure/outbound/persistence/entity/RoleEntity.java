@@ -8,7 +8,8 @@ import java.util.*;
 @Entity
 @Table(name = "role",
         indexes = {
-                @Index(name = "idx_role_name", columnList = "name")
+                @Index(name = "idx_role_key", columnList = "key"),
+                @Index(name = "idx_role_status", columnList = "status")
         }
 )
 @Builder
@@ -22,11 +23,15 @@ public class RoleEntity {
     private UUID id;
     @Column(nullable = false, unique = true, length = 100)
     private String name;
+    @Column(nullable = false, unique = true, length = 100)
+    private String key;
+    @Column(nullable = false, unique = true, length = 50)
+    private String status;
+    @Column(nullable = false, unique = true, length = 50)
+    private String type;
     @Lob
-    @Column
+    @Column(length = 500)
     private String description;
-    @Column(nullable = false)
-    private boolean active;
     @Column(nullable = false)
     private int level;
     //mapping

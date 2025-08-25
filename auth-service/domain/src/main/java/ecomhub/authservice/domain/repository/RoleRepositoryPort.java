@@ -8,21 +8,14 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface RoleRepositoryPort {
-    //region save
     Role save(Role role);
 
-    //endregion
-    //region exists
     boolean existsByName(String name);
 
-    //endregion
-    //region find
-    Optional<Role> findByName(String name);
+    Role getByRoleKey(String key);
 
     Optional<Role> findById(UUID id);
 
-    //endregion
-    //region update
     int updateActive(UUID id, boolean isActive);
 
     int updateDescription(UUID id, String newDescription);
@@ -31,14 +24,9 @@ public interface RoleRepositoryPort {
 
     int updateName(UUID id, String newName);
 
-
-    //endregion
-    //region permission management
     void grantPermissions(UUID roleId, Set<UUID> permissionIds);
 
     void revokePermissions(UUID roleId, UUID permissionId);
-    //endregion
-    //region find all
+
     List<Role> findAll();
-    //endregion
 }

@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingProviderException extends RequiredFieldMissingException {
     public MissingProviderException() {
-        super("Phương thức đăng nhập");
+        super("Please select a provider to assign to the account", false);
     }
 }

@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingPhoneNumberException extends RequiredFieldMissingException {
     public MissingPhoneNumberException() {
-        super("số điện thoại");
+        super("phone number",true);
     }
 }

@@ -4,6 +4,6 @@ import ecomhub.authservice.common.enums.ErrorCode;
 
 public class ResourceAlreadyExistsException extends HttpException {
     public ResourceAlreadyExistsException(String message) {
-        super(409, ErrorCode.RESOURCE_ALREADY_EXISTS, String.format("%s đã tồn tại.", message));
+        super(409, ErrorCode.RESOURCE_ALREADY_EXISTS, String.format("%s already exists.", message));
     }
 }

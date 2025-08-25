@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingPasswordException extends RequiredFieldMissingException {
     public MissingPasswordException() {
-        super("mật khẩu");
+        super("password", true);
     }
 }

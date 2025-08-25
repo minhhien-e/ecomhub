@@ -16,6 +16,10 @@ public class RoleConverter {
         return RoleEntity.builder()
                 .id(role.getId())
                 .name(role.getName().getValue())
+                .key(role.getKey().getValue())
+                .type(role.getType().getValue())
+                .status(role.getStatus().getValue())
+                .level(role.getLevel().getValue())
                 .description(role.getDescription().orElse(null))
                 .rolePermissions(convertPermissionToEntities(role))
                 .build();
@@ -24,10 +28,12 @@ public class RoleConverter {
     public static Role toDomain(RoleEntity roleEntity) {
         return new Role(roleEntity.getId(),
                 roleEntity.getName(),
+                roleEntity.getKey(),
+                roleEntity.getLevel(),
+                roleEntity.getType(),
+                roleEntity.getStatus(),
                 roleEntity.getDescription(),
-                convertPermissionToDomain(roleEntity.getRolePermissions()),
-                roleEntity.isActive(),
-                roleEntity.getLevel()
+                convertPermissionToDomain(roleEntity.getRolePermissions())
         );
 
     }

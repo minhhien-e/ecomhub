@@ -1,5 +1,6 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.repository.role.impl;
 
+import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.infrastructure.outbound.persistence.converter.RoleConverter;
@@ -24,26 +25,21 @@ public class RoleRepository implements RoleRepositoryPort {
     private final RoleJpaRepository roleJpaRepository;
     private final RolePermissionJpaRepository rolePermissionJpaRepository;
 
-    //region create
     @Override
     public Role save(Role role) {
         var roleEntity = roleJpaRepository.save(RoleConverter.toEntity(role));
         return RoleConverter.toDomain(roleEntity);
     }
 
-    //endregion
-    //region exist
     @Override
     public boolean existsByName(String name) {
         return roleJpaRepository.existsByName(name);
     }
 
-    //endregion
-    //region find
     @Override
-    public Optional<Role> findByName(String name) {
-        var entity = roleJpaRepository.findByName(name);
-        return entity.map(RoleConverter::toDomain);
+    public Role getByRoleKey(String key) {
+        var entity = roleJpaRepository.findByRoleKey(key).orElseThrow(RoleNotFoundException::new);
+        return RoleConverter.toDomain(entity);
     }
 
 
@@ -53,8 +49,6 @@ public class RoleRepository implements RoleRepositoryPort {
         return roleEntity.map(RoleConverter::toDomain);
     }
 
-    //endregion
-    //region update
     @Override
     public int updateActive(UUID id, boolean isActive) {
         return roleJpaRepository.updateActive(id, isActive);
@@ -75,8 +69,6 @@ public class RoleRepository implements RoleRepositoryPort {
         return roleJpaRepository.updateName(id, newName);
     }
 
-    //endregion
-    //region permission
     @Override
     public void grantPermissions(UUID roleId, Set<UUID> permissionIds) {
         Set<RolePermissionEntity> entities = permissionIds.stream()
@@ -100,12 +92,9 @@ public class RoleRepository implements RoleRepositoryPort {
         rolePermissionJpaRepository.delete(entity);
     }
 
-    //endregion
-    //region Find All
     @Override
     public List<Role> findAll() {
         return roleJpaRepository.findAll().stream().map(RoleConverter::toDomain).toList();
     }
-    //endregion
 }
 

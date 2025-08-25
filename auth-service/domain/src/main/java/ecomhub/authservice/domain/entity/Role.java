@@ -1,8 +1,12 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.common.exception.concrete.role.*;
+import ecomhub.authservice.common.exception.concrete.role.PermissionAlreadyAssignedException;
+import ecomhub.authservice.common.exception.concrete.role.PermissionNotAssignedException;
 import ecomhub.authservice.domain.valueobject.Level;
+import ecomhub.authservice.domain.valueobject.RoleStatus;
+import ecomhub.authservice.domain.valueobject.RoleType;
+import ecomhub.authservice.domain.valueobject.key.RoleKey;
 import ecomhub.authservice.domain.valueobject.name.Name;
 import ecomhub.authservice.domain.valueobject.name.RoleName;
 
@@ -11,29 +15,37 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import static ecomhub.authservice.domain.constant.RoleStatusConstants.*;
+
 public class Role {
     private final UUID id;
     private RoleName name;
+    private final RoleKey key;
+    private RoleType type;
+    private RoleStatus status;
     private String description;
-    private final Set<Permission> permissions;
-    private boolean active;
     private Level level;
+    private final Set<Permission> permissions;
 
-    public Role(UUID id, String name, String description, Set<Permission> permissions, boolean active, int level) {
+    public Role(UUID id, String name, String key, int level, String type, String status, String description, Set<Permission> permissions) {
         this.id = id;
         this.name = new RoleName(name);
+        this.key = new RoleKey(key);
+        this.type = new RoleType(type);
         this.description = description;
         this.permissions = new HashSet<>(permissions);
-        this.active = active;
+        this.status = new RoleStatus(status);
         this.level = new Level(level);
     }
 
-    public Role(String name, String description, int level) {
+    public Role(String name, String key, String type, String description, int level) {
         this.id = UUID.randomUUID();
         this.name = new RoleName(name);
+        this.key = new RoleKey(key);
+        this.type = new RoleType(type);
         this.description = description;
         this.permissions = new HashSet<>();
-        this.active = true;
+        this.status = new RoleStatus(ACTIVE);
         this.level = new Level(level);
 
     }
@@ -56,9 +68,26 @@ public class Role {
         this.permissions.remove(permission);
     }
 
+    // Status Management
     public void deactivate() {
-        this.active = false;
+        this.status = new RoleStatus(INACTIVE);
+    }
 
+    public void archive() {
+        this.status = new RoleStatus(ARCHIVED);
+    }
+
+    public void activate() {
+        this.status = new RoleStatus(ACTIVE);
+    }
+
+    public void delete() {
+        this.status = new RoleStatus(DELETED);
+    }
+
+    //Update Information
+    public void updateType(String newType) {
+        this.type = new RoleType(newType);
     }
 
     public void updateName(String newName) {
@@ -93,8 +122,16 @@ public class Role {
         return Set.copyOf(permissions);
     }
 
-    public boolean isActive() {
-        return active;
+    public RoleKey getKey() {
+        return key;
+    }
+
+    public RoleType getType() {
+        return type;
+    }
+
+    public RoleStatus getStatus() {
+        return status;
     }
 
     public Level getLevel() {

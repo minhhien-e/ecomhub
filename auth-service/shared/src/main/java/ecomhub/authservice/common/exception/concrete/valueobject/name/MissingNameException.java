@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingNameException extends RequiredFieldMissingException {
     public MissingNameException(String domainName) {
-        super("tên của " + domainName);
+        super(domainName + "'s name",true);
     }
 }

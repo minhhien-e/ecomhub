@@ -20,7 +20,7 @@ public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
     @NonNull
     Optional<RoleEntity> findById(@NonNull UUID id);
 
-    Optional<RoleEntity> findByName(String name);
+    Optional<RoleEntity> findByRoleKey(String name);
 
     //endregion
     //region update
