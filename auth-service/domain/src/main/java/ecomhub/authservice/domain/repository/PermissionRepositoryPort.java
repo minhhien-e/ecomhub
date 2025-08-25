@@ -8,37 +8,25 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface PermissionRepositoryPort {
-    //region save
     Permission save(Permission permission);
 
-    //endregion
-    //region exists
     boolean existsByNameOrKey(String name, String key);
 
     boolean existsByKey(String key);
 
     boolean existsById(UUID id);
 
-    //endregion
-    //region find all
     List<Permission> findAllByKeyIn(Set<String> permissionKeys);
 
     List<Permission> findAll();
 
-    //endregion
-    //region delete
     void deleteById(UUID id);
 
-    //endregion
-    //region update
     int updateDescription(UUID id, String newDescription);
 
     int updateName(UUID id, String newName);
 
-    //endregion
-    //region find
-    Optional<Permission> findById(UUID permissionId);
+    Permission getById(UUID permissionId);
 
     Optional<Permission> findByKey(String permissionKey);
-    //endregion
 }

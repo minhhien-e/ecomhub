@@ -1,10 +1,10 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.repository.account.impl;
 
-import ecomhub.authservice.domain.entity.Role;
+import ecomhub.authservice.common.exception.concrete.account.AccountNotFoundException;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.AccountEntity;
-import ecomhub.authservice.infrastructure.outbound.persistence.converter.AccountConverter;
+import ecomhub.authservice.infrastructure.outbound.persistence.mapper.AccountMapper;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.AccountRoleEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.RoleEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.id.AccountRoleId;
@@ -25,7 +25,7 @@ public class AccountRepository implements AccountRepositoryPort {
 
     @Override
     public void save(Account account) {
-        AccountEntity accountEntity = AccountConverter.toEntity(account);
+        AccountEntity accountEntity = AccountMapper.toEntity(account);
         accountJpaRepository.save(accountEntity);
     }
 
@@ -35,22 +35,21 @@ public class AccountRepository implements AccountRepositoryPort {
         return accountJpaRepository.exists(AccountSpecification.byIdentifier(identifier));
     }
 
-    //region find
     @Override
     public Optional<Account> findByIdentifier(String identifier) {
         Optional<AccountEntity> account = accountJpaRepository.findOne(AccountSpecification.byIdentifier(identifier));
-        return account.map(AccountConverter::toDomain);
+        return account.map(AccountMapper::toDomain);
     }
 
     @Override
-    public Optional<Account> findById(UUID id) {
-        return accountJpaRepository.findById(id).map(AccountConverter::toDomain);
+    public Account geById(UUID id) {
+        var entity = accountJpaRepository.findById(id)
+                .orElseThrow(AccountNotFoundException::new);
+        return AccountMapper.toDomain(entity);
     }
 
-    //endregion
-    //region Role Management
     @Override
-    public void grantRole(UUID accountId, UUID roleId) {
+    public void assignRole(UUID accountId, UUID roleId) {
         accountRoleJpaRepository.save(AccountRoleEntity.builder()
                 .id(new AccountRoleId(accountId, roleId))
                 .account(AccountEntity.builder().id(accountId).build())
@@ -66,6 +65,5 @@ public class AccountRepository implements AccountRepositoryPort {
                 .role(RoleEntity.builder().id(roleId).build())
                 .build());
     }
-    //endregion
 
 }

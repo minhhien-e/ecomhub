@@ -46,7 +46,7 @@ public class Account {
         this.roles = new HashSet<>();
     }
 
-    public void grantRole(Role role) {
+    public void assignRole(Role role) {
         if (role == null) {
             throw new MissingRoleException();
         }

@@ -1,9 +1,9 @@
 package ecomhub.authservice.domain.repository;
 
+import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.entity.Role;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,21 +12,26 @@ public interface RoleRepositoryPort {
 
     boolean existsByName(String name);
 
-    Role getByRoleKey(String key);
+    boolean existsByKey(String key);
 
-    Optional<Role> findById(UUID id);
 
-    int updateActive(UUID id, boolean isActive);
+    Role getByKey(String key);
 
-    int updateDescription(UUID id, String newDescription);
+    Role getById(UUID id);
 
-    int updateLevel(UUID id, Integer newLevel);
+    int updateDescription(Role role);
 
-    int updateName(UUID id, String newName);
+    int updateLevel(Role role);
 
-    void grantPermissions(UUID roleId, Set<UUID> permissionIds);
+    int updateName(Role role);
 
-    void revokePermissions(UUID roleId, UUID permissionId);
+    void grantPermissions(Role role, Set<Permission> permissions);
+
+    void revokePermissions(Role role,Set<Permission> permissions);
 
     List<Role> findAll();
+
+    int updateStatus(Role role);
+
+    void deleteById(UUID id);
 }

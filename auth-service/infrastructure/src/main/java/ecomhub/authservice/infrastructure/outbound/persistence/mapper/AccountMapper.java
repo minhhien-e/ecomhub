@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.outbound.persistence.converter;
+package ecomhub.authservice.infrastructure.outbound.persistence.mapper;
 
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
@@ -12,7 +12,7 @@ import ecomhub.authservice.infrastructure.outbound.persistence.entity.id.Account
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class AccountConverter {
+public class AccountMapper {
     public static AccountEntity toEntity(Account account) {
         return AccountEntity.builder()
                 .id(account.getId())
@@ -31,7 +31,7 @@ public class AccountConverter {
                 accountEntity.getEmail(),
                 accountEntity.getUsername(),
                 accountEntity.getPhoneNumber(),
-                accountEntity.getPasswordHash(),
+                accountEntity.getHashedPassword(),
                 accountEntity.getProvider(),
                 accountEntity.isActive(),
                 convertRoleToDomain(accountEntity.getAccountRoles()));
@@ -40,7 +40,7 @@ public class AccountConverter {
     private static Set<Role> convertRoleToDomain(Set<AccountRoleEntity> roles) {
         return roles
                 .stream()
-                .map(entity -> RoleConverter.toDomain(entity.getRole()))
+                .map(entity -> RoleMapper.toDomain(entity.getRole()))
                 .collect(java.util.stream.Collectors.toSet());
     }
 

@@ -1,4 +1,6 @@
 package ecomhub.authservice.common.dto.request.role;
 
-public record UpdateDescriptionRoleRequest(String newDescription) {
+import java.util.UUID;
+
+public record UpdateDescriptionRoleRequest(UUID roleId, String newDescription) {
 }

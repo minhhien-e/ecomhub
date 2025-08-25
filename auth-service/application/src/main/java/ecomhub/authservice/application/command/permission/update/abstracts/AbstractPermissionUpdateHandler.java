@@ -25,8 +25,8 @@ public abstract class AbstractPermissionUpdateHandler<TCommand> {
     }
 
     protected void updateWithPermissionCheck(TCommand command, UUID permissionId, UUID requesterId, String forbiddenMessageError, BiConsumer<Permission, TCommand> updateAction) {
-        var requester = accountRepository.findById(requesterId).orElseThrow(() -> new AccountNotFoundException(requesterId));
-        var permission = permissionRepository.findById(permissionId).orElseThrow(() -> new PermissionNotFoundException(permissionId));
+        var requester = accountRepository.geById(requesterId).orElseThrow(() -> new AccountNotFoundException(requesterId));
+        var permission = permissionRepository.getById(permissionId).orElseThrow(() -> new PermissionNotFoundException(permissionId));
         if (!permissionService.canBeModifiedBy(requester)) throw new ForbiddenException(forbiddenMessageError);
         updateAction.accept(permission, command);
         int result = saveChange(permission, command);

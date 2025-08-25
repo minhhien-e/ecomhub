@@ -13,14 +13,18 @@ import java.util.stream.Collectors;
 public class RoleDto {
     private UUID id;
     private String name;
+    private String key;
+    private int level;
+    private String type;
+    private String status;
     private String description;
     private Set<PermissionDto> permissions;
-    private boolean active;
-    private int level;
 
     public RoleResponse toResponse() {
-        return new RoleResponse(id, name, description, permissions
+        return new RoleResponse(id, name,
+                key, type, status,
+                description, level, permissions
                 .stream().map(PermissionDto::toResponse)
-                .collect(Collectors.toSet()), active, level);
+                .collect(Collectors.toSet()));
     }
 }

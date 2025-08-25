@@ -24,7 +24,7 @@ public class DeletePermissionHandler implements ICommandHandler<DeletePermission
 
     @Override
     public void handle(DeletePermissionCommand command) {
-        var requester = accountRepository.findById(command.getRequesterId()).orElseThrow(() -> new AccountNotFoundException(command.getRequesterId()));
+        var requester = accountRepository.geById(command.getRequesterId()).orElseThrow(() -> new AccountNotFoundException(command.getRequesterId()));
         if (!permissionRepository.existsById(command.getPermissionId()))
             throw new PermissionNotFoundException(command.getPermissionId());
         if (!permissionService.canBeDeletedBy(requester))

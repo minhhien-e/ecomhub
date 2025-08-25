@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class DeleteRoleHandlerTests {
 
     @InjectMocks
-    private DeleteRoleHandler handler;
+    private HardDeleteRoleHandler handler;
 
     @Mock
     private RoleRepositoryPort roleRepository;
@@ -45,13 +45,13 @@ class DeleteRoleHandlerTests {
         // Arrange
         DeleteRoleCommand command = new DeleteRoleCommand(roleId,requesterId);
 
-        when(roleRepository.findById(roleId)).thenReturn(Optional.empty());
+        when(roleRepository.getById(roleId)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(RoleNotFoundException.class, () -> handler.handle(command));
 
         // Verify
-        verify(roleRepository).findById(roleId);
+        verify(roleRepository).getById(roleId);
         verify(roleRepository, never()).updateActive(any(), anyBoolean());
     }
 

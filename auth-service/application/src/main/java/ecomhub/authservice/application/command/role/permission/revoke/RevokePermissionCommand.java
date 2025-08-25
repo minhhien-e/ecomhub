@@ -11,5 +11,5 @@ import java.util.UUID;
 public class RevokePermissionCommand implements ICommand {
     private UUID requesterId;
     private UUID roleId;
-    private String permissionKey;
+    private UUID permissionId;
 }

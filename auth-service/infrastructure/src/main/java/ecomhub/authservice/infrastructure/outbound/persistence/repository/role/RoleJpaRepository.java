@@ -14,19 +14,14 @@ import java.util.UUID;
 public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
     boolean existsByName(String name);
 
-    //region find
+    boolean existsByKey(String key);
+
     @Override
     @EntityGraph(attributePaths = {"rolePermissions.permission"})
     @NonNull
     Optional<RoleEntity> findById(@NonNull UUID id);
 
-    Optional<RoleEntity> findByRoleKey(String name);
-
-    //endregion
-    //region update
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE RoleEntity r SET r.active = :active WHERE r.id = :id")
-    int updateActive(@Param("id") UUID id, @Param("active") boolean active);
+    Optional<RoleEntity> findByKey(String name);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE RoleEntity r SET r.description = :newDescription WHERE r.id = :id")
@@ -39,6 +34,9 @@ public interface RoleJpaRepository extends JpaRepository<RoleEntity, UUID> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE RoleEntity r SET r.name = :newName WHERE r.id = :id")
     int updateName(UUID id, String newName);
-    //endregion
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE RoleEntity r SET r.status = :newStatus WHERE r.id = :id")
+    int updateStatus(UUID id, String newStatus);
 
 }

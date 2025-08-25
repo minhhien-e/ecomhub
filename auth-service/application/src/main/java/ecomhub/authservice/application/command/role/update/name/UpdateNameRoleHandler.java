@@ -2,32 +2,31 @@ package ecomhub.authservice.application.command.role.update.name;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.command.role.update.abstracts.AbstractRoleUpdateHandler;
+import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
-import ecomhub.authservice.domain.entity.Role;
+import ecomhub.authservice.domain.service.abstracts.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class UpdateNameRoleHandler extends AbstractRoleUpdateHandler<UpdateNameRoleCommand>
+public class UpdateNameRoleHandler extends AbstractRoleUpdateHandler<String>
         implements ICommandHandler<UpdateNameRoleCommand> {
-    public UpdateNameRoleHandler(RoleRepositoryPort roleRepository, AccountRepositoryPort accountRepository) {
-        super(roleRepository, accountRepository);
+    protected UpdateNameRoleHandler(RoleRepositoryPort roleRepository, AccountRepositoryPort accountRepository, RoleService roleService) {
+        super(roleRepository, accountRepository, roleService);
     }
 
     @Override
     public void handle(UpdateNameRoleCommand command) {
-        super.updateWithPermissionCheck(command,
+        super.updateWithPermissionCheck(command.getNewName(),
                 command.getRoleId(),
                 command.getRequesterId(),
-                "thay đổi tên vai trò",
-                (targetRole, updateCommand) ->
-                        targetRole.updateName(updateCommand.getNewName()));
+                roleService::updateName);
     }
 
     @Override
-    protected int saveChange(Role targetRole, UpdateNameRoleCommand command) {
-        return roleRepository.updateName(targetRole.getId(), command.getNewName());
+    protected int saveChange(Role targetRole) {
+        return roleRepository.updateName(targetRole);
     }
 }

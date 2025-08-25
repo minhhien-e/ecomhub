@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,14 +15,13 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class AddRoleCommand implements ICommand {
-    @NotBlank
+    private UUID requesterId;
     private String name;
+    private String key;
+    private String type;
     private String description;
-    @Min(value = 0,message = "Cấp độ vai trò phải là số dương")
     private int level;
-    @NotEmpty(message = "Quyền không được bỏ trống")
-    private Set<@NotNull(message = "Khóa quyền không không được bỏ trống") String> permissionKeys;
+    private Set<String> permissionKeys;
 }

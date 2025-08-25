@@ -5,30 +5,28 @@ import ecomhub.authservice.application.command.role.update.abstracts.AbstractRol
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.entity.Role;
+import ecomhub.authservice.domain.service.abstracts.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class UpdateLevelRoleHandler extends AbstractRoleUpdateHandler<UpdateLevelRoleCommand>
+public class UpdateLevelRoleHandler extends AbstractRoleUpdateHandler<Integer>
         implements ICommandHandler<UpdateLevelRoleCommand> {
-
-    public UpdateLevelRoleHandler(RoleRepositoryPort roleRepository, AccountRepositoryPort accountRepository) {
-        super(roleRepository, accountRepository);
+    protected UpdateLevelRoleHandler(RoleRepositoryPort roleRepository, AccountRepositoryPort accountRepository, RoleService roleService) {
+        super(roleRepository, accountRepository, roleService);
     }
 
     @Override
     public void handle(UpdateLevelRoleCommand command) {
-        super.updateWithPermissionCheck(command,
+        super.updateWithPermissionCheck(command.getNewLevel(),
                 command.getRoleId(),
                 command.getRequesterId(),
-                "thay đổi cấp độ vai trò",
-                (targetRole, updateCommand) ->
-                        targetRole.updateLevel(updateCommand.getNewLevel()));
+                roleService::updateLevel);
     }
 
     @Override
-    protected int saveChange(Role targetRole, UpdateLevelRoleCommand command) {
-        return roleRepository.updateLevel(targetRole.getId(), command.getNewLevel());
+    protected int saveChange(Role targetRole) {
+        return roleRepository.updateLevel(targetRole);
     }
 }

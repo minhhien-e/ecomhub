@@ -4,6 +4,6 @@ import ecomhub.authservice.common.enums.ErrorCode;
 
 public class UpdateFailureException extends HttpException {
     public UpdateFailureException() {
-        super(400, ErrorCode.UPDATE_FAILURE,"Có lỗi xảy ra không thể thay đổi thông tin");
+        super(400, ErrorCode.UPDATE_FAILURE, "An error occurred. The information could not be updated.");
     }
 }

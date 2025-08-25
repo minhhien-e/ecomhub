@@ -1,9 +1,9 @@
 package ecomhub.authservice.infrastructure.inbound.web.mapper;
 
 import ecomhub.authservice.application.command.account.register.RegisterAccountCommand;
-import ecomhub.authservice.application.command.account.role.grant.GrantRoleCommand;
+import ecomhub.authservice.application.command.account.role.grant.AssignRoleCommand;
 import ecomhub.authservice.application.command.account.role.revoke.RevokeRoleCommand;
-import ecomhub.authservice.common.dto.request.account.GrantRoleRequest;
+import ecomhub.authservice.common.dto.request.account.AssignRoleRequest;
 import ecomhub.authservice.common.dto.request.account.RegisterBasicRequest;
 import ecomhub.authservice.common.dto.request.account.RevokeRoleRequest;
 
@@ -18,8 +18,8 @@ public class AccountRequestMapper {
                 request.provider());
     }
 
-    public static GrantRoleCommand toCommand(GrantRoleRequest request, UUID requesterId) {
-        return new GrantRoleCommand(requesterId, request.roleId(), request.accountId());
+    public static AssignRoleCommand toCommand(AssignRoleRequest request, UUID requesterId) {
+        return new AssignRoleCommand(requesterId, request.roleId(), request.accountId());
     }
 
     public static RevokeRoleCommand toCommand(RevokeRoleRequest request, UUID requesterId) {

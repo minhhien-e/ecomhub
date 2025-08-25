@@ -1,4 +1,4 @@
-package ecomhub.authservice.application.command.account.role.revoke;
+package ecomhub.authservice.application.command.account.role.grant;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.command.account.role.abstracts.AbstractRoleManagementHandler;
@@ -8,20 +8,20 @@ import ecomhub.authservice.domain.service.abstracts.AccountService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RevokeRoleHandler extends AbstractRoleManagementHandler<RevokeRoleCommand> implements ICommandHandler<RevokeRoleCommand> {
-
-    public RevokeRoleHandler(AccountRepositoryPort accountRepository, RoleRepositoryPort roleRepository, AccountService accountService) {
+public class AssignRoleHandler extends AbstractRoleManagementHandler<AssignRoleCommand> implements ICommandHandler<AssignRoleCommand> {
+    public AssignRoleHandler(AccountRepositoryPort accountRepository, RoleRepositoryPort roleRepository, AccountService accountService) {
         super(accountRepository, roleRepository, accountService);
     }
 
     @Override
-    public void handle(RevokeRoleCommand command) {
+    public void handle(AssignRoleCommand command) {
         super.handle(command, command.getRoleId(), command.getRequesterId(), command.getAccountId(),
-                accountService::revokeRole);
+                accountService::assignRole);
+
     }
 
     @Override
-    protected void saveChange(RevokeRoleCommand revokeRoleCommand) {
-        accountRepository.revokeRole(revokeRoleCommand.getAccountId(), revokeRoleCommand.getRoleId());
+    protected void saveChange(AssignRoleCommand revokeRoleCommand) {
+        accountRepository.assignRole(revokeRoleCommand.getAccountId(), revokeRoleCommand.getRoleId());
     }
 }

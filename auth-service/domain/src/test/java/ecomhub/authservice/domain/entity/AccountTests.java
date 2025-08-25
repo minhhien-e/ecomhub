@@ -86,7 +86,7 @@ class AccountTests {
         Role newRole = new Role("NewRole", "New role description", 3);
 
         // Act
-        account.grantRole(newRole);
+        account.assignRole(newRole);
 
         // Assert
         assertTrue(account.getRoles().contains(newRole));
@@ -97,14 +97,14 @@ class AccountTests {
     void grantRole_WhenRoleAlreadyAssigned_ShouldThrowException() {
         // Act & Assert
         assertThrows(RoleAlreadyAssignedException.class,
-                () -> account.grantRole(testRole));
+                () -> account.assignRole(testRole));
     }
 
     @Test
     void grantRole_WhenNullRole_ShouldThrowException() {
         // Act & Assert
         assertThrows(MissingRoleException.class,
-                () -> account.grantRole(null));
+                () -> account.assignRole(null));
     }
 
     @Test

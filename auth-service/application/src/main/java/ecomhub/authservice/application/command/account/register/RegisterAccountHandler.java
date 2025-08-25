@@ -35,7 +35,7 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
             throw new UsernameAlreadyExistsException(command.getUsername());
         }
         var account = accountCommandMapper.toDomain(command);
-        accountService.register(account, roleRepository.getByRoleKey(CUSTOMER));
+        accountService.register(account, roleRepository.getByKey(CUSTOMER));
         accountRepository.save(account);
     }
 

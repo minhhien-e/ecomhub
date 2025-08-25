@@ -12,9 +12,9 @@ public interface AccountRepositoryPort {
 
     boolean existsByIdentifier(String identifier);
 
-    Optional<Account> findById(UUID id);
+    Account geById(UUID id);
 
-    void grantRole(UUID accountId, UUID roleId);
+    void assignRole(UUID accountId, UUID roleId);
 
     void revokeRole(UUID accountId, UUID roleId);
 }

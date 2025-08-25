@@ -36,7 +36,7 @@ public class AccountEntity {
     @Column(nullable = false, unique = true)
     private String phoneNumber;
     @Column(nullable = false)
-    private String passwordHash;
+    private String hashedPassword;
     @Column(nullable = false)
     private String provider;
     @Column(nullable = false)

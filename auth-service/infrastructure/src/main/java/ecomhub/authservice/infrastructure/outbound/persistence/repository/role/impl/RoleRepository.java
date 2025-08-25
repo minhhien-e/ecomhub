@@ -1,20 +1,19 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.repository.role.impl;
 
 import ecomhub.authservice.common.exception.concrete.role.RoleNotFoundException;
+import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
-import ecomhub.authservice.infrastructure.outbound.persistence.converter.RoleConverter;
-import ecomhub.authservice.infrastructure.outbound.persistence.entity.PermissionEntity;
-import ecomhub.authservice.infrastructure.outbound.persistence.entity.RoleEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.RolePermissionEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.id.RolePermissionId;
+import ecomhub.authservice.infrastructure.outbound.persistence.mapper.PermissionMapper;
+import ecomhub.authservice.infrastructure.outbound.persistence.mapper.RoleMapper;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.role.RoleJpaRepository;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.role.RolePermissionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -27,8 +26,8 @@ public class RoleRepository implements RoleRepositoryPort {
 
     @Override
     public Role save(Role role) {
-        var roleEntity = roleJpaRepository.save(RoleConverter.toEntity(role));
-        return RoleConverter.toDomain(roleEntity);
+        var roleEntity = roleJpaRepository.save(RoleMapper.toEntity(role));
+        return RoleMapper.toDomain(roleEntity);
     }
 
     @Override
@@ -37,64 +36,77 @@ public class RoleRepository implements RoleRepositoryPort {
     }
 
     @Override
-    public Role getByRoleKey(String key) {
-        var entity = roleJpaRepository.findByRoleKey(key).orElseThrow(RoleNotFoundException::new);
-        return RoleConverter.toDomain(entity);
+    public boolean existsByKey(String key) {
+        return roleJpaRepository.existsByKey(key);
+    }
+
+    @Override
+    public Role getByKey(String key) {
+        var entity = roleJpaRepository.findByKey(key).orElseThrow(RoleNotFoundException::new);
+        return RoleMapper.toDomain(entity);
     }
 
 
     @Override
-    public Optional<Role> findById(UUID id) {
-        Optional<RoleEntity> roleEntity = roleJpaRepository.findById(id);
-        return roleEntity.map(RoleConverter::toDomain);
+    public Role getById(UUID id) {
+        var entity = roleJpaRepository.findById(id).orElseThrow(RoleNotFoundException::new);
+        return RoleMapper.toDomain(entity);
+    }
+
+
+    @Override
+    public int updateDescription(Role role) {
+        return roleJpaRepository.updateDescription(role.getId(), role.getDescription().orElse(null));
     }
 
     @Override
-    public int updateActive(UUID id, boolean isActive) {
-        return roleJpaRepository.updateActive(id, isActive);
+    public int updateLevel(Role role) {
+        return roleJpaRepository.updateLevel(role.getId(), role.getLevel().getValue());
     }
 
     @Override
-    public int updateDescription(UUID id, String newDescription) {
-        return roleJpaRepository.updateDescription(id, newDescription);
+    public int updateName(Role role) {
+        return roleJpaRepository.updateName(role.getId(), role.getName().getValue());
+    }
+    @Override
+    public int updateStatus(Role role) {
+        return roleJpaRepository.updateStatus(role.getId(),role.getStatus().getValue());
     }
 
     @Override
-    public int updateLevel(UUID id, Integer newLevel) {
-        return roleJpaRepository.updateLevel(id, newLevel);
+    public void deleteById(UUID id) {
+        roleJpaRepository.deleteById(id);
     }
 
     @Override
-    public int updateName(UUID id, String newName) {
-        return roleJpaRepository.updateName(id, newName);
-    }
-
-    @Override
-    public void grantPermissions(UUID roleId, Set<UUID> permissionIds) {
-        Set<RolePermissionEntity> entities = permissionIds.stream()
-                .map(pid -> RolePermissionEntity.builder()
-                        .id(new RolePermissionId(roleId, pid))
-                        .role(RoleEntity.builder().id(roleId).build())
-                        .permission(PermissionEntity.builder().id(pid).build())
+    public void grantPermissions(Role role, Set<Permission> permissions) {
+        Set<RolePermissionEntity> entities = permissions.stream()
+                .map(p -> RolePermissionEntity.builder()
+                        .id(new RolePermissionId(role.getId(), p.getId()))
+                        .role(RoleMapper.toEntity(role))
+                        .permission(PermissionMapper.toEntity(p))
                         .build())
                 .collect(Collectors.toSet());
         rolePermissionJpaRepository.saveAll(entities);
     }
 
     @Override
-    public void revokePermissions(UUID roleId, UUID permissionId) {
-        RolePermissionEntity entity =
-                RolePermissionEntity.builder()
-                        .id(new RolePermissionId(roleId, permissionId))
-                        .role(RoleEntity.builder().id(roleId).build())
-                        .permission(PermissionEntity.builder().id(permissionId).build())
-                        .build();
-        rolePermissionJpaRepository.delete(entity);
+    public void revokePermissions(Role role, Set<Permission> permissions) {
+        Set<RolePermissionEntity> entities = permissions.stream()
+                .map(p -> RolePermissionEntity.builder()
+                        .id(new RolePermissionId(role.getId(), p.getId()))
+                        .role(RoleMapper.toEntity(role))
+                        .permission(PermissionMapper.toEntity(p))
+                        .build())
+                .collect(Collectors.toSet());
+        rolePermissionJpaRepository.deleteAll(entities);
     }
 
     @Override
     public List<Role> findAll() {
-        return roleJpaRepository.findAll().stream().map(RoleConverter::toDomain).toList();
+        return roleJpaRepository.findAll().stream().map(RoleMapper::toDomain).toList();
     }
+
+
 }
 

@@ -13,47 +13,45 @@ import ecomhub.authservice.common.dto.request.role.*;
 import java.util.UUID;
 
 public class RoleRequestMapper {
-    //region add
-    public static AddRoleCommand toCommand(AddRoleRequest request) {
-        return new AddRoleCommand(request.name(), request.description(), request.level(), request.permissionKeys());
+    public static AddRoleCommand toCommand(AddRoleRequest request, UUID requesterId) {
+        return AddRoleCommand.builder()
+                .requesterId(requesterId)
+                .name(request.name())
+                .key(request.key())
+                .type(request.type())
+                .level(request.level())
+                .description(request.description())
+                .permissionKeys(request.permissionKeys())
+                .build();
     }
 
-    //endregion
-    //region update
-    public static UpdateDescriptionRoleCommand toCommand(UpdateDescriptionRoleRequest request, UUID roleId, UUID requesterId) {
-        return new UpdateDescriptionRoleCommand(request.newDescription(), roleId, requesterId);
+    public static UpdateDescriptionRoleCommand toCommand(UpdateDescriptionRoleRequest request, UUID requesterId) {
+        return new UpdateDescriptionRoleCommand(request.newDescription(), request.roleId(), requesterId);
     }
 
-    public static UpdateNameRoleCommand toCommand(UpdateNameRoleRequest request, UUID roleId, UUID requesterId) {
-        return new UpdateNameRoleCommand(request.newName(), roleId, requesterId);
+    public static UpdateNameRoleCommand toCommand(UpdateNameRoleRequest request, UUID requesterId) {
+        return new UpdateNameRoleCommand(request.newName(), request.roleId(), requesterId);
     }
 
 
-    public static UpdateLevelRoleCommand toCommand(UpdateLevelRoleRequest request, UUID roleId, UUID requesterId) {
-        return new UpdateLevelRoleCommand(request.newLevel(), roleId, requesterId);
+    public static UpdateLevelRoleCommand toCommand(UpdateLevelRoleRequest request,  UUID requesterId) {
+        return new UpdateLevelRoleCommand(request.newLevel(), request.roleId(), requesterId);
     }
 
-    //endregion
-    //region delete
     public static DeleteRoleCommand toCommand(DeleteRoleRequest request, UUID requesterId) {
         return new DeleteRoleCommand(request.roleId(), requesterId);
     }
 
-    //endregion
-    //region get all
     public static GetAllRoleQuery toQuery(GetAllRoleRequest request) {
         return new GetAllRoleQuery();
     }
 
-    //endregion
-    //region permission management
     public static GrantPermissionCommand toCommand(GrantPermissionRequest request, UUID roleId, UUID requesterId) {
         return new GrantPermissionCommand(requesterId, roleId, request.permissionKeys());
     }
 
     public static RevokePermissionCommand toCommand(RevokePermissionRequest request, UUID roleId, UUID requesterId) {
-        return new RevokePermissionCommand(requesterId, roleId, request.permissionKey());
+        return new RevokePermissionCommand(requesterId, roleId, request.permissionId());
     }
-    //endregion
 
 }

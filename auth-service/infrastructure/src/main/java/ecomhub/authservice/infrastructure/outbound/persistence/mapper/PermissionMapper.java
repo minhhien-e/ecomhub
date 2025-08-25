@@ -1,9 +1,9 @@
-package ecomhub.authservice.infrastructure.outbound.persistence.converter;
+package ecomhub.authservice.infrastructure.outbound.persistence.mapper;
 
 import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.PermissionEntity;
 
-public class PermissionConverter {
+public class PermissionMapper {
     public static PermissionEntity toEntity(Permission permission) {
         return PermissionEntity.builder()
                 .id(permission.getId())

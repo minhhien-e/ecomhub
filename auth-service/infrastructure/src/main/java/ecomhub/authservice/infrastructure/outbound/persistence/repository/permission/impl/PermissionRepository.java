@@ -1,8 +1,9 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.repository.permission.impl;
 
+import ecomhub.authservice.common.exception.concrete.permission.PermissionNotFoundException;
 import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.domain.entity.Permission;
-import ecomhub.authservice.infrastructure.outbound.persistence.converter.PermissionConverter;
+import ecomhub.authservice.infrastructure.outbound.persistence.mapper.PermissionMapper;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.permission.PermissionJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -19,8 +20,8 @@ public class PermissionRepository implements PermissionRepositoryPort {
 
     @Override
     public Permission save(Permission permission) {
-        var permissionEntity = permissionJpaRepository.save(PermissionConverter.toEntity(permission));
-        return PermissionConverter.toDomain(permissionEntity);
+        var permissionEntity = permissionJpaRepository.save(PermissionMapper.toEntity(permission));
+        return PermissionMapper.toDomain(permissionEntity);
     }
 
     @Override
@@ -46,7 +47,7 @@ public class PermissionRepository implements PermissionRepositoryPort {
 
     @Override
     public List<Permission> findAll() {
-        return permissionJpaRepository.findAll().stream().map(PermissionConverter::toDomain).toList();
+        return permissionJpaRepository.findAll().stream().map(PermissionMapper::toDomain).toList();
     }
 
     @Override
@@ -65,12 +66,14 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
-    public Optional<Permission> findById(UUID permissionId) {
-        return permissionJpaRepository.findById(permissionId).map(PermissionConverter::toDomain);
+    public Permission getById(UUID permissionId) {
+        var entity= permissionJpaRepository.findById(permissionId)
+                .orElseThrow(PermissionNotFoundException::new);
+        return PermissionMapper.toDomain(entity);
     }
 
     @Override
     public Optional<Permission> findByKey(String permissionKey) {
-        return permissionJpaRepository.findByKey(permissionKey).map(PermissionConverter::toDomain);
+        return permissionJpaRepository.findByKey(permissionKey).map(PermissionMapper::toDomain);
     }
 }

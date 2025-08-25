@@ -1,5 +1,6 @@
 package ecomhub.authservice.domain.service.impl;
 
+import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
@@ -7,32 +8,33 @@ import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
 
 public class AccountServiceImpl implements AccountService {
     private final PasswordHashService passwordHashService;
+
     public AccountServiceImpl(PasswordHashService passwordHashService) {
         this.passwordHashService = passwordHashService;
     }
+
     @Override
-    public boolean canBeGrantedRoleBy(Account targetAccount, Role targetRole, Account requester) {
+    public void assignRole(Account targetAccount, Role targetRole, Account requester) {
         var highestRole = targetAccount.getHighestRole();
-        return canPerformAction(targetRole, highestRole, requester, "account.role.grant");
+        if (requester.getRoles().stream().anyMatch(role ->
+                role.greaterThan(targetRole) && role.hasPermission("account.role.assign") && role.greaterThan(highestRole)))
+            targetAccount.assignRole(targetRole);
+        else throw new ForbiddenException("assign a role to the account.");
     }
 
     @Override
-    public boolean canBeRevokedRoleBy(Account targetAccount, Role targetRole, Account requester) {
+    public void revokeRole(Account targetAccount, Role targetRole, Account requester) {
         var highestRole = targetAccount.getHighestRole();
-        return canPerformAction(targetRole, highestRole, requester, "account.role.revoke");
+        if (requester.getRoles().stream().anyMatch(role ->
+                role.greaterThan(targetRole) && role.hasPermission("account.role.grant") && role.greaterThan(highestRole)))
+            targetAccount.assignRole(targetRole);
+        else throw new ForbiddenException("revoke a role to the account.");
     }
 
     @Override
     public void register(Account account, Role role) {
         account.hashPassword(passwordHashService.hash(account.getRawPassword()));
-        account.grantRole(role);
+        account.assignRole(role);
     }
 
-
-    //Kiểm tra có thực thi một quyền cụ thể
-    private boolean canPerformAction(Role targetRole, Role targetHighestRole, Account requester, String permissionKey) {
-        return requester.getRoles().stream().anyMatch(role ->
-                role.greaterThan(targetRole) && role.hasPermission(permissionKey) && role.greaterThan(targetHighestRole)
-        );
-    }
 }

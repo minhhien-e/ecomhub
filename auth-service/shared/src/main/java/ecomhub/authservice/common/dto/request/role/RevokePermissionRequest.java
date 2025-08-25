@@ -1,4 +1,6 @@
 package ecomhub.authservice.common.dto.request.role;
 
-public record RevokePermissionRequest(String permissionKey) {
+import java.util.UUID;
+
+public record RevokePermissionRequest(UUID permissionId) {
 }

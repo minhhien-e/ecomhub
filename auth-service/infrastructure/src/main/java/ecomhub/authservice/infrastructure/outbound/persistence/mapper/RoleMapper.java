@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.outbound.persistence.converter;
+package ecomhub.authservice.infrastructure.outbound.persistence.mapper;
 
 import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.entity.Role;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RoleConverter {
+public class RoleMapper {
     public static RoleEntity toEntity(Role role) {
         return RoleEntity.builder()
                 .id(role.getId())
@@ -44,7 +44,7 @@ public class RoleConverter {
         }
         return permissions
                 .stream()
-                .map(permission -> PermissionConverter.toDomain(permission.getPermission()))
+                .map(permission -> PermissionMapper.toDomain(permission.getPermission()))
                 .collect(java.util.stream.Collectors.toSet());
     }
 

@@ -2,7 +2,7 @@ package ecomhub.authservice.infrastructure.inbound.web.rest;
 
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
-import ecomhub.authservice.common.dto.request.account.GrantRoleRequest;
+import ecomhub.authservice.common.dto.request.account.AssignRoleRequest;
 import ecomhub.authservice.common.dto.request.account.RegisterBasicRequest;
 import ecomhub.authservice.common.dto.request.account.RevokeRoleRequest;
 import ecomhub.authservice.common.dto.response.ApiResponse;
@@ -25,23 +25,23 @@ public class AccountRestAdapter {
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody RegisterBasicRequest request) {
         commandBus.dispatch(toCommand(request));
-        return ResponseEntity.ok(ApiResponse.success(null, "Đăng ký thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Register account successfully"));
     }
 
-    @PreAuthorize("hasAuthority('account.role.grant')")
-    @PutMapping("/{accountId}/role/grant")
+    @PreAuthorize("hasAuthority('account.role.assign')")
+    @PutMapping("/{accountId}/role/assign")
     public ResponseEntity<?> grantRole(@RequestBody UUID roleId, @RequestAttribute("accountId") UUID requesterId, @PathVariable("accountId") UUID accountId) {
-        var request = new GrantRoleRequest(roleId, accountId);
-        commandBus.dispatch(toCommand(request, accountId));
-        return ResponseEntity.ok(ApiResponse.success(null, "Gán quyền thành công"));
+        var request = new AssignRoleRequest(roleId, accountId);
+        commandBus.dispatch(toCommand(request, requesterId));
+        return ResponseEntity.ok(ApiResponse.success(null, "Assign role successfully"));
     }
 
-    @PreAuthorize("hasAuthority('account.role.revoke')")
-    @DeleteMapping("/role/{roleId}/revoke")
-    public ResponseEntity<?> revokeRole(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId) {
+    @PreAuthorize("hasAuthority('account.role.assign')")
+    @DeleteMapping("/{accountId}/role/{roleId}/revoke")
+    public ResponseEntity<?> revokeRole(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID requesterId, @PathVariable("accountId") UUID accountId) {
         var request = new RevokeRoleRequest(roleId, accountId);
-        commandBus.dispatch(toCommand(request, accountId));
-        return ResponseEntity.ok(ApiResponse.success(null, "Hủy quyền thành công"));
+        commandBus.dispatch(toCommand(request, requesterId));
+        return ResponseEntity.ok(ApiResponse.success(null, "Revoke role successfully"));
     }
 
 }

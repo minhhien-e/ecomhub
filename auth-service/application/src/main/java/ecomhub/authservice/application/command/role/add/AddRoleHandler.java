@@ -22,9 +22,10 @@ public class AddRoleHandler implements ICommandHandler<AddRoleCommand> {
     @Transactional
     @Override
     public void handle(AddRoleCommand command) {
-        if (roleRepository.existsByName(command.getName())) {
-            throw new RoleAlreadyExistsException(command.getName());
-        }
+        if (roleRepository.existsByName(command.getName()))
+            throw new RoleAlreadyExistsException(command.getName(), true);
+        if (roleRepository.existsByKey(command.getKey()))
+            throw new RoleAlreadyExistsException(command.getKey(), false);
         var role = RoleMapper.toDomain(command);
         var permissions = getPermissions(command.getPermissionKeys());
         permissions.forEach(role::grantPermission);

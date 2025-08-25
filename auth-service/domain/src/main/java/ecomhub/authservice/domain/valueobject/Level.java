@@ -18,4 +18,7 @@ public class Level {
     public boolean greaterThan(Level level) {
         return this.value > level.value;
     }
+    public boolean lessThan(Level level) {
+        return this.value < level.value;
+    }
 }

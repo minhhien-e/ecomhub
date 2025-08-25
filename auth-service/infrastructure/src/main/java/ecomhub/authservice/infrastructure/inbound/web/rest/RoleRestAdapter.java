@@ -15,60 +15,52 @@ import java.util.UUID;
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toCommand;
 import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestMapper.toQuery;
 
-
 @RestController
 @RequestMapping("/api/v1/auth/role")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('role.add')")
 public class RoleRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @PreAuthorize("hasAuthority('role.create')")
     @PostMapping()
-    public ResponseEntity<?> add(@RequestBody AddRoleRequest request) {
-        commandBus.dispatch(toCommand(request));
-        return ResponseEntity.ok(ApiResponse.success(null, "Thêm vai trò thành công"));
+    public ResponseEntity<?> add(@RequestBody AddRoleRequest request, @RequestAttribute("accountId") UUID accountId) {
+        commandBus.dispatch(toCommand(request, accountId));
+        return ResponseEntity.ok(ApiResponse.success(null, "Add role successfully"));
     }
 
-    @PreAuthorize("hasAuthority('role.delete')")
     @DeleteMapping("/{roleId}")
     public ResponseEntity<?> delete(@PathVariable UUID roleId, @RequestAttribute("accountId") UUID accountId) {
         var request = new DeleteRoleRequest(roleId);
         var input = toCommand(request, accountId);
         commandBus.dispatch(input);
-        return ResponseEntity.ok(ApiResponse.success(null, "Xóa vai trò thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Delete role successfully"));
     }
 
-    //region Update
-    @PreAuthorize("hasAuthority('role.edit')")
     @PatchMapping("/{roleId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID roleId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateNameRoleRequest(newName);
-        var input = toCommand(request, roleId, accountId);
+        var request = new UpdateNameRoleRequest(roleId,newName);
+        var input = toCommand(request, accountId);
         commandBus.dispatch(input);
-        return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi tên vai trò thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Update role name successfully"));
     }
 
-    @PreAuthorize("hasAuthority('role.edit')")
     @PatchMapping("/{roleId}/level")
     public ResponseEntity<?> updateLevel(@PathVariable UUID roleId, @RequestBody int newLevel, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateLevelRoleRequest(newLevel);
-        var input = toCommand(request, roleId, accountId);
+        var request = new UpdateLevelRoleRequest(roleId,newLevel);
+        var input = toCommand(request, accountId);
         commandBus.dispatch(input);
-        return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi cấp độ vai trò thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Update role level successfully"));
     }
 
-    @PreAuthorize("hasAuthority('role.edit')")
     @PatchMapping("/{roleId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable UUID roleId, @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateDescriptionRoleRequest(newDescription);
-        var input = toCommand(request, roleId, accountId);
+        var request = new UpdateDescriptionRoleRequest(roleId,newDescription);
+        var input = toCommand(request, accountId);
         commandBus.dispatch(input);
-        return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi miêu tả vai trò thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Update role description successfully"));
     }
 
-    //endregion
-    //region Read
     @PreAuthorize("hasAuthority('role.read')")
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -76,26 +68,23 @@ public class RoleRestAdapter {
         var query = toQuery(request);
         var result = queryBus.dispatch(query);
         var response = result.stream().map(RoleDto::toResponse).toList();
-        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách vai trò thành công"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Get all roles successfully"));
     }
 
-    //endregion
-    //region Permission Management
     @PreAuthorize("hasAuthority('role.permission.grant')")
-    @PutMapping("/{roleId}/grant")
+    @PutMapping("/{roleId}/grant/permission")
     public ResponseEntity<?> grantPermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @RequestBody GrantPermissionRequest request) {
         var command = toCommand(request, roleId, accountId);
         commandBus.dispatch(command);
-        return ResponseEntity.ok(ApiResponse.success(null, "Gán quyền thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Grant permission successfully"));
     }
 
-    @PreAuthorize("hasAuthority('role.permission.revoke')")
-    @DeleteMapping("/{roleId}/revoke/{permissionKey}")
-    public ResponseEntity<?> revokePermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @PathVariable("permissionKey") String permissionKey) {
-        var request = new RevokePermissionRequest(permissionKey);
+    @PreAuthorize("hasAuthority('role.permission.grant')")
+    @DeleteMapping("/{roleId}/revoke/permission/{permissionId}")
+    public ResponseEntity<?> revokePermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @PathVariable("permissionId") UUID permissionId) {
+        var request = new RevokePermissionRequest(permissionId);
         var command = toCommand(request, roleId, accountId);
         commandBus.dispatch(command);
-        return ResponseEntity.ok(ApiResponse.success(null, "Xóa quyền thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Revoke permission successfully"));
     }
-    // endregion
 }

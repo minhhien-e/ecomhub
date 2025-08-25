@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.util.UUID;
 @Getter
 @AllArgsConstructor
-public class GrantRoleCommand implements ICommand {
+public class AssignRoleCommand implements ICommand {
     private UUID requesterId;
     private UUID roleId;
     private UUID accountId;
