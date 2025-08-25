@@ -1,6 +1,7 @@
 package ecomhub.authservice.domain.valueobject;
 
 import ecomhub.authservice.common.exception.concrete.role.MissingPermissionException;
+import ecomhub.authservice.common.utils.StringUtils;
 
 import java.util.Objects;
 
@@ -8,7 +9,7 @@ public class PermissionKey {
     private final String value;
 
     public PermissionKey(String value) {
-        if (value == null || value.isBlank())
+        if (StringUtils.isNullOrBlank(value))
             throw new MissingPermissionException();
         this.value = value;
     }

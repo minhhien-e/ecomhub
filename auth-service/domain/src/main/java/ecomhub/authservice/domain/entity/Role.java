@@ -3,7 +3,8 @@ package ecomhub.authservice.domain.entity;
 
 import ecomhub.authservice.common.exception.concrete.role.*;
 import ecomhub.authservice.domain.valueobject.Level;
-import ecomhub.authservice.domain.valueobject.Name;
+import ecomhub.authservice.domain.valueobject.name.Name;
+import ecomhub.authservice.domain.valueobject.name.RoleName;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -11,29 +12,25 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Role {
-    private UUID id;
-    private Name name;
+    private final UUID id;
+    private RoleName name;
     private String description;
-    private Set<Permission> permissions;
+    private final Set<Permission> permissions;
     private boolean active;
     private Level level;
 
-    //region constructor
     public Role(UUID id, String name, String description, Set<Permission> permissions, boolean active, int level) {
-        if (id == null) {
-            throw new MissingIdInRoleException();
-        }
         this.id = id;
-        this.name = new Name(name, "vai trò");
+        this.name = new RoleName(name);
         this.description = description;
-        this.permissions = permissions;
+        this.permissions = new HashSet<>(permissions);
         this.active = active;
         this.level = new Level(level);
     }
 
     public Role(String name, String description, int level) {
         this.id = UUID.randomUUID();
-        this.name = new Name(name, "vai trò");
+        this.name = new RoleName(name);
         this.description = description;
         this.permissions = new HashSet<>();
         this.active = true;
@@ -41,8 +38,45 @@ public class Role {
 
     }
 
-    //endregion
-    //region getter
+    public boolean hasPermission(String key) {
+        return permissions.stream().anyMatch(p -> p.hasKey(key));
+    }
+
+    public void grantPermission(Permission permission) {
+        if (this.permissions.contains(permission)) {
+            throw new PermissionAlreadyAssignedException(permission.getName().getValue());
+        }
+        this.permissions.add(permission);
+    }
+
+    public void revokePermission(Permission permission) {
+        if (!this.getPermissions().contains(permission)) {
+            throw new PermissionNotAssignedException(permission.getName().getValue());
+        }
+        this.permissions.remove(permission);
+    }
+
+    public void deactivate() {
+        this.active = false;
+
+    }
+
+    public void updateName(String newName) {
+        this.name = new RoleName(newName);
+    }
+
+    public void updateLevel(int newLevel) {
+        this.level = new Level(newLevel);
+    }
+
+    public void updateDescription(String newDescription) {
+        this.description = newDescription;
+    }
+
+    public boolean greaterThan(Role role) {
+        return this.level.getValue() > role.getLevel().getValue();
+    }
+
     public UUID getId() {
         return id;
     }
@@ -65,56 +99,5 @@ public class Role {
 
     public Level getLevel() {
         return level;
-    }
-
-    //endregion
-    //region permission
-    public boolean hasPermission(String key) {
-        return permissions.stream().anyMatch(p -> p.hasKey(key));
-    }
-
-    public void grantPermission(Permission permission) {
-        if (permission == null) {
-            throw new MissingPermissionException();
-        }
-        if (this.permissions.contains(permission)) {
-            throw new PermissionAlreadyAssignedException(permission.getName().getValue());
-        }
-        this.permissions.add(permission);
-    }
-
-    public void revokePermission(Permission permission) {
-        if (permission == null) {
-            throw new MissingPermissionException();
-        }
-        if (!this.getPermissions().contains(permission)) {
-            throw new PermissionNotAssignedException(permission.getName().getValue());
-        }
-        this.permissions.remove(permission);
-    }
-
-    //endregion
-    //region active
-    public void deactivate() {
-        this.active = false;
-
-    }
-
-    //endregion
-    //region update
-    public void updateName(String newName) {
-        this.name = new Name(newName, "vai trò");
-    }
-
-    public void updateLevel(int newLevel) {
-        this.level = new Level(newLevel);
-    }
-
-    public void updateDescription(String newDescription) {
-        this.description = newDescription;
-    }
-    //endregion
-    public boolean greaterThan(Role role) {
-        return this.level.value() > role.getLevel().value();
     }
 }

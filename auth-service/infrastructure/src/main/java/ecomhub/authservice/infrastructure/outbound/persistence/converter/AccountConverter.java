@@ -1,23 +1,14 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.converter;
 
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jwt.SignedJWT;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.valueobject.Password;
-import ecomhub.authservice.domain.valueobject.Username;
+import ecomhub.authservice.domain.valueobject.name.Username;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.AccountEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.AccountRoleEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.RoleEntity;
 import ecomhub.authservice.infrastructure.outbound.persistence.entity.id.AccountRoleId;
 
-import java.security.KeyFactory;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 

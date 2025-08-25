@@ -1,34 +1,43 @@
 package ecomhub.authservice.domain.entity;
 
 
-import ecomhub.authservice.common.exception.concrete.permission.MissingIdInPermissionException;
-import ecomhub.authservice.domain.valueobject.Name;
 import ecomhub.authservice.domain.valueobject.PermissionKey;
+import ecomhub.authservice.domain.valueobject.name.Name;
+import ecomhub.authservice.domain.valueobject.name.PermissionName;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class Permission {
-    private UUID id;
-    private Name name;
-    private PermissionKey key;
+    private final UUID id;
+    private PermissionName name;
+    private final PermissionKey key;
     private String description;
 
     public Permission(UUID id, String name, String key, String description) {
-        if (id == null) {
-            throw new MissingIdInPermissionException();
-        }
         this.id = id;
-        this.name = new Name(name, "quyền");
+        this.name = new PermissionName(name);
         this.key = new PermissionKey(key);
         this.description = description;
     }
 
     public Permission(String name, String key, String description) {
         this.id = UUID.randomUUID();
-        this.name = new Name(name, "quyền");
+        this.name = new PermissionName(name);
         this.key = new PermissionKey(key);
         this.description = description;
+    }
+
+    public boolean hasKey(String key) {
+        return this.key.equals(new PermissionKey(key));
+    }
+
+    public void updateDescription(String newDescription) {
+        this.description = newDescription;
+    }
+
+    public void updateName(String newName) {
+        this.name = new PermissionName(newName);
     }
 
     public UUID getId() {
@@ -45,18 +54,5 @@ public class Permission {
 
     public PermissionKey getKey() {
         return key;
-    }
-
-
-    public boolean hasKey(String key) {
-        return this.key.equals(new PermissionKey(key));
-    }
-
-    public void updateDescription(String newDescription) {
-        this.description = newDescription;
-    }
-
-    public void updateName(String newName) {
-        this.name = new Name(newName, "quyền");
     }
 }

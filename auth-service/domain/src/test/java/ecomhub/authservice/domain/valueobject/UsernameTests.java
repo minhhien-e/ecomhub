@@ -1,6 +1,7 @@
 package ecomhub.authservice.domain.valueobject;
 
 import ecomhub.authservice.common.exception.concrete.valueobject.username.MissingUsernameException;
+import ecomhub.authservice.domain.valueobject.name.Username;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

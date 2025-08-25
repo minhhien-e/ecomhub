@@ -66,16 +66,6 @@ class AccountTests {
     }
 
 
-    @Test
-    void constructor_WithNullId_ShouldThrowException() {
-        // Arrange
-        Set<Role> roles = Set.of(testRole);
-
-        // Act & Assert
-        assertThrows(MissingIdInAccountException.class,
-                () -> new Account(null, "test@example.com", "testuser", "0939346634",
-                        "hashedPassword123", "LOCAL", true, roles));
-    }
 
     @Test
     void constructor_WithEmptyRoles_ShouldThrowException() {

@@ -3,15 +3,16 @@ package ecomhub.authservice.domain.valueobject;
 import ecomhub.authservice.common.enums.ProviderType;
 import ecomhub.authservice.common.exception.concrete.valueobject.provider.MissingProviderException;
 import ecomhub.authservice.common.exception.concrete.valueobject.provider.ProviderNotSupportException;
+import ecomhub.authservice.common.utils.StringUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class Provider {
-    private String value;
+    private final String value;
 
     public Provider(String value) {
-        if (value == null || value.isBlank())
+        if (StringUtils.isNullOrBlank(value))
             throw new MissingProviderException();
         if (Arrays.stream(ProviderType.values())
                 .noneMatch(provider -> provider.name().equalsIgnoreCase(value)))

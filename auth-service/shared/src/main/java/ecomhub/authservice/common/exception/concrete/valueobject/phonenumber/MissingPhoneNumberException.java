@@ -3,7 +3,7 @@ package ecomhub.authservice.common.exception.concrete.valueobject.phonenumber;
 import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingException;
 
 public class MissingPhoneNumberException extends RequiredFieldMissingException {
-    public MissingPhoneNumberException(String domainName) {
-        super(String.format("số điện thoại của %s", domainName));
+    public MissingPhoneNumberException() {
+        super("số điện thoại");
     }
 }

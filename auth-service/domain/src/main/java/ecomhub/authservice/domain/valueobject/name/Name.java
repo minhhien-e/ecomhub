@@ -1,15 +1,12 @@
-package ecomhub.authservice.domain.valueobject;
-
-import ecomhub.authservice.common.exception.concrete.valueobject.username.MissingUsernameException;
+package ecomhub.authservice.domain.valueobject.name;
 
 import java.util.Objects;
 
-public class Username {
-    private final String value;
+public abstract class Name {
+    private String value;
 
-    public Username(String value) {
-        if (value == null || value.isBlank())
-            throw new MissingUsernameException();
+
+    protected void setValue(String value) {
         this.value = value;
     }
 
@@ -20,7 +17,7 @@ public class Username {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Username username = (Username) o;
+        Name username = (Name) o;
         return String.CASE_INSENSITIVE_ORDER
                 .compare(value, username.value) == 0;
     }

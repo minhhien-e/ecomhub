@@ -1,7 +1,7 @@
 package ecomhub.authservice.domain.entity;
 
 import ecomhub.authservice.common.exception.concrete.permission.MissingIdInPermissionException;
-import ecomhub.authservice.domain.valueobject.Name;
+import ecomhub.authservice.domain.valueobject.name.Name;
 import ecomhub.authservice.domain.valueobject.PermissionKey;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

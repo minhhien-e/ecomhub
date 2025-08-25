@@ -1,32 +1,33 @@
 package ecomhub.authservice.domain.entity;
 
 import ecomhub.authservice.common.exception.concrete.account.*;
-import ecomhub.authservice.domain.valueobject.*;
+import ecomhub.authservice.domain.valueobject.Email;
+import ecomhub.authservice.domain.valueobject.Password;
+import ecomhub.authservice.domain.valueobject.PhoneNumber;
+import ecomhub.authservice.domain.valueobject.Provider;
+import ecomhub.authservice.domain.valueobject.name.Username;
 
 import java.util.*;
 
 
 public class Account {
-    private UUID id;
+    private final UUID id;
     private Email email;
     private Username username;
     private PhoneNumber phoneNumber;
     private Password passwordHash;
-    private Provider provider;
+    private final Provider provider;
     private boolean active;
-    private Set<Role> roles;
+    private final Set<Role> roles;
 
     public Account(UUID id, String email, String username, String phoneNumber, String passwordHash, String provider, boolean active, Set<Role> roles) {
-        if (id == null) {
-            throw new MissingIdInAccountException();
-        }
         if (roles.isEmpty()) {
             throw new NoRoleAssignedException();
         }
         this.id = id;
-        this.email = new Email(email, "tài khoản");
+        this.email = new Email(email);
         this.username = new Username(username);
-        this.phoneNumber = new PhoneNumber(phoneNumber, "tài khoản");
+        this.phoneNumber = new PhoneNumber(phoneNumber);
         this.passwordHash = new Password(passwordHash);
         this.provider = new Provider(provider);
         this.active = active;
@@ -35,13 +36,63 @@ public class Account {
 
     public Account(String email, String username, String phoneNumber, String passwordHash, String provider) {
         this.id = UUID.randomUUID();
-        this.email = new Email(email, "tài khoản");
+        this.email = new Email(email);
         this.username = new Username(username);
-        this.phoneNumber = new PhoneNumber(phoneNumber, "tài khoản");
+        this.phoneNumber = new PhoneNumber(phoneNumber);
         this.passwordHash = new Password(passwordHash);
         this.provider = new Provider(provider);
         this.active = true;
         this.roles = new HashSet<>();
+    }
+
+    public void grantRole(Role role) {
+        if (role == null) {
+            throw new MissingRoleException();
+        }
+        if (this.roles.contains(role)) {
+            throw new RoleAlreadyAssignedException(role.getName().getValue());
+        }
+        this.roles.add(role);
+    }
+
+    public Role getHighestRole() {
+        return roles.stream()
+                .max(Comparator.comparingInt(r -> r.getLevel().getValue()))
+                .orElse(null);
+    }
+
+    public void revokeRole(Role role) {
+        if (role == null) {
+            throw new MissingRoleException();
+        }
+        if (!this.roles.contains(role)) {
+            throw new RoleNotAssignedException(role.getName().getValue());
+        }
+        this.roles.remove(role);
+    }
+
+    public void updateUsername(String newUsername) {
+        this.username = new Username(newUsername);
+    }
+
+    public void updateEmail(String newEmail) {
+        this.email = new Email(newEmail);
+    }
+
+    public void updatePhoneNumber(String newPhoneNumber) {
+        this.phoneNumber = new PhoneNumber(newPhoneNumber);
+    }
+
+    public void updatePassword(String newPassword) {
+        this.passwordHash = new Password(newPassword);
+    }
+
+    public void activate() {
+        this.active = true;
+    }
+
+    public void deactivate() {
+        this.active = false;
     }
 
     public UUID getId() {
@@ -76,33 +127,6 @@ public class Account {
         return Set.copyOf(roles);
     }
 
-    public void grantRole(Role role) {
-        if (role == null) {
-            throw new MissingRoleException();
-        }
-        if (this.roles.contains(role)) {
-            throw new RoleAlreadyAssignedException(role.getName().getValue());
-        }
-        this.roles.add(role);
-    }
-
-    public Role getHighestRole() {
-        return getRoles().stream()
-                .max(Comparator.comparingInt(r -> r.getLevel().value()))
-                .orElse(null);
-    }
-
-    public void revokeRole(Role role) {
-        if (role == null) {
-            throw new MissingRoleException();
-        }
-        if (!this.roles.contains(role)) {
-            throw new RoleNotAssignedException(role.getName().getValue());
-        }
-        this.roles.remove(role);
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -114,5 +138,6 @@ public class Account {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }
 
