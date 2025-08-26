@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.RequiredFieldMissingExcept
 
 public class MissingEmailException extends RequiredFieldMissingException {
     public MissingEmailException() {
-        super("email", true);
+        super("your email", true);
     }
 }

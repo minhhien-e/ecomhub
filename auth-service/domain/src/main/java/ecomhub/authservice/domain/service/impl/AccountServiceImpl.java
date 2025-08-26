@@ -19,7 +19,7 @@ public class AccountServiceImpl implements AccountService {
         if (requester.getRoles().stream().anyMatch(role ->
                 role.greaterThan(targetRole) && role.hasPermission("account.role.assign") && role.greaterThan(highestRole)))
             targetAccount.assignRole(targetRole);
-        else throw new ForbiddenException("assign a role to the account.");
+        else throw new ForbiddenException("assign a role to the account");
     }
 
     @Override
@@ -27,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
         var highestRole = targetAccount.getHighestRole();
         if (requester.getRoles().stream().anyMatch(role ->
                 role.greaterThan(targetRole) && role.hasPermission("account.role.grant") && role.greaterThan(highestRole)))
-            targetAccount.assignRole(targetRole);
+            targetAccount.revokeRole(targetRole);
         else throw new ForbiddenException("revoke a role to the account.");
     }
 

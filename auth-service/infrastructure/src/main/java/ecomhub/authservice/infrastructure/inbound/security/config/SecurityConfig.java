@@ -48,6 +48,24 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
     private static final String[] PUBLIC_API_URLS = {"/api/v*/auth/register", "/actuator/**"};
     private static final String[] PUBLIC_AUTH_URLS = {"/login", "/favicon.ico", "/oauth2/token", "/oauth2/revoke", "/oauth2/jwts"};
+    private static final String[] SWAGGER_URLS = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
+    @Bean
+    @Order(0)
+    public SecurityFilterChain swaggerFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher(SWAGGER_URLS)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable);
+        return http.build();
+    }
 
     @Bean
     @Order(2)
