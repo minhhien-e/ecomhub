@@ -11,5 +11,4 @@ import java.util.UUID;
 public class UpdateNamePermissionCommand implements ICommand {
     private String newName;
     private UUID permissionId;
-    private UUID requesterId;
 }

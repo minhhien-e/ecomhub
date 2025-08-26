@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.DuplicateEntityException;
 
 public class PermissionAlreadyAssignedException extends DuplicateEntityException {
     public PermissionAlreadyAssignedException(String name) {
-        super("Quyền '" + name + "'");
+        super("permission '" + name + "'");
     }
 }

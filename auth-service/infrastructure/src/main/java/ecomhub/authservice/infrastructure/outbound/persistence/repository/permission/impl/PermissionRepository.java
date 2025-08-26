@@ -1,8 +1,8 @@
 package ecomhub.authservice.infrastructure.outbound.persistence.repository.permission.impl;
 
 import ecomhub.authservice.common.exception.concrete.permission.PermissionNotFoundException;
-import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.domain.entity.Permission;
+import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.infrastructure.outbound.persistence.mapper.PermissionMapper;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.permission.PermissionJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +17,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PermissionRepository implements PermissionRepositoryPort {
     private final PermissionJpaRepository permissionJpaRepository;
-
-    @Override
-    public Permission save(Permission permission) {
-        var permissionEntity = permissionJpaRepository.save(PermissionMapper.toEntity(permission));
-        return PermissionMapper.toDomain(permissionEntity);
-    }
-
-    @Override
-    public boolean existsByNameOrKey(String name, String key) {
-        return permissionJpaRepository.existsByNameOrKey(name, key);
-    }
 
     @Override
     public boolean existsByKey(String key) {
@@ -51,23 +40,18 @@ public class PermissionRepository implements PermissionRepositoryPort {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        permissionJpaRepository.deleteById(id);
+    public int updateDescription(Permission permission) {
+        return permissionJpaRepository.updateDescription(permission.getId(), permission.getDescription().orElse(null));
     }
 
     @Override
-    public int updateDescription(UUID id, String newDescription) {
-        return permissionJpaRepository.updateDescription(id, newDescription);
-    }
-
-    @Override
-    public int updateName(UUID id, String newName) {
-        return permissionJpaRepository.updateName(id, newName);
+    public int updateName(Permission permission) {
+        return permissionJpaRepository.updateName(permission.getId(), permission.getName().getValue());
     }
 
     @Override
     public Permission getById(UUID permissionId) {
-        var entity= permissionJpaRepository.findById(permissionId)
+        var entity = permissionJpaRepository.findById(permissionId)
                 .orElseThrow(PermissionNotFoundException::new);
         return PermissionMapper.toDomain(entity);
     }

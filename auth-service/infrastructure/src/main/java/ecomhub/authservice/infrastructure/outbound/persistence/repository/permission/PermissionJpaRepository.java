@@ -12,8 +12,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface PermissionJpaRepository extends JpaRepository<PermissionEntity, UUID> {
-    boolean existsByNameOrKey(String name, String key);
-
     boolean existsByKey(String key);
 
     List<Permission> findAllByKeyIn(Set<String> permissionKeys);

@@ -30,7 +30,7 @@ public class GrantPermissionHandler extends AbstractPermissionManagementHandler<
     protected Set<Permission> getPermissions(GrantPermissionCommand command) {
         command.getPermissionKeys().forEach(key -> {
             if (!permissionRepository.existsByKey(key))
-                throw new PermissionNotFoundException(key);
+                throw new PermissionNotFoundException();
         });
         return new HashSet<>(permissionRepository.findAllByKeyIn(command.getPermissionKeys()));
     }

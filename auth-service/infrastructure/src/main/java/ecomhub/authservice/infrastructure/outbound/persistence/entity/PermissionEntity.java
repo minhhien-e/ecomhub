@@ -23,7 +23,7 @@ public class PermissionEntity {
     private UUID id;
     @Column(nullable = false, unique = true, length = 100)
     private String name;
-    @Column(nullable = false, unique = true, length = 100,name = "`key`")
+    @Column(nullable = false, unique = true, length = 100)
     private String key;
     @Lob
     @Column

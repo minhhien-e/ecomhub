@@ -3,31 +3,29 @@ package ecomhub.authservice.application.command.permission.update.description;
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.command.permission.update.abstracts.AbstractPermissionUpdateHandler;
 import ecomhub.authservice.domain.entity.Permission;
-import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
+import ecomhub.authservice.domain.service.abstracts.PermissionService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UpdateDescriptionPermissionHandler extends AbstractPermissionUpdateHandler<UpdateDescriptionPermissionCommand>
+public class UpdateDescriptionPermissionHandler extends AbstractPermissionUpdateHandler<String>
         implements ICommandHandler<UpdateDescriptionPermissionCommand> {
-    protected UpdateDescriptionPermissionHandler(PermissionRepositoryPort permissionRepository, AccountRepositoryPort accountRepository) {
-        super(permissionRepository, accountRepository);
+
+    protected UpdateDescriptionPermissionHandler(PermissionRepositoryPort permissionRepository, PermissionService permissionService) {
+        super(permissionRepository, permissionService);
     }
 
     @Override
-    protected int saveChange(Permission targetPermission, UpdateDescriptionPermissionCommand updateDescriptionPermissionCommand) {
-        return permissionRepository.updateDescription(targetPermission.getId(), updateDescriptionPermissionCommand.getNewDescription());
+    protected int saveChange(Permission targetPermission) {
+        return permissionRepository.updateDescription(targetPermission);
     }
 
     @Override
     public void handle(UpdateDescriptionPermissionCommand command) {
         updateWithPermissionCheck(
-                command,
+                command.getNewDescription(),
                 command.getPermissionId(),
-                command.getRequesterId(),
-                "thay đổi thông tin miêu tả của quyền",
-                (targetPermission, updateCommand) -> targetPermission
-                        .updateDescription(updateCommand.getNewDescription())
+                permissionService::updateDescription
         );
     }
 

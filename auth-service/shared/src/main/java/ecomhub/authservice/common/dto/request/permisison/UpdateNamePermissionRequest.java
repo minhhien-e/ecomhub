@@ -1,4 +1,6 @@
 package ecomhub.authservice.common.dto.request.permisison;
 
-public record UpdateNamePermissionRequest(String newName) {
+import java.util.UUID;
+
+public record UpdateNamePermissionRequest(UUID permissionId, String newName) {
 }

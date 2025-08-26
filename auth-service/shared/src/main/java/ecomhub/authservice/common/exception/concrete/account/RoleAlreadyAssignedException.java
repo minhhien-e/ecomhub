@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.DuplicateEntityException;
 
 public class RoleAlreadyAssignedException extends DuplicateEntityException {
     public RoleAlreadyAssignedException(String name) {
-        super("role '" + name);
+        super("role '" + name + "'");
     }
 }

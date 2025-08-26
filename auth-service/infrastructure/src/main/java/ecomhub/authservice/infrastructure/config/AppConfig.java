@@ -2,8 +2,10 @@ package ecomhub.authservice.infrastructure.config;
 
 import ecomhub.authservice.domain.service.abstracts.AccountService;
 import ecomhub.authservice.domain.service.abstracts.PasswordHashService;
+import ecomhub.authservice.domain.service.abstracts.PermissionService;
 import ecomhub.authservice.domain.service.abstracts.RoleService;
 import ecomhub.authservice.domain.service.impl.AccountServiceImpl;
+import ecomhub.authservice.domain.service.impl.PermissionServiceImpl;
 import ecomhub.authservice.domain.service.impl.RoleServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,5 +19,9 @@ public class AppConfig {
     @Bean
     public RoleService roleService(){
         return new RoleServiceImpl();
+    }
+    @Bean
+    public PermissionService permissionService(){
+        return new PermissionServiceImpl();
     }
 }

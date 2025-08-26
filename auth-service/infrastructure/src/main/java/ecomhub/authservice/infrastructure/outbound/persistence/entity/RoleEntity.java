@@ -36,8 +36,10 @@ public class RoleEntity {
     private int level;
     //mapping
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<AccountRoleEntity> accountRoles = new ArrayList<>();
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private Set<RolePermissionEntity> rolePermissions = new HashSet<>();
 
 }

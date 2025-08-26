@@ -11,6 +11,4 @@ import java.util.UUID;
 public class UpdateDescriptionPermissionCommand implements ICommand {
     private String newDescription;
     private UUID permissionId;
-    private UUID requesterId;
-
 }

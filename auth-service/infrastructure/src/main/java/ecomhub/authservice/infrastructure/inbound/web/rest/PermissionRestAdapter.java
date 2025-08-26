@@ -3,9 +3,8 @@ package ecomhub.authservice.infrastructure.inbound.web.rest;
 import ecomhub.authservice.application.dto.PermissionDto;
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
-import ecomhub.authservice.common.dto.request.permisison.AddPermissionRequest;
-import ecomhub.authservice.common.dto.request.permisison.DeletePermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.GetAllPermissionRequest;
+import ecomhub.authservice.common.dto.request.permisison.UpdateDescriptionPermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.UpdateNamePermissionRequest;
 import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
@@ -17,49 +16,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/auth/permissions")
+@RequestMapping("/api/v1/auth/permission")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('permission.add')")
 public class PermissionRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @PreAuthorize("hasAuthority('permission.create')")
-    @PostMapping()
-    public ResponseEntity<?> addPermission(@RequestBody AddPermissionRequest request) {
-        commandBus.dispatch(PermissionRequestMapper.toCommand(request));
-        return ResponseEntity.ok(ApiResponse.success(null, "Thêm quyền thành công"));
-    }
-
-    @PreAuthorize("hasAuthority('permission.delete')")
-    @DeleteMapping("/{permissionId}/delete")
-    public ResponseEntity<?> deletePermission(@PathVariable UUID permissionId, @RequestAttribute("accountId") UUID accountId) {
-        var request = new DeletePermissionRequest(permissionId);
-        var command = PermissionRequestMapper.toCommand(request, accountId);
-        commandBus.dispatch(command);
-        return ResponseEntity.ok(ApiResponse.success(null, "Xóa quyền thành công"));
-    }
-
-    //region Update
-    @PreAuthorize("hasAuthority('permission.edit')")
     @PatchMapping("/{permissionId}/name")
-    public ResponseEntity<?> updateName(@PathVariable UUID permissionId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateNamePermissionRequest(newName);
-        var command = PermissionRequestMapper.toCommand(request, permissionId, accountId);
+    public ResponseEntity<?> updateName(@PathVariable UUID permissionId, @RequestBody String newName) {
+        var request = new UpdateNamePermissionRequest(permissionId, newName);
+        var command = PermissionRequestMapper.toCommand(request);
         commandBus.dispatch(command);
-        return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi tên quyền thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Permission name updated successfully"));
     }
 
-    @PreAuthorize("hasAuthority('permission.edit')")
     @PatchMapping("/{permissionId}/description")
-    public ResponseEntity<?> updateDescription(@PathVariable UUID permissionId, @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateNamePermissionRequest(newDescription);
-        var command = PermissionRequestMapper.toCommand(request, permissionId, accountId);
+    public ResponseEntity<?> updateDescription(@PathVariable UUID permissionId, @RequestBody String newDescription) {
+        var request = new UpdateDescriptionPermissionRequest(permissionId, newDescription);
+        var command = PermissionRequestMapper.toCommand(request);
         commandBus.dispatch(command);
-        return ResponseEntity.ok(ApiResponse.success(null, "Thay đổi miêu tả quyền thành công"));
+        return ResponseEntity.ok(ApiResponse.success(null, "Permission description updated successfully"));
     }
 
-    //endregion
-    //region Read
     @PreAuthorize("hasAuthority('permission.read')")
     @GetMapping
     public ResponseEntity<?> getAllPermission() {
@@ -67,7 +46,6 @@ public class PermissionRestAdapter {
         var query = PermissionRequestMapper.toQuery(request);
         var result = queryBus.dispatch(query);
         var response = result.stream().map(PermissionDto::toResponse).toList();
-        return ResponseEntity.ok(ApiResponse.success(response, "Lấy danh sách quyền thành công"));
+        return ResponseEntity.ok(ApiResponse.success(response, "Permissions retrieved successfully"));
     }
-    //endregion
 }

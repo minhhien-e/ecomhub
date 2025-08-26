@@ -2,7 +2,7 @@ package ecomhub.authservice.domain.valueobject;
 
 import ecomhub.authservice.common.enums.ProviderType;
 import ecomhub.authservice.common.exception.concrete.valueobject.provider.MissingProviderException;
-import ecomhub.authservice.common.exception.concrete.valueobject.provider.ProviderNotSupportException;
+import ecomhub.authservice.common.exception.concrete.valueobject.provider.InvalidProviderException;
 import ecomhub.authservice.common.utils.StringUtils;
 
 import java.util.Arrays;
@@ -16,7 +16,7 @@ public class Provider {
             throw new MissingProviderException();
         if (Arrays.stream(ProviderType.values())
                 .noneMatch(provider -> provider.name().equalsIgnoreCase(value)))
-            throw new ProviderNotSupportException(value);
+            throw new InvalidProviderException(value);
         this.value = value;
     }
 

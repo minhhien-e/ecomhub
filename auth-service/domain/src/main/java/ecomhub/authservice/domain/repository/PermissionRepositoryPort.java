@@ -8,10 +8,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface PermissionRepositoryPort {
-    Permission save(Permission permission);
-
-    boolean existsByNameOrKey(String name, String key);
-
     boolean existsByKey(String key);
 
     boolean existsById(UUID id);
@@ -20,11 +16,9 @@ public interface PermissionRepositoryPort {
 
     List<Permission> findAll();
 
-    void deleteById(UUID id);
+    int updateDescription(Permission permission);
 
-    int updateDescription(UUID id, String newDescription);
-
-    int updateName(UUID id, String newName);
+    int updateName(Permission permission);
 
     Permission getById(UUID permissionId);
 

@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.BusinessRuleViolationExcep
 
 public class NoRoleAssignedException extends BusinessRuleViolationException {
     public NoRoleAssignedException() {
-        super("Tài khoản phải có ít nhất một vai trò.");
+        super("The account must have at least one role assigned.");
     }
 }

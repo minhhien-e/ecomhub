@@ -1,4 +1,0 @@
-ALTER TABLE `role`
-    ADD active BIT NOT NULL;
-ALTER TABLE `role`
-    ADD level INTEGER NOT NULL;

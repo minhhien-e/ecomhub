@@ -4,6 +4,6 @@ import ecomhub.authservice.common.exception.abstracts.InvalidFormatException;
 
 public class InvalidEmailFormatException extends InvalidFormatException {
     public InvalidEmailFormatException(String email) {
-        super("Định dạng email không hợp lệ: '" + email + "'. Vui lòng nhập đúng định dạng email.");
+        super("Invalid email format: '" + email + "'. Please enter a valid email address.");
     }
 }

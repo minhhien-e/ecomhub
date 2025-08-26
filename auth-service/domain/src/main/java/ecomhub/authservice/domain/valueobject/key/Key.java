@@ -1,7 +1,5 @@
 package ecomhub.authservice.domain.valueobject.key;
 
-import ecomhub.authservice.domain.valueobject.name.Name;
-
 import java.util.Objects;
 
 public abstract class Key {

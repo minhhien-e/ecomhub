@@ -7,7 +7,7 @@ public class Level {
 
     public Level(int value) {
         if (value < 0)
-            throw new InvalidLevelException();
+            throw new InvalidLevelException(value);
         this.value = value;
     }
 

@@ -1,9 +1,9 @@
 package ecomhub.authservice.domain.service.abstracts;
 
-import ecomhub.authservice.domain.entity.Account;
+import ecomhub.authservice.domain.entity.Permission;
 
 public interface PermissionService {
-    boolean canBeModifiedBy(Account requester);
+    void updateName(Permission targetPermission, String newName);
 
-    boolean canBeDeletedBy(Account requester);
+    void updateDescription(Permission targetPermission, String newDescription);
 }

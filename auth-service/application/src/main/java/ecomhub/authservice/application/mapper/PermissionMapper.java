@@ -1,6 +1,5 @@
 package ecomhub.authservice.application.mapper;
 
-import ecomhub.authservice.application.command.permission.add.AddPermissionCommand;
 import ecomhub.authservice.application.dto.PermissionDto;
 import ecomhub.authservice.domain.entity.Permission;
 
@@ -12,9 +11,5 @@ public final class PermissionMapper {
                 .key(permission.getKey().getValue())
                 .description(permission.getDescription().orElse(null))
                 .build();
-    }
-
-    public static Permission toDomain(AddPermissionCommand addPermissionCommand) {
-        return new Permission(addPermissionCommand.getName(), addPermissionCommand.getKey(), addPermissionCommand.getDescription());
     }
 }

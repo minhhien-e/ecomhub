@@ -5,6 +5,6 @@ import ecomhub.authservice.common.exception.abstracts.EntityNotFoundException;
 
 public class PermissionNotAssignedException extends EntityNotFoundException {
     public PermissionNotAssignedException(String name) {
-        super("Quyền  '" + name + "'");
+        super("permission '" + name + "'");
     }
 }
