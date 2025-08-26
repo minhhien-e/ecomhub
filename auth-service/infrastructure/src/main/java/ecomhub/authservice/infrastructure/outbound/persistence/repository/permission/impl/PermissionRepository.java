@@ -23,11 +23,12 @@ public class PermissionRepository implements PermissionRepositoryPort {
         return permissionJpaRepository.existsByKey(key);
     }
 
-
     @Override
-    public boolean existsById(UUID id) {
-        return permissionJpaRepository.existsById(id);
+    public boolean existsByName(String name) {
+        return permissionJpaRepository.existsByName(name);
     }
+
+
 
     @Override
     public List<Permission> findAllByKeyIn(Set<String> permissionKeys) {
@@ -54,10 +55,5 @@ public class PermissionRepository implements PermissionRepositoryPort {
         var entity = permissionJpaRepository.findById(permissionId)
                 .orElseThrow(PermissionNotFoundException::new);
         return PermissionMapper.toDomain(entity);
-    }
-
-    @Override
-    public Optional<Permission> findByKey(String permissionKey) {
-        return permissionJpaRepository.findByKey(permissionKey).map(PermissionMapper::toDomain);
     }
 }

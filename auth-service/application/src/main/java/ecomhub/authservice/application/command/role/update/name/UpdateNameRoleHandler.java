@@ -2,6 +2,7 @@ package ecomhub.authservice.application.command.role.update.name;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.command.role.update.abstracts.AbstractRoleUpdateHandler;
+import ecomhub.authservice.common.exception.concrete.role.RoleAlreadyExistsException;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
@@ -19,6 +20,8 @@ public class UpdateNameRoleHandler extends AbstractRoleUpdateHandler<String>
 
     @Override
     public void handle(UpdateNameRoleCommand command) {
+        if(roleRepository.existsByName(command.getNewName()))
+            throw new RoleAlreadyExistsException(command.getNewName(), true);
         super.updateWithPermissionCheck(command.getNewName(),
                 command.getRoleId(),
                 command.getRequesterId(),

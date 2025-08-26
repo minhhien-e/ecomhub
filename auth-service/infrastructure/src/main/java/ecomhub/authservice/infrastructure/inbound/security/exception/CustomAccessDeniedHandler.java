@@ -30,7 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         ApiResponse<?> apiResponse = ApiResponse.error(
                 response.getStatus(),
                 ErrorCode.FORBIDDEN.name(),
-                "Không đủ quyền truy cấp tài nguyên"
+                "You do not have sufficient permissions to perform this action."
         );
 
         response.getWriter().write(objectMapper.writeValueAsString(apiResponse));

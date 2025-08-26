@@ -13,6 +13,7 @@ import java.util.UUID;
 
 public interface PermissionJpaRepository extends JpaRepository<PermissionEntity, UUID> {
     boolean existsByKey(String key);
+    boolean existsByName(String name);
 
     List<Permission> findAllByKeyIn(Set<String> permissionKeys);
 
@@ -25,4 +26,5 @@ public interface PermissionJpaRepository extends JpaRepository<PermissionEntity,
     int updateName(UUID id, String newName);
 
     Optional<PermissionEntity> findByKey(String permissionKey);
+
 }
