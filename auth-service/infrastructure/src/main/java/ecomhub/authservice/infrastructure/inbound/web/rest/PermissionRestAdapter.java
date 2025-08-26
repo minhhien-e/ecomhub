@@ -30,7 +30,11 @@ public class PermissionRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @Operation(summary = "Update permission name", description = "Update the name of a specific permission")
+    @Operation(summary = "Update permission name", description = "Update the name of a specific permission",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The new name of the permission",
+                    required = true
+            ))
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Permission name updated successfully", data = Object.class),
             errorExamples = {
@@ -47,7 +51,11 @@ public class PermissionRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Permission name updated successfully"));
     }
 
-    @Operation(summary = "Update permission description", description = "Update the description of a specific permission")
+    @Operation(summary = "Update permission description", description = "Update the description of a specific permission",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The new description of the permission",
+                    required = true
+            ))
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Permission description updated successfully", data = Object.class),
             errorExamples = {

@@ -10,6 +10,8 @@ import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -62,7 +64,11 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Delete role successfully"));
     }
 
-    @Operation(summary = "Update role name", description = "Update the name of a specific role")
+    @Operation(summary = "Update role name", description = "Update the name of a specific role",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The new name of the role",
+                    required = true
+            ))
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role name successfully", data = Object.class),
             errorExamples = {
@@ -80,7 +86,11 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Update role name successfully"));
     }
 
-    @Operation(summary = "Update role level", description = "Update the level of a specific role")
+    @Operation(summary = "Update role level", description = "Update the level of a specific role",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The new level of the role",
+                    required = true
+            ))
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role level successfully", data = Object.class),
             errorExamples = {
@@ -98,7 +108,11 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Update role level successfully"));
     }
 
-    @Operation(summary = "Update role description", description = "Update the description of a specific role")
+    @Operation(summary = "Update role description", description = "Update the description of a specific role",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The new description of the role",
+                    required = true
+            ))
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role description successfully", data = Object.class),
             errorExamples = {
@@ -108,7 +122,8 @@ public class RoleRestAdapter {
             }
     )
     @PatchMapping("/{roleId}/description")
-    public ResponseEntity<?> updateDescription(@PathVariable UUID roleId, @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
+    public ResponseEntity<?> updateDescription(@PathVariable UUID roleId,
+                                               @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateDescriptionRoleRequest(roleId, newDescription);
         var input = toCommand(request, accountId);
         commandBus.dispatch(input);
