@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface SuccessfulResponse {
     String message();
     Class<?> data();
+    boolean isList() default false;
+    boolean hasData() default true;
 }

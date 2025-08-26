@@ -5,6 +5,7 @@ import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
 import ecomhub.authservice.common.dto.request.role.*;
 import ecomhub.authservice.common.dto.response.ApiResponse;
+import ecomhub.authservice.common.dto.response.RoleResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
@@ -29,7 +30,6 @@ public class RoleRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @Tag(name = "Role")
     @Operation(summary = "Add new role", description = "Create a new role in the system")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Add role successfully", data = Object.class),
@@ -45,7 +45,6 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Add role successfully"));
     }
 
-    @Tag(name = "Role")
     @Operation(summary = "Delete role", description = "Delete a specific role from the system")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Delete role successfully", data = Object.class),
@@ -63,7 +62,6 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Delete role successfully"));
     }
 
-    @Tag(name = "Role")
     @Operation(summary = "Update role name", description = "Update the name of a specific role")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role name successfully", data = Object.class),
@@ -76,13 +74,12 @@ public class RoleRestAdapter {
     )
     @PatchMapping("/{roleId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID roleId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateNameRoleRequest(roleId,newName);
+        var request = new UpdateNameRoleRequest(roleId, newName);
         var input = toCommand(request, accountId);
         commandBus.dispatch(input);
         return ResponseEntity.ok(ApiResponse.success(null, "Update role name successfully"));
     }
 
-    @Tag(name = "Role")
     @Operation(summary = "Update role level", description = "Update the level of a specific role")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role level successfully", data = Object.class),
@@ -95,13 +92,12 @@ public class RoleRestAdapter {
     )
     @PatchMapping("/{roleId}/level")
     public ResponseEntity<?> updateLevel(@PathVariable UUID roleId, @RequestBody int newLevel, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateLevelRoleRequest(roleId,newLevel);
+        var request = new UpdateLevelRoleRequest(roleId, newLevel);
         var input = toCommand(request, accountId);
         commandBus.dispatch(input);
         return ResponseEntity.ok(ApiResponse.success(null, "Update role level successfully"));
     }
 
-    @Tag(name = "Role")
     @Operation(summary = "Update role description", description = "Update the description of a specific role")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Update role description successfully", data = Object.class),
@@ -113,16 +109,15 @@ public class RoleRestAdapter {
     )
     @PatchMapping("/{roleId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable UUID roleId, @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
-        var request = new UpdateDescriptionRoleRequest(roleId,newDescription);
+        var request = new UpdateDescriptionRoleRequest(roleId, newDescription);
         var input = toCommand(request, accountId);
         commandBus.dispatch(input);
         return ResponseEntity.ok(ApiResponse.success(null, "Update role description successfully"));
     }
 
-    @Tag(name = "Role")
     @Operation(summary = "Get all roles", description = "Retrieve all available roles in the system")
     @StandardApiResponses(
-            successExample = @SuccessfulResponse(message = "Get all roles successfully", data = Object.class),
+            successExample = @SuccessfulResponse(message = "Get all roles successfully", data = RoleResponse.class, isList = true),
             errorExamples = {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to view roles")
             }
@@ -137,7 +132,6 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(response, "Get all roles successfully"));
     }
 
-    @Tag(name = "Role Permission Management")
     @Operation(summary = "Grant permission to role", description = "Grant a specific permission to a role")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Grant permission successfully", data = Object.class),
@@ -156,7 +150,6 @@ public class RoleRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Grant permission successfully"));
     }
 
-    @Tag(name = "Role Permission Management")
     @Operation(summary = "Revoke permission from role", description = "Revoke a specific permission from a role")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Revoke permission successfully", data = Object.class),

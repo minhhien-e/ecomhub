@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Builder
 @Data
@@ -25,6 +24,6 @@ public class RoleDto {
                 key, type, status,
                 description, level, permissions
                 .stream().map(PermissionDto::toResponse)
-                .collect(Collectors.toSet()));
+                .toList());
     }
 }

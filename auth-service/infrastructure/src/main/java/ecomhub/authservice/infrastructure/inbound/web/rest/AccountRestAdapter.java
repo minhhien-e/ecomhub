@@ -23,12 +23,11 @@ import static ecomhub.authservice.infrastructure.inbound.web.mapper.AccountReque
 @RestController
 @RequestMapping("/api/v1/auth/account")
 @RequiredArgsConstructor
-@Tag(name = "Account", description = "Endpoints related to account management")
+@Tag(name = "Account API", description = "Endpoints related to account management")
 public class AccountRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @Tag(name = "Account")
     @Operation(summary = "Register account", description = "Register account with basic information")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Register account successfully", data = Object.class),
@@ -44,7 +43,6 @@ public class AccountRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Register account successfully"));
     }
 
-    @Tag(name = "Role Management", description = "Endpoints to assign roles to accounts")
     @Operation(summary = "Assign role to account", description = "Assign role to account")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Assign role to account", data = Object.class),
@@ -63,7 +61,6 @@ public class AccountRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Assign role successfully"));
     }
 
-    @Tag(name = "Role Management", description = "Endpoints to revoke roles from accounts")
     @Operation(summary = "Revoke role from account", description = "Revoke role from account")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Assign role to account", data = Object.class),

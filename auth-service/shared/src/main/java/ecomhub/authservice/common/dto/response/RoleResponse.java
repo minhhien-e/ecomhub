@@ -1,6 +1,6 @@
 package ecomhub.authservice.common.dto.response;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public record RoleResponse(UUID id, String name,
@@ -9,6 +9,6 @@ public record RoleResponse(UUID id, String name,
                            String status,
                            String description,
                            int level,
-                           Set<PermissionResponse> permissions
+                           List<PermissionResponse> permissions
 ) {
 }

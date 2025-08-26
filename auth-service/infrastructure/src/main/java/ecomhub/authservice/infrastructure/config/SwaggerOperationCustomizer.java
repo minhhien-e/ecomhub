@@ -2,19 +2,24 @@ package ecomhub.authservice.infrastructure.config;
 
 import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
+import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
+import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;
+import io.swagger.v3.core.converter.ResolvedSchema;
 import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.web.method.HandlerMethod;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
-
+@Slf4j
 public class SwaggerOperationCustomizer implements OperationCustomizer {
     private static final String FORMAT = """
             {
@@ -28,22 +33,31 @@ public class SwaggerOperationCustomizer implements OperationCustomizer {
     @Override
     public Operation customize(Operation operation, HandlerMethod handlerMethod) {
         var annotation = handlerMethod.getMethodAnnotation(StandardApiResponses.class);
-        var schemas = getSchemas(ecomhub.authservice.common.dto.response.ApiResponse.class);
-        Schema<?> apiResponseSchema = schemas.get(ecomhub.authservice.common.dto.response.ApiResponse.class.getSimpleName());
+        Schema<?> apiResponseSchema = resolveSchema(ecomhub.authservice.common.dto.response.ApiResponse.class);
         if (annotation != null) {
-            Class<?> successDataClass = annotation.successExample().data();
-            setSuccessfulResponse(operation, successDataClass, apiResponseSchema);
+            setSuccessfulResponse(operation, annotation.successExample(), apiResponseSchema);
             setErrorResponse(operation, apiResponseSchema, annotation.errorExamples());
         }
         return operation;
     }
 
-    private void setSuccessfulResponse(Operation operation, Class<?> successDataClass, Schema<?> apiResponseSchema) {
+    private void setSuccessfulResponse(Operation operation, SuccessfulResponse successfulResponse, Schema<?> apiResponseSchema) {
         Schema<?> successApiResponseSchema = new Schema<>();
-        apiResponseSchema.getProperties().forEach(successApiResponseSchema::addProperty);
-        Schema<?> successDataSchema = getSchemas(successDataClass)
-                .get(successDataClass.getSimpleName());
-        successApiResponseSchema.addProperty("data", successDataSchema);
+        if (apiResponseSchema.getProperties() != null) {
+            apiResponseSchema.getProperties().forEach(successApiResponseSchema::addProperty);
+        }
+
+        if (successfulResponse.hasData()) {
+            Schema<?> dataSchema = resolveSchema(successfulResponse.data());
+            if (successfulResponse.isList()) {
+                ArraySchema arraySchema = new ArraySchema();
+                arraySchema.setItems(dataSchema);
+                successApiResponseSchema.addProperty("data", arraySchema);
+            } else {
+                successApiResponseSchema.addProperty("data", dataSchema);
+            }
+        }
+
         operation.getResponses().addApiResponse("200",
                 new ApiResponse()
                         .description("Successful")
@@ -70,7 +84,32 @@ public class SwaggerOperationCustomizer implements OperationCustomizer {
         }
     }
 
-    private Map<String, Schema> getSchemas(Class<?> clazz) {
-        return ModelConverters.getInstance().readAll(clazz);
+    private Schema<?> resolveSchema(Class<?> clazz) {
+        ModelConverters.getInstance().read(clazz);
+
+        ResolvedSchema resolved = ModelConverters.getInstance()
+                .resolveAsResolvedSchema(new AnnotatedType(clazz));
+        Schema<?> schema = resolved.schema;
+
+        if (schema.getProperties() != null) {
+            schema.getProperties().forEach((propertyName, propertySchema) -> {
+                try {
+                    Type genericType = clazz.getDeclaredField(propertyName).getGenericType();
+                    if (propertySchema instanceof ArraySchema arraySchema && arraySchema.getItems() == null) {
+                        if (genericType instanceof ParameterizedType pt) {
+                            Type listType = pt.getActualTypeArguments()[0];
+                            if (listType instanceof Class<?> listClass) {
+                                arraySchema.setItems(resolveSchema(listClass));
+                            }
+                        }
+                    }
+
+                } catch (NoSuchFieldException e) {
+                    log.warn("Cannot resolve schema for property '{}' of class {}", propertyName, clazz.getName());
+                }
+            });
+        }
+
+        return schema;
     }
 }

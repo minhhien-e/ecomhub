@@ -7,6 +7,7 @@ import ecomhub.authservice.common.dto.request.permisison.GetAllPermissionRequest
 import ecomhub.authservice.common.dto.request.permisison.UpdateDescriptionPermissionRequest;
 import ecomhub.authservice.common.dto.request.permisison.UpdateNamePermissionRequest;
 import ecomhub.authservice.common.dto.response.ApiResponse;
+import ecomhub.authservice.common.dto.response.PermissionResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
@@ -29,7 +30,6 @@ public class PermissionRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
 
-    @Tag(name = "Permission")
     @Operation(summary = "Update permission name", description = "Update the name of a specific permission")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Permission name updated successfully", data = Object.class),
@@ -47,7 +47,6 @@ public class PermissionRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Permission name updated successfully"));
     }
 
-    @Tag(name = "Permission")
     @Operation(summary = "Update permission description", description = "Update the description of a specific permission")
     @StandardApiResponses(
             successExample = @SuccessfulResponse(message = "Permission description updated successfully", data = Object.class),
@@ -65,10 +64,9 @@ public class PermissionRestAdapter {
         return ResponseEntity.ok(ApiResponse.success(null, "Permission description updated successfully"));
     }
 
-    @Tag(name = "Permission")
     @Operation(summary = "Get all permissions", description = "Retrieve all available permissions in the system")
     @StandardApiResponses(
-            successExample = @SuccessfulResponse(message = "Permissions retrieved successfully", data = Object.class),
+            successExample = @SuccessfulResponse(message = "Permissions retrieved successfully", data = PermissionResponse.class, isList = true),
             errorExamples = {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to view permissions")
             }
