@@ -3,7 +3,7 @@ package com.ecomhub.cartservice.adapters.input.controller;
 import com.ecomhub.cartservice.adapters.input.dto.AddToCartRequest;
 import com.ecomhub.cartservice.adapters.input.dto.UpdateCartRequest;
 import com.ecomhub.cartservice.adapters.input.dto.CartResponse;
-import com.ecomhub.cartservice.application.common.ApiResponse;
+import com.ecomhub.cartservice.shared.response.ApiResponse;
 import com.ecomhub.cartservice.application.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,4 +65,7 @@ public class CartController {
         var response = CartResponse.from(cart);
         return ResponseEntity.ok(ApiResponse.Success(response, "Lấy giỏ hàng thành công"));
     }
+//    http://localhost:8083/swagger-ui.html
+//    http://localhost:8083/api-docs
+
 }

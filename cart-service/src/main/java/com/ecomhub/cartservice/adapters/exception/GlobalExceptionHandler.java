@@ -1,4 +1,4 @@
-package com.ecomhub.cartservice.api.exception;
+package com.ecomhub.cartservice.adapters.exception;
 
 import com.ecomhub.cartservice.domain.exception.*;
 import org.springframework.http.HttpStatus;

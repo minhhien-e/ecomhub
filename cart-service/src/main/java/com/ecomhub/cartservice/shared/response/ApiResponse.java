@@ -1,9 +1,20 @@
-package com.ecomhub.cartservice.application.common;
+package com.ecomhub.cartservice.shared.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Standard API response wrapper")
 public class ApiResponse<T> {
+
+    @Schema(description = "HTTP status code")
     private int statusCode;
+
+    @Schema(description = "Error code if any, null when success")
     private String errorCode;
+
+    @Schema(description = "Response message")
     private String message;
+
+    @Schema(description = "Payload data")
     private T data;
 
     public ApiResponse(int statusCode, String errorCode, String message, T data) {

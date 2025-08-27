@@ -3,16 +3,19 @@ package com.ecomhub.cartservice.application.service;
 import com.ecomhub.cartservice.domain.entity.Cart;
 import com.ecomhub.cartservice.domain.entity.CartItem;
 import com.ecomhub.cartservice.domain.exception.CartNotFoundException;
-import com.ecomhub.cartservice.domain.exception.CacheWriteException;
 import com.ecomhub.cartservice.domain.exception.ItemNotFoundException;
 import com.ecomhub.cartservice.domain.port.CartCache;
 import com.ecomhub.cartservice.domain.port.CartRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CartService {
 
     private final CartCache cartCache;
@@ -61,6 +64,7 @@ public class CartService {
             try {
                 cartCache.set(userId, cart);
             } catch (Exception e) {
+                log.warn("Không thể ghi giỏ hàng vào Redis khi load từ MongoDB (userId = {}).", userId, e);
             }
         }
 
@@ -81,11 +85,17 @@ public class CartService {
     }
 
     private void persistCart(String userId, Cart cart) {
-        cartRepository.save(cart); // Mongo
-        try {
-            cartCache.set(userId, cart); // Redis
-        } catch (Exception e) {
-            throw new CacheWriteException("Không thể ghi giỏ hàng vào Redis.", e);
-        }
+        cartRepository.save(cart);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() { // Xem lại hàm , anotation
+                try {
+                    cartCache.set(userId, cart);
+                    log.debug("Giỏ hàng đã được ghi vào Redis (userId = {})", userId);
+                } catch (Exception e) {
+                    log.error("Không thể ghi giỏ hàng vào Redis sau khi commit (userId = {}).", userId, e);
+                }
+            }
+        });
     }
 }
