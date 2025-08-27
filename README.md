@@ -20,7 +20,7 @@ Nó đóng vai trò:
 
 ---
 
-## 📂 3. Cấu trúc thư mục
+##  3. Cấu trúc thư mục
 
 ```bash
 com.ecomhub.cartservice/
