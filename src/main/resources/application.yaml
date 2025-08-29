@@ -1,0 +1,14 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: inventory-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/Inventory
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
