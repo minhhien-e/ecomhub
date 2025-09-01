@@ -13,6 +13,7 @@ import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiRes
 import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/auth/permission")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('permission.add')")
 @Tag(name = "Permission API", description = "Operations related to permission management")
 public class PermissionRestAdapter {
     private final ICommandBus commandBus;
@@ -43,6 +43,7 @@ public class PermissionRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to update permission names")
             }
     )
+    @PreAuthorize("hasAuthority('permission.update')")
     @PatchMapping("/{permissionId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID permissionId, @RequestBody String newName) {
         var request = new UpdateNamePermissionRequest(permissionId, newName);
@@ -64,6 +65,7 @@ public class PermissionRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to update permission descriptions")
             }
     )
+    @PreAuthorize("hasAuthority('permission.update')")
     @PatchMapping("/{permissionId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable UUID permissionId, @RequestBody String newDescription) {
         var request = new UpdateDescriptionPermissionRequest(permissionId, newDescription);

@@ -26,7 +26,6 @@ import static ecomhub.authservice.infrastructure.inbound.web.mapper.RoleRequestM
 @RestController
 @RequestMapping("/api/v1/auth/role")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('role.add')")
 @Tag(name = "Role API", description = "Operations related to role management")
 public class RoleRestAdapter {
     private final ICommandBus commandBus;
@@ -41,7 +40,8 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to create roles")
             }
     )
-    @PostMapping()
+    @PreAuthorize("hasAuthority('role.create')")
+    @PostMapping
     public ResponseEntity<?> add(@RequestBody AddRoleRequest request, @RequestAttribute("accountId") UUID accountId) {
         commandBus.dispatch(toCommand(request, accountId));
         return ResponseEntity.ok(ApiResponse.success(null, "Add role successfully"));
@@ -56,6 +56,7 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to delete roles")
             }
     )
+    @PreAuthorize("hasAuthority('role.delete')")
     @DeleteMapping("/{roleId}")
     public ResponseEntity<?> delete(@PathVariable UUID roleId, @RequestAttribute("accountId") UUID accountId) {
         var request = new DeleteRoleRequest(roleId);
@@ -78,6 +79,7 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "409", code = "DUPLICATE_ENTRY", message = "Role with this name already exists")
             }
     )
+    @PreAuthorize("hasAuthority('role.update')")
     @PatchMapping("/{roleId}/name")
     public ResponseEntity<?> updateName(@PathVariable UUID roleId, @RequestBody String newName, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateNameRoleRequest(roleId, newName);
@@ -100,6 +102,7 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to update role levels")
             }
     )
+    @PreAuthorize("hasAuthority('role.update')")
     @PatchMapping("/{roleId}/level")
     public ResponseEntity<?> updateLevel(@PathVariable UUID roleId, @RequestBody int newLevel, @RequestAttribute("accountId") UUID accountId) {
         var request = new UpdateLevelRoleRequest(roleId, newLevel);
@@ -121,6 +124,7 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to update role descriptions")
             }
     )
+    @PreAuthorize("hasAuthority('role.update')")
     @PatchMapping("/{roleId}/description")
     public ResponseEntity<?> updateDescription(@PathVariable UUID roleId,
                                                @RequestBody String newDescription, @RequestAttribute("accountId") UUID accountId) {
@@ -174,7 +178,7 @@ public class RoleRestAdapter {
                     @ErrorResponse(statusCode = "403", code = "FORBIDDEN", message = "You do not have sufficient permissions to revoke permissions from roles")
             }
     )
-    @PreAuthorize("hasAuthority('role.permission.grant')")
+    @PreAuthorize("hasAuthority('role.permission.revoke')")
     @DeleteMapping("/{roleId}/revoke/permission/{permissionId}")
     public ResponseEntity<?> revokePermission(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID accountId, @PathVariable("permissionId") UUID permissionId) {
         var request = new RevokePermissionRequest(permissionId);

@@ -13,11 +13,6 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    public boolean canBeDeletedBy(Role targetRole, Account requester) {
-        return canPerformAction(targetRole, requester, "role.delete");
-    }
-
-    @Override
     public void updateName(Role targetRole, Account requester, String newName) {
         update(targetRole, requester, "name", newName,
                 (role, value) -> role.updateName((String) value));
@@ -46,7 +41,7 @@ public class RoleServiceImpl implements RoleService {
     private void update(Role targetRole, Account requester,
                         String fieldName,
                         Object value, BiConsumer<Role, Object> action) {
-        if (canPerformAction(targetRole, requester, "role.add"))
+        if (canPerformAction(targetRole, requester, "role.update"))
             action.accept(targetRole, value);
         else throw new ForbiddenException("update the " + fieldName + " of the role");
     }
@@ -60,14 +55,14 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void revokePermission(Role targetRole, Permission targetPermission, Account requester) {
-        if (canPerformAction(targetRole, requester, "role.permission.grant"))
+        if (canPerformAction(targetRole, requester, "role.permission.revoke"))
             targetRole.revokePermission(targetPermission);
         else throw new ForbiddenException("revoke a permission from the role");
     }
 
     @Override
     public void delete(Role targetRole, Account requester, boolean isHard) {
-        if (canPerformAction(targetRole, requester, "role.add")) {
+        if (canPerformAction(targetRole, requester, "role.delete")) {
             if (!isHard) targetRole.delete();
         } else throw new ForbiddenException("delete the role");
     }

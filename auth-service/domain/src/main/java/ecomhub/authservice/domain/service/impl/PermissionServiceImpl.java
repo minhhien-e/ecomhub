@@ -1,6 +1,5 @@
 package ecomhub.authservice.domain.service.impl;
 
-import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.service.abstracts.PermissionService;
 

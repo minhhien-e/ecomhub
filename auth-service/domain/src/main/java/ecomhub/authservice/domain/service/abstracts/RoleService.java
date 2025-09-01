@@ -6,8 +6,6 @@ import ecomhub.authservice.domain.entity.Role;
 
 public interface RoleService {
 
-    boolean canBeDeletedBy(Role targetRole, Account requester);
-
     void updateName(Role targetRole, Account requester, String newName);
 
     void updateDescription(Role targetRole, Account requester, String newDescription);

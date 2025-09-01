@@ -26,7 +26,7 @@ public class AccountServiceImpl implements AccountService {
     public void revokeRole(Account targetAccount, Role targetRole, Account requester) {
         var highestRole = targetAccount.getHighestRole();
         if (requester.getRoles().stream().anyMatch(role ->
-                role.greaterThan(targetRole) && role.hasPermission("account.role.grant") && role.greaterThan(highestRole)))
+                role.greaterThan(targetRole) && role.hasPermission("account.role.revoke") && role.greaterThan(highestRole)))
             targetAccount.revokeRole(targetRole);
         else throw new ForbiddenException("revoke a role to the account.");
     }

@@ -71,7 +71,7 @@ public class AccountRestAdapter {
                     @ErrorResponse(statusCode = "409", code = "DUPLICATE_ENTRY", message = "The role 'admin' was not found.")
             }
     )
-    @PreAuthorize("hasAuthority('account.role.assign')")
+    @PreAuthorize("hasAuthority('account.role.revoke')")
     @DeleteMapping("/{accountId}/role/{roleId}/revoke")
     public ResponseEntity<?> revokeRole(@PathVariable("roleId") UUID roleId, @RequestAttribute("accountId") UUID requesterId, @PathVariable("accountId") UUID accountId) {
         var request = new RevokeRoleRequest(roleId, accountId);
