@@ -2,12 +2,13 @@ package ecomhub.authservice.domain.constant;
 
 import java.util.Set;
 
-public class RoleTypesConstants extends ValueConstants {
-    public static final String ADMIN = "ADMIN";
-    public static final String CUSTOMER = "CUSTOMER";
-    public static final String SELLER = "SELLER";
+public class RoleTypesConstants {
+    public static final String SYSTEM = "SYSTEM";
+    public static final String USER = "USER";
+    public static final Set<String> TYPES = Set.of(SYSTEM, USER);
 
-    static {
-        VALUES.addAll(Set.of(ADMIN, CUSTOMER, SELLER));
+    public static boolean isValid(String type) {
+        return TYPES.contains(type);
     }
+
 }

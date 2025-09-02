@@ -25,9 +25,9 @@ public class RoleEntity {
     private String name;
     @Column(nullable = false, unique = true, length = 100)
     private String key;
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String status;
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String type;
     @Lob
     @Column(length = 500)

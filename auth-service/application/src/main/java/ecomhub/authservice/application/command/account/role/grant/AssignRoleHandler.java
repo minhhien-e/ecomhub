@@ -6,8 +6,10 @@ import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AssignRoleHandler extends AbstractRoleManagementHandler<AssignRoleCommand> implements ICommandHandler<AssignRoleCommand> {
     public AssignRoleHandler(AccountRepositoryPort accountRepository, RoleRepositoryPort roleRepository, AccountService accountService) {
         super(accountRepository, roleRepository, accountService);
@@ -17,11 +19,10 @@ public class AssignRoleHandler extends AbstractRoleManagementHandler<AssignRoleC
     public void handle(AssignRoleCommand command) {
         super.handle(command, command.getRoleId(), command.getRequesterId(), command.getAccountId(),
                 accountService::assignRole);
-
     }
 
     @Override
-    protected void saveChange(AssignRoleCommand revokeRoleCommand) {
-        accountRepository.assignRole(revokeRoleCommand.getAccountId(), revokeRoleCommand.getRoleId());
+    protected void saveChange(AssignRoleCommand command) {
+        accountRepository.assignRole(command.getAccountId(), command.getRoleId());
     }
 }

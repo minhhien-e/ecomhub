@@ -11,6 +11,7 @@ import ecomhub.authservice.infrastructure.outbound.persistence.mapper.RoleMapper
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.role.RoleJpaRepository;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.role.RolePermissionJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,14 +21,20 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class RoleRepository implements RoleRepositoryPort {
     private final RoleJpaRepository roleJpaRepository;
     private final RolePermissionJpaRepository rolePermissionJpaRepository;
 
     @Override
     public Role save(Role role) {
-        var roleEntity = roleJpaRepository.save(RoleMapper.toEntity(role));
-        return RoleMapper.toDomain(roleEntity);
+        try {
+            var roleEntity = roleJpaRepository.save(RoleMapper.toEntity(role));
+            return RoleMapper.toDomain(roleEntity);
+        } catch (Exception e) {
+            log.error("Error while saving role [{}]: {}", role.getName().getValue(), e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
@@ -42,15 +49,22 @@ public class RoleRepository implements RoleRepositoryPort {
 
     @Override
     public Role getByKey(String key) {
-        var entity = roleJpaRepository.findByKey(key).orElseThrow(RoleNotFoundException::new);
-        return RoleMapper.toDomain(entity);
+        return roleJpaRepository.findByKey(key)
+                .map(RoleMapper::toDomain)
+                .orElseThrow(() -> {
+                    log.warn("Role not found with key [{}]", key);
+                    return new RoleNotFoundException();
+                });
     }
-
 
     @Override
     public Role getById(UUID id) {
-        var entity = roleJpaRepository.findById(id).orElseThrow(RoleNotFoundException::new);
-        return RoleMapper.toDomain(entity);
+        return roleJpaRepository.findById(id)
+                .map(RoleMapper::toDomain)
+                .orElseThrow(() -> {
+                    log.warn("Role not found with id [{}]", id);
+                    return new RoleNotFoundException();
+                });
     }
 
 
@@ -75,31 +89,51 @@ public class RoleRepository implements RoleRepositoryPort {
 
     @Override
     public void deleteById(UUID id) {
-        roleJpaRepository.deleteById(id);
+        try {
+            roleJpaRepository.deleteById(id);
+            log.info("Deleted role with id [{}]", id);
+        } catch (Exception e) {
+            log.error("Error deleting role [{}]: {}", id, e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public void grantPermissions(Role role, Set<Permission> permissions) {
-        Set<RolePermissionEntity> entities = permissions.stream()
-                .map(p -> RolePermissionEntity.builder()
-                        .id(new RolePermissionId(role.getId(), p.getId()))
-                        .role(RoleMapper.toEntity(role))
-                        .permission(PermissionMapper.toEntity(p))
-                        .build())
-                .collect(Collectors.toSet());
-        rolePermissionJpaRepository.saveAll(entities);
+        try {
+            Set<RolePermissionEntity> entities = permissions.stream()
+                    .map(p -> RolePermissionEntity.builder()
+                            .id(new RolePermissionId(role.getId(), p.getId()))
+                            .role(RoleMapper.toEntity(role))
+                            .permission(PermissionMapper.toEntity(p))
+                            .build())
+                    .collect(Collectors.toSet());
+
+            rolePermissionJpaRepository.saveAll(entities);
+            log.info("Granted [{}] permissions to role [{}]", permissions.size(), role.getId());
+        } catch (Exception e) {
+            log.error("Error granting permissions to role [{}]: {}", role.getId(), e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public void revokePermissions(Role role, Set<Permission> permissions) {
-        Set<RolePermissionEntity> entities = permissions.stream()
-                .map(p -> RolePermissionEntity.builder()
-                        .id(new RolePermissionId(role.getId(), p.getId()))
-                        .role(RoleMapper.toEntity(role))
-                        .permission(PermissionMapper.toEntity(p))
-                        .build())
-                .collect(Collectors.toSet());
-        rolePermissionJpaRepository.deleteAll(entities);
+        try {
+            Set<RolePermissionEntity> entities = permissions.stream()
+                    .map(p -> RolePermissionEntity.builder()
+                            .id(new RolePermissionId(role.getId(), p.getId()))
+                            .role(RoleMapper.toEntity(role))
+                            .permission(PermissionMapper.toEntity(p))
+                            .build())
+                    .collect(Collectors.toSet());
+
+            rolePermissionJpaRepository.deleteAll(entities);
+            log.info("Revoked [{}] permissions from role [{}]", permissions.size(), role.getId());
+        } catch (Exception e) {
+            log.error("Error revoking permissions from role [{}]: {}", role.getId(), e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override

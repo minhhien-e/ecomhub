@@ -15,11 +15,11 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AddRoleHandler implements ICommandHandler<AddRoleCommand> {
     private final RoleRepositoryPort roleRepository;
     private final PermissionRepositoryPort permissionRepository;
 
-    @Transactional
     @Override
     public void handle(AddRoleCommand command) {
         if (roleRepository.existsByName(command.getName()))

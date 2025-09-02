@@ -22,6 +22,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +31,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator;
-import org.springframework.security.oauth2.server.authorization.token.JwtGenerator;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.security.oauth2.server.authorization.token.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -46,7 +45,7 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
-    private static final String[] PUBLIC_API_URLS = {"/api/v*/auth/register", "/actuator/**"};
+    private static final String[] PUBLIC_API_URLS = {"/api/v*/auth/account/register", "/actuator/**"};
     private static final String[] PUBLIC_AUTH_URLS = {"/login", "/favicon.ico", "/oauth2/token", "/oauth2/revoke", "/oauth2/jwts"};
     private static final String[] SWAGGER_URLS = {
             "/v3/api-docs/**",
@@ -155,17 +154,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuth2TokenGenerator<OAuth2Token> tokenGenerator(JWKSource<SecurityContext> jwkSource) {
+    public OAuth2TokenGenerator<OAuth2Token> tokenGenerator(JWKSource<SecurityContext> jwkSource, OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer) {
         JwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource);
         JwtGenerator jwtAccessTokenGenerator = new JwtGenerator(jwtEncoder);
-        jwtAccessTokenGenerator.setJwtCustomizer(context -> {
-                    if (context.getPrincipal() instanceof UsernamePasswordAuthenticationToken userDetails) {
-                        context.getClaims().claims((map) -> map.put("permissionKey", userDetails.getAuthorities()));
-                    }
-                }
-        );
+        jwtAccessTokenGenerator.setJwtCustomizer(jwtCustomizer);
         return new DelegatingOAuth2TokenGenerator(jwtAccessTokenGenerator,
                 new OAuth2PublicClientRefreshTokenGenerator());
+    }
+
+    @Bean
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
+        return context -> {
+            if (context.getPrincipal() instanceof UsernamePasswordAuthenticationToken userDetails) {
+                context.getClaims().claims((map) -> map.put("permissionKey", userDetails.getAuthorities()));
+                context.getClaims().claim("accountId", ((UserDetails) userDetails.getPrincipal()).getUsername());
+            }
+        };
     }
 
     @Bean

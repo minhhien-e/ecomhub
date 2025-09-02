@@ -1,6 +1,5 @@
 package ecomhub.authservice.application.command.role.permission.abstracts;
 
-import ecomhub.authservice.common.exception.concrete.permission.PermissionNotFoundException;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.entity.Role;

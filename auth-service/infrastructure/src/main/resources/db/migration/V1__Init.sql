@@ -68,12 +68,6 @@ ALTER TABLE `role`
 ALTER TABLE `role`
     ADD CONSTRAINT uc_role_name UNIQUE (name);
 
-ALTER TABLE `role`
-    ADD CONSTRAINT uc_role_status UNIQUE (status);
-
-ALTER TABLE `role`
-    ADD CONSTRAINT uc_role_type UNIQUE (type);
-
 CREATE INDEX idx_account_email ON account (email);
 
 CREATE INDEX idx_account_phone ON account (phone_number);

@@ -4,9 +4,11 @@ import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.RoleService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class HardDeleteRoleHandler implements ICommandHandler<DeleteRoleCommand> {
     private final RoleRepositoryPort roleRepository;
     private final AccountRepositoryPort accountRepository;

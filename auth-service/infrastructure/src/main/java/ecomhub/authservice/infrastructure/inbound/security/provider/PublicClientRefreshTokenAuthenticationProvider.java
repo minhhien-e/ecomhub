@@ -3,9 +3,13 @@ package ecomhub.authservice.infrastructure.inbound.security.provider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.*;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -30,6 +34,7 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
     private final OAuth2TokenGenerator<OAuth2Token> tokenGenerator;
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationService authorizationService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -37,21 +42,14 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
         OAuth2ClientAuthenticationToken clientPrincipal = (OAuth2ClientAuthenticationToken) refreshAuth.getPrincipal();
         RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientPrincipal.getPrincipal().toString());
         if (registeredClient == null)
-            throwException("Không tìm thấy client", OAuth2ErrorCodes.INVALID_CLIENT);
+            throwException("Client notfound", OAuth2ErrorCodes.INVALID_CLIENT);
         OAuth2Authorization authorization = authorizationService.findByToken(refreshAuth.getRefreshToken(), OAuth2TokenType.REFRESH_TOKEN);
         getOAuth2Token(authorization, registeredClient.getId(), refreshAuth.getRefreshToken());
-        OAuth2TokenContext tokenContext = DefaultOAuth2TokenContext.builder()
-                .registeredClient(registeredClient)
-                .principal(clientPrincipal)
-                .authorizationServerContext(AuthorizationServerContextHolder.getContext())
-                .tokenType(OAuth2TokenType.ACCESS_TOKEN)
-                .authorizationGrantType(refreshAuth.getGrantType())
-                .authorizationGrant(refreshAuth)
-                .authorization(authorization)
-                .build();
+        assert authorization != null;
+        OAuth2TokenContext tokenContext = createTokenContext(registeredClient, authorization, refreshAuth);
         OAuth2Token generatedAccessToken = tokenGenerator.generate(tokenContext);
         if (generatedAccessToken == null)
-            throwException("Tạo token không thành công", OAuth2ErrorCodes.INVALID_REQUEST);
+            throwException("Can't generate token", OAuth2ErrorCodes.INVALID_REQUEST);
         OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                 generatedAccessToken.getTokenValue(), generatedAccessToken.getIssuedAt(),
                 generatedAccessToken.getExpiresAt(), null);
@@ -61,6 +59,20 @@ public class PublicClientRefreshTokenAuthenticationProvider implements Authentic
     @Override
     public boolean supports(Class<?> authentication) {
         return OAuth2RefreshTokenAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    private OAuth2TokenContext createTokenContext(RegisteredClient registeredClient, OAuth2Authorization authorization, OAuth2RefreshTokenAuthenticationToken refreshAuth) {
+        var user = userDetailsService.loadUserByUsername(authorization.getPrincipalName());
+        UsernamePasswordAuthenticationToken userPrincipal = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return DefaultOAuth2TokenContext.builder()
+                .registeredClient(registeredClient)
+                .principal(userPrincipal)
+                .authorizationServerContext(AuthorizationServerContextHolder.getContext())
+                .tokenType(OAuth2TokenType.ACCESS_TOKEN)
+                .authorizationGrantType(refreshAuth.getGrantType())
+                .authorizationGrant(refreshAuth)
+                .authorization(authorization)
+                .build();
     }
 
 }

@@ -6,8 +6,10 @@ import ecomhub.authservice.domain.entity.Permission;
 import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.PermissionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class UpdateDescriptionPermissionHandler extends AbstractPermissionUpdateHandler<String>
         implements ICommandHandler<UpdateDescriptionPermissionCommand> {
 

@@ -9,12 +9,14 @@ import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.RoleService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Transactional
 public class GrantPermissionHandler extends AbstractPermissionManagementHandler<GrantPermissionCommand> implements ICommandHandler<GrantPermissionCommand> {
 
     public GrantPermissionHandler(AccountRepositoryPort accountRepository, PermissionRepositoryPort permissionRepository, RoleRepositoryPort roleRepository, RoleService roleService) {

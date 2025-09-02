@@ -56,7 +56,7 @@ public class AccountRestAdapter {
     @PreAuthorize("hasAuthority('account.role.assign')")
     @PutMapping("/{accountId}/role/assign")
     public ResponseEntity<?> grantRole(@RequestBody UUID roleId, @RequestAttribute("accountId") UUID requesterId, @PathVariable("accountId") UUID accountId) {
-        var request = new AssignRoleRequest(roleId, accountId);
+        var request = new AssignRoleRequest(accountId, roleId);
         commandBus.dispatch(toCommand(request, requesterId));
         return ResponseEntity.ok(ApiResponse.success(null, "Assign role successfully"));
     }

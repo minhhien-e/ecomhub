@@ -6,8 +6,10 @@ import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RevokeRoleHandler extends AbstractRoleManagementHandler<RevokeRoleCommand> implements ICommandHandler<RevokeRoleCommand> {
 
     public RevokeRoleHandler(AccountRepositoryPort accountRepository, RoleRepositoryPort roleRepository, AccountService accountService) {

@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static ecomhub.authservice.domain.constant.RoleKeyConstants.CUSTOMER;
+import static ecomhub.authservice.domain.constant.RoleKeyConstants.ADMIN;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,7 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
             throw new UsernameAlreadyExistsException(command.getUsername());
         }
         var account = accountCommandMapper.toDomain(command);
-        accountService.register(account, roleRepository.getByKey(CUSTOMER));
+        accountService.register(account, roleRepository.getByKey(ADMIN));
         accountRepository.save(account);
     }
 
