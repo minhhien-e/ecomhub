@@ -82,58 +82,40 @@ public class RoleRepository implements RoleRepositoryPort {
     public int updateName(Role role) {
         return roleJpaRepository.updateName(role.getId(), role.getName().getValue());
     }
+
     @Override
     public int updateStatus(Role role) {
-        return roleJpaRepository.updateStatus(role.getId(),role.getStatus().getValue());
+        return roleJpaRepository.updateStatus(role.getId(), role.getStatus().getValue());
     }
 
     @Override
     public void deleteById(UUID id) {
-        try {
-            roleJpaRepository.deleteById(id);
-            log.info("Deleted role with id [{}]", id);
-        } catch (Exception e) {
-            log.error("Error deleting role [{}]: {}", id, e.getMessage(), e);
-            throw e;
-        }
+        roleJpaRepository.deleteById(id);
     }
 
     @Override
     public void grantPermissions(Role role, Set<Permission> permissions) {
-        try {
-            Set<RolePermissionEntity> entities = permissions.stream()
-                    .map(p -> RolePermissionEntity.builder()
-                            .id(new RolePermissionId(role.getId(), p.getId()))
-                            .role(RoleMapper.toEntity(role))
-                            .permission(PermissionMapper.toEntity(p))
-                            .build())
-                    .collect(Collectors.toSet());
+        Set<RolePermissionEntity> entities = permissions.stream()
+                .map(p -> RolePermissionEntity.builder()
+                        .id(new RolePermissionId(role.getId(), p.getId()))
+                        .role(RoleMapper.toEntity(role))
+                        .permission(PermissionMapper.toEntity(p))
+                        .build())
+                .collect(Collectors.toSet());
 
-            rolePermissionJpaRepository.saveAll(entities);
-            log.info("Granted [{}] permissions to role [{}]", permissions.size(), role.getId());
-        } catch (Exception e) {
-            log.error("Error granting permissions to role [{}]: {}", role.getId(), e.getMessage(), e);
-            throw e;
-        }
+        rolePermissionJpaRepository.saveAll(entities);
     }
 
     @Override
     public void revokePermissions(Role role, Set<Permission> permissions) {
-        try {
-            Set<RolePermissionEntity> entities = permissions.stream()
-                    .map(p -> RolePermissionEntity.builder()
-                            .id(new RolePermissionId(role.getId(), p.getId()))
-                            .role(RoleMapper.toEntity(role))
-                            .permission(PermissionMapper.toEntity(p))
-                            .build())
-                    .collect(Collectors.toSet());
-
-            rolePermissionJpaRepository.deleteAll(entities);
-            log.info("Revoked [{}] permissions from role [{}]", permissions.size(), role.getId());
-        } catch (Exception e) {
-            log.error("Error revoking permissions from role [{}]: {}", role.getId(), e.getMessage(), e);
-            throw e;
-        }
+        Set<RolePermissionEntity> entities = permissions.stream()
+                .map(p -> RolePermissionEntity.builder()
+                        .id(new RolePermissionId(role.getId(), p.getId()))
+                        .role(RoleMapper.toEntity(role))
+                        .permission(PermissionMapper.toEntity(p))
+                        .build())
+                .collect(Collectors.toSet());
+        rolePermissionJpaRepository.deleteAll(entities);
     }
 
     @Override

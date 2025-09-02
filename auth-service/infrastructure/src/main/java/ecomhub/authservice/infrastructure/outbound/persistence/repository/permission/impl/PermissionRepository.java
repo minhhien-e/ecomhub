@@ -6,15 +6,16 @@ import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import ecomhub.authservice.infrastructure.outbound.persistence.mapper.PermissionMapper;
 import ecomhub.authservice.infrastructure.outbound.persistence.repository.permission.PermissionJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class PermissionRepository implements PermissionRepositoryPort {
     private final PermissionJpaRepository permissionJpaRepository;
 
@@ -52,8 +53,11 @@ public class PermissionRepository implements PermissionRepositoryPort {
 
     @Override
     public Permission getById(UUID permissionId) {
-        var entity = permissionJpaRepository.findById(permissionId)
-                .orElseThrow(PermissionNotFoundException::new);
-        return PermissionMapper.toDomain(entity);
+        return permissionJpaRepository.findById(permissionId)
+                .map(PermissionMapper::toDomain)
+                .orElseThrow(() -> {
+                    log.error("Permission not found with id={}", permissionId);
+                    return new PermissionNotFoundException();
+                });
     }
 }

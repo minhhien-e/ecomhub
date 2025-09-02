@@ -26,11 +26,4 @@ spring:
 #        defaultZone: http://localhost:${EUREKA_PORT:8761}/eureka
 #    register-with-eureka: false
 #    fetch-registry: true
-
-
 #    enabled: false
-logging:
-  level:
-    org.springframework.security: debug
-    org.springframework.security.oauth2: debug
-    org.springframework.security.authorization: debug

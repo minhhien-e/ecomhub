@@ -29,7 +29,7 @@ public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCo
             throw new EmailAlreadyExistsException(command.getEmail());
         }
         if (accountRepository.existsByIdentifier(command.getPhoneNumber())) {
-            throw new PhoneNumberAlreadyExistsException(command.getEmail());
+            throw new PhoneNumberAlreadyExistsException(command.getPhoneNumber());
         }
         if (accountRepository.existsByIdentifier(command.getUsername())) {
             throw new UsernameAlreadyExistsException(command.getUsername());
