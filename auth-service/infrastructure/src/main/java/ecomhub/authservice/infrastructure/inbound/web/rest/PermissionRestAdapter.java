@@ -13,7 +13,6 @@ import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiRes
 import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
