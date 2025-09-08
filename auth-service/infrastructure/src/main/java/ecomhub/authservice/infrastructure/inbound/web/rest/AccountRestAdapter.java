@@ -3,7 +3,6 @@ package ecomhub.authservice.infrastructure.inbound.web.rest;
 import ecomhub.authservice.application.port.bus.ICommandBus;
 import ecomhub.authservice.application.port.bus.IQueryBus;
 import ecomhub.authservice.common.dto.request.account.AssignRoleRequest;
-import ecomhub.authservice.common.dto.request.account.RegisterBasicRequest;
 import ecomhub.authservice.common.dto.request.account.RevokeRoleRequest;
 import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
@@ -27,21 +26,6 @@ import static ecomhub.authservice.infrastructure.inbound.web.mapper.AccountReque
 public class AccountRestAdapter {
     private final ICommandBus commandBus;
     private final IQueryBus queryBus;
-
-    @Operation(summary = "Register account", description = "Register account with basic information")
-    @StandardApiResponses(
-            successExample = @SuccessfulResponse(message = "Register account successfully", data = Object.class),
-            errorExamples = {
-                    @ErrorResponse(statusCode = "400", code = "REQUIRED_FIELD_MISSING", message = "Please enter your email"),
-                    @ErrorResponse(statusCode = "404", code = "RESOURCE_NOT_FOUND", message = "Sorry, we couldn't find the role you are looking for"),
-                    @ErrorResponse(statusCode = "409", code = "RESOURCE_ALREADY_EXISTS", message = "User with email 'abc@gmail.com' already exists")
-            }
-    )
-    @PostMapping("/register")
-    public ResponseEntity<?> registerAccount(@RequestBody RegisterBasicRequest request) {
-        commandBus.dispatch(toCommand(request));
-        return ResponseEntity.ok(ApiResponse.success(null, "Register account successfully"));
-    }
 
     @Operation(summary = "Assign role to account", description = "Assign role to account")
     @StandardApiResponses(

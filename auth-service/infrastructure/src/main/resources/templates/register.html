@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Registration</title>
+    <link rel="stylesheet" th:href="@{../auth.css}">
+</head>
+<body>
+<div th:replace="~{layout :: header}"></div>
+
+<main class="auth-main">
+    <div class="auth-container">
+        <h1 class="auth-title">Create account</h1>
+
+        <form th:action="@{/auth/register}" method="post">
+            <div class="form-group">
+                <label for="email" class="form-label">Enter your email</label>
+                <input type="email" id="email" name="email" class="form-input"
+                       th:value="${identityType == 'EMAIL'} ? ${identity} : ''">
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber" class="form-label">Enter mobile number</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input"
+                       th:value="${identityType == 'PHONE'} ? ${identity} : ''">
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">Enter your username</label>
+                <input type="text" id="username" name="username" class="form-input"
+                       th:value="${identityType == 'USERNAME'} ? ${identity} : ''">
+            </div>
+            <div class="form-group">
+                <label for="name" class="form-label">Your name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="First and last name" required>
+            </div>
+            <input type="hidden" name="provider" value="LOCAL" required>
+            <div class="form-group">
+                <label for="password" class="form-label">Password (at least 6 characters)</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+                <div class="info-box">
+                    <div class="info-icon">i</div>
+                    <span>Passwords must be at least 6 characters.</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password-confirm" class="form-label">Re-enter password</label>
+                <input type="password" id="password-confirm" name="password-confirm" class="form-input" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Verify email</button>
+
+            <div class="auth-section">
+                <div class="section-title">Already a customer?</div>
+                <a th:href="@{/auth}" class="link">Sign in instead</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>

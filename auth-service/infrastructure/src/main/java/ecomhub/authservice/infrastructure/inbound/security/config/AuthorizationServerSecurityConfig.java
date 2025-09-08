@@ -28,7 +28,8 @@ import java.util.Arrays;
 @EnableWebSecurity
 @Configuration
 public class AuthorizationServerSecurityConfig {
-    private static final String[] PUBLIC_AUTH_URLS = {"/login", "/favicon.ico", "/oauth2/token", "/oauth2/revoke", "/oauth2/jwts"};
+    private static final String[] PUBLIC_AUTH_URLS = {"/oauth2/token", "/oauth2/revoke", "/oauth2/jwts"};
+    private static final String[] AUTH_URLS = {"/auth/**", "/auth", "/auth.css"};
 
     @Bean
     @Order(1)
@@ -44,42 +45,51 @@ public class AuthorizationServerSecurityConfig {
                                                               CustomAuthenticationFailureHandler customAuthenticationFailureHandler
             , @Qualifier("corsConfigurationSource") CorsConfigurationSource configurationSource) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
-        http
-                .securityMatcher(new OrRequestMatcher(
-                        authorizationServerConfigurer.getEndpointsMatcher(),
-                        request -> Arrays.stream(PUBLIC_AUTH_URLS)
-                                .anyMatch(uri -> request.getRequestURI().startsWith(uri))
-                ))
-                .authorizeHttpRequests(auth ->
+        //match request
+        http.securityMatcher(new OrRequestMatcher(
+                authorizationServerConfigurer.getEndpointsMatcher(),
+                request -> Arrays.stream(AUTH_URLS)
+                        .anyMatch(uri -> request.getRequestURI().startsWith(uri))
+        ));
+        //authorize, cors and csrf
+        http.authorizeHttpRequests(auth ->
                         auth.requestMatchers(PUBLIC_AUTH_URLS).permitAll()
+                                .requestMatchers(AUTH_URLS).permitAll()
                                 .anyRequest().authenticated())
-                .formLogin(login -> login.loginPage("/login")
-                        .failureHandler(customAuthenticationFailureHandler)
-                        .permitAll())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
-                .cors(cors -> cors.configurationSource(configurationSource))
-                .userDetailsService(userDetailsService)
+                .cors(cors -> cors.configurationSource(configurationSource));
+        // oauth2
+        http.userDetailsService(userDetailsService)
                 .with(authorizationServerConfigurer, authorizationServer ->
                         authorizationServer
                                 .authorizationServerSettings(authorizationServerSettings)
+                                //token
                                 .tokenEndpoint(tokenEndpointConfigurer ->
                                         tokenEndpointConfigurer
                                                 .authenticationProvider(delegatingPublicClientTokenAuthenticationProvider)
                                                 .accessTokenRequestConverter(new DelegatingPublicClientTokenAuthenticationConverter())
                                                 .errorResponseHandler(customAuthenticationFailureHandler)
                                 )
+                                //revoke token
                                 .tokenRevocationEndpoint(tokenRevocationEndpointConfigurer ->
                                         tokenRevocationEndpointConfigurer
                                                 .authenticationProvider(publicClientTokenRevocationAuthenticationProvider)
                                                 .revocationRequestConverter(new PublicClientTokenRevocationAuthenticationConverter())
                                                 .errorResponseHandler(customAuthenticationFailureHandler)
                                 )
+                                //token generator
                                 .tokenGenerator(tokenGenerator)
-                ).authenticationProvider(daoAuthenticationProvider)
-                .exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(customAuthenticationEntryPoint)
-                                .accessDeniedHandler(customAccessDeniedHandler)
-                );
+                ).authenticationProvider(daoAuthenticationProvider);
+        //exception handling
+        http.exceptionHandling(exception ->
+                exception.authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
+        );
+        //login
+        http.formLogin(login -> login
+                .loginProcessingUrl("/auth/login")
+                .failureHandler(customAuthenticationFailureHandler)
+                .permitAll());
         return http.build();
     }
 }

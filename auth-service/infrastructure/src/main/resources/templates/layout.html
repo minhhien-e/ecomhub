@@ -1,0 +1,35 @@
+<!-- layout.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'Authentication'">Authentication</title>
+</head>
+<body>
+<!-- Header chung -->
+<div th:fragment="header">
+    <header class="auth-header">
+        <a href="#" class="amazon-logo">amazon</a>
+    </header>
+</div>
+
+<!-- Nội dung động -->
+<main class="auth-main">
+    <div th:fragment="content"></div>
+</main>
+
+<!-- Footer chung -->
+<div th:fragment="footer">
+    <footer class="auth-footer">
+        <div class="footer-links">
+            <a href="#" class="link">Conditions of Use</a>
+            <a href="#" class="link">Privacy Notice</a>
+            <a href="#" class="link">Help</a>
+        </div>
+        <div class="copyright">
+            © 1996-2025, Amazon.com, Inc. or its affiliates
+        </div>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vn">
+<html lang="vi">
 <head>
-    <title>Đăng nhập</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amazon Sign-in</title>
+    <link rel="stylesheet" th:href="@{../auth.css}">
 </head>
 <body>
-<h2>Đăng nhập</h2>
-<form th:action="@{/login}" method="post">
-    <label>Tên đăng nhập:</label>
-    <label>
-        <input type="text" name="username"/>
-    </label><br/>
+<div th:replace="~{layout :: header}"></div>
 
-    <label>Mật khẩu:</label>
-    <label>
-        <input type="password" name="password"/>
-    </label><br/>
+<main class="auth-main">
+    <div class="auth-container">
+        <h1 class="auth-title">Sign in</h1>
 
-    <button type="submit">Đăng nhập</button>
-</form>
-<p th:if="${param.error}" class="text-danger">Tài khoản hoặc mật khẩu không đúng.</p>
+        <div class="user-info">
+            <span class="user-email" th:text="${identity}">email_here</span>
+            <a th:href="@{/auth}" class="link">Change</a>
+        </div>
+
+        <form th:action="@{/auth/login}" method="post">
+            <div class="form-group">
+                <div class="form-label-row">
+                    <label for="password" class="form-label">Password</label>
+                    <a href="#" class="link link-small">Forgot password?</a>
+                </div>
+                <input type="hidden" name="username" th:value="${identity}">
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Sign in</button>
+        </form>
+    </div>
+</main>
+<div th:replace="~{layout :: footer}"></div>
+
 </body>
 </html>

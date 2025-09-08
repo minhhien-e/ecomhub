@@ -21,7 +21,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         if (request.getRequestURI().startsWith("/oauth2/authorize") && request.getMethod().equals("GET")) {
-            response.sendRedirect("/login");
+            response.sendRedirect("/auth");
             return;
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
