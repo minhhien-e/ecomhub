@@ -15,6 +15,8 @@ public class AccountRequestMapper {
     public static RegisterAccountCommand toCommand(RegisterBasicRequest request) {
         return new RegisterAccountCommand(request.username(),
                 request.password(),
+                request.passwordConfirm(),
+                request.fullName(),
                 request.email(),
                 request.phoneNumber(),
                 request.provider());

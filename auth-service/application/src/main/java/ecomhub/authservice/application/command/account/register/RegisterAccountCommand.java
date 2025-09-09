@@ -9,6 +9,8 @@ import lombok.Data;
 public class RegisterAccountCommand implements ICommand {
     private String username;
     private String password;
+    private String passwordConfirm;
+    private String fullName;
     private String email;
     private String phoneNumber;
     private String provider;

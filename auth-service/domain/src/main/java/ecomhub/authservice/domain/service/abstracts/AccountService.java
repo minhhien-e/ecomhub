@@ -8,5 +8,5 @@ public interface AccountService {
 
     void revokeRole(Account targetAccount, Role targetRole, Account requester);
 
-    void register(Account account, Role role);
+    Account register(String username, String email, String phoneNumber, String password, String passwordConfirm, String provider, Role role);
 }

@@ -1,5 +1,8 @@
 package ecomhub.authservice.infrastructure.inbound.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import ecomhub.authservice.infrastructure.inbound.security.exception.CustomAccessDeniedHandler;
+import ecomhub.authservice.infrastructure.inbound.security.exception.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +16,15 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 public class ApiSecurityConfig {
-    private static final String[] PUBLIC_API_URLS = {"/api/v*/auth/account/register", "/actuator/**"};
+    private static final String[] PUBLIC_API_URLS = {"/api/v1/auth/account/register", "/actuator/**"};
 
     @Bean
     @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http,
                                               @Qualifier("corsConfigurationSource") CorsConfigurationSource configurationSource,
-                                              JwtAuthenticationConverter converter) throws Exception {
+                                              JwtAuthenticationConverter converter,
+                                              ObjectMapper objectMapper
+    ) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(configurationSource)).csrf(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -34,6 +39,9 @@ public class ApiSecurityConfig {
                         .jwt(jwtConfigurer -> jwtConfigurer
                                 .jwtAuthenticationConverter(converter)))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(handling -> handling
+                        .accessDeniedHandler(new CustomAccessDeniedHandler(objectMapper))
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint(objectMapper)))
                 .build();
     }
 }

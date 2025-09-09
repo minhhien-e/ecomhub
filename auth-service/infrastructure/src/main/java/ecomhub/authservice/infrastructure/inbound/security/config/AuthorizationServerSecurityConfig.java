@@ -1,10 +1,12 @@
 package ecomhub.authservice.infrastructure.inbound.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ecomhub.authservice.infrastructure.inbound.security.converter.DelegatingPublicClientTokenAuthenticationConverter;
 import ecomhub.authservice.infrastructure.inbound.security.converter.PublicClientTokenRevocationAuthenticationConverter;
 import ecomhub.authservice.infrastructure.inbound.security.exception.CustomAccessDeniedHandler;
 import ecomhub.authservice.infrastructure.inbound.security.exception.CustomAuthenticationEntryPoint;
-import ecomhub.authservice.infrastructure.inbound.security.exception.CustomAuthenticationFailureHandler;
+import ecomhub.authservice.infrastructure.inbound.security.exception.FormAuthenticationFailureHandler;
+import ecomhub.authservice.infrastructure.inbound.security.exception.Oauth2AuthenticationFailureHandler;
 import ecomhub.authservice.infrastructure.inbound.security.provider.DelegatingPublicClientTokenAuthenticationProvider;
 import ecomhub.authservice.infrastructure.inbound.security.provider.PublicClientTokenRevocationAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,15 +38,16 @@ public class AuthorizationServerSecurityConfig {
     public SecurityFilterChain authorizationServerFilterChain(HttpSecurity http,
                                                               UserDetailsService userDetailsService,
                                                               AuthorizationServerSettings authorizationServerSettings,
+                                                              ObjectMapper objectMapper,
                                                               OAuth2TokenGenerator<OAuth2Token> tokenGenerator,
                                                               DelegatingPublicClientTokenAuthenticationProvider delegatingPublicClientTokenAuthenticationProvider,
                                                               DaoAuthenticationProvider daoAuthenticationProvider,
                                                               PublicClientTokenRevocationAuthenticationProvider publicClientTokenRevocationAuthenticationProvider,
-                                                              CustomAccessDeniedHandler customAccessDeniedHandler,
-                                                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint,
-                                                              CustomAuthenticationFailureHandler customAuthenticationFailureHandler
-            , @Qualifier("corsConfigurationSource") CorsConfigurationSource configurationSource) throws Exception {
+                                                              CustomAuthenticationEntryPoint customAuthenticationEntryPoint, @Qualifier("corsConfigurationSource") CorsConfigurationSource configurationSource) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
+        Oauth2AuthenticationFailureHandler customAuthenticationFailureHandler = new Oauth2AuthenticationFailureHandler(objectMapper);
+        CustomAccessDeniedHandler customAccessDeniedHandler = new CustomAccessDeniedHandler(objectMapper);
+
         //match request
         http.securityMatcher(new OrRequestMatcher(
                 authorizationServerConfigurer.getEndpointsMatcher(),
@@ -88,7 +91,7 @@ public class AuthorizationServerSecurityConfig {
         //login
         http.formLogin(login -> login
                 .loginProcessingUrl("/auth/login")
-                .failureHandler(customAuthenticationFailureHandler)
+                .failureHandler(new FormAuthenticationFailureHandler())
                 .permitAll());
         return http.build();
     }

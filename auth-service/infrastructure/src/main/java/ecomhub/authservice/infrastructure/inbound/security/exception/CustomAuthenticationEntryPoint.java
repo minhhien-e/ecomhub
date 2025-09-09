@@ -3,7 +3,6 @@ package ecomhub.authservice.infrastructure.inbound.security.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.enums.ErrorCode;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         if (request.getRequestURI().startsWith("/oauth2/authorize") && request.getMethod().equals("GET")) {
             response.sendRedirect("/auth");
             return;
@@ -27,8 +26,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        ApiResponse<?> apiResponse;
-        apiResponse = ApiResponse.error(
+        ApiResponse<?> apiResponse = ApiResponse.error(
                 response.getStatus(),
                 ErrorCode.UNAUTHORIZED.name(),
                 authException.getMessage()

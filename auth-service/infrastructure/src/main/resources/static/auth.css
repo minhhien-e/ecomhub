@@ -1,4 +1,4 @@
-/* Amazon Auth Pages - Reusable Styles */
+/* Amazon Auth Pages - Complete Reusable Styles */
 
 /* Reset và Base Styles */
 * {
@@ -47,6 +47,7 @@ body {
 
 /* Main Content Layout */
 .auth-main {
+    position: relative;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -56,6 +57,7 @@ body {
 
 /* Auth Container */
 .auth-container {
+    position: relative;
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -121,6 +123,64 @@ body {
     outline: none;
     border-color: #e47911;
     box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.3);
+}
+
+/* Error States */
+.form-input.error {
+    border-color: #d13212;
+    background-color: #fdf2f2;
+}
+
+.form-input.error:focus {
+    border-color: #d13212;
+    box-shadow: 0 0 3px 2px rgba(209, 50, 18, 0.3);
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    color: #d13212;
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.2;
+}
+
+.error-icon {
+    width: 14px;
+    height: 14px;
+    background-color: #d13212;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+/* Error Container (Top Right) */
+.error-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+#error-box {
+    color: #d13212;
+    background-color: #fdf2f2;
+    border: 1px solid #d13212;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: none;
+}
+
+#error-box:not(:empty) {
+    display: block;
 }
 
 /* Buttons */
@@ -217,12 +277,26 @@ body {
     margin-bottom: 10px;
 }
 
+/* Success Message */
+.success-box {
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    display: none;
+}
+
 /* Info Box */
 .info-box {
     display: flex;
     align-items: flex-start;
+    background-color: #ddd;
+    border: 1px solid #c4c4c4;
     border-radius: 4px;
-    padding: 8px 10px 8px 0;
+    padding: 8px 10px;
     margin-bottom: 15px;
     font-size: 12px;
     color: #0f1111;
@@ -298,11 +372,40 @@ body {
     color: #555;
 }
 
+/* Loading State */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
     .auth-container {
         padding: 20px;
         margin: 0 10px;
+        max-width: none;
     }
 
     .auth-title {
@@ -322,5 +425,60 @@ body {
 
     .form-label-row .link {
         margin-top: 5px;
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .error-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        min-width: auto;
+    }
+
+    #error-box,
+    .success-box {
+        border-radius: 6px;
+        padding: 14px 18px 14px 45px;
+        font-size: 13px;
+    }
+
+    #error-box::before,
+    .success-box::before {
+        font-size: 16px;
+        left: 14px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: more) {
+    .form-input {
+        border-color: #000;
+    }
+
+    .form-input:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 2px #000;
+    }
+
+    .btn-primary {
+        background: #ffff00;
+        border-color: #000;
+        color: #000;
     }
 }

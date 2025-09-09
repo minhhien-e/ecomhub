@@ -10,6 +10,9 @@
 <div th:replace="~{layout :: header}"></div>
 
 <main class="auth-main">
+    <div class="error-container">
+        <div id="error-box" th:value="${errorMessage}"></div>
+    </div>
     <div class="auth-container">
         <h1 class="auth-title">Sign in</h1>
 

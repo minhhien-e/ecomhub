@@ -1,6 +1,7 @@
 package ecomhub.authservice.domain.service.impl;
 
 import ecomhub.authservice.common.exception.abstracts.ForbiddenException;
+import ecomhub.authservice.common.exception.concrete.account.PasswordNotMatchException;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
@@ -32,9 +33,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void register(Account account, Role role) {
+    public Account register(String username, String email, String phoneNumber, String password, String passwordConfirm, String provider, Role role) {
+        if (!password.equals(passwordConfirm)) {
+            throw new PasswordNotMatchException();
+        }
+        var account = new Account(email, username, phoneNumber, password, provider);
         account.hashPassword(passwordHashService.hash(account.getRawPassword()));
         account.assignRole(role);
+        return account;
     }
 
 }
