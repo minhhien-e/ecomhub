@@ -2,13 +2,13 @@ package ecomhub.authservice.application.command.role.add;
 
 import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.application.mapper.RoleMapper;
-import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
-import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.common.exception.concrete.role.RoleAlreadyExistsException;
 import ecomhub.authservice.domain.entity.Permission;
-import jakarta.transaction.Transactional;
+import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
+import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;

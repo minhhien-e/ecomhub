@@ -7,21 +7,21 @@ import ecomhub.authservice.common.exception.concrete.account.UsernameAlreadyExis
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static ecomhub.authservice.domain.constant.RoleKeyConstants.CUSTOMER;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RegisterAccountHandler implements ICommandHandler<RegisterAccountCommand> {
     private final AccountRepositoryPort accountRepository;
     private final RoleRepositoryPort roleRepository;
     private final AccountService accountService;
 
     @Override
-    @Transactional
     public void handle(RegisterAccountCommand command) {
         if (accountRepository.existsByIdentifier(command.getEmail())) {
             throw new EmailAlreadyExistsException(command.getEmail());

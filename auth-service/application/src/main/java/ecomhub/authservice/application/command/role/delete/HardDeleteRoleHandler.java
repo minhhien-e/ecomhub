@@ -4,7 +4,7 @@ import ecomhub.authservice.application.command.abstracts.ICommandHandler;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.RoleService;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service

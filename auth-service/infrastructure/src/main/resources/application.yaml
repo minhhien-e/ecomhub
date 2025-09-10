@@ -5,8 +5,8 @@ spring:
     name: auth-service
   data:
     redis:
-      port: 6379
-      host: localhost
+      port: ${SPRING_REDIS_PORT:6379}
+      host: ${SPRING_REDIS_HOST:localhost}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:ecomhub_auth}
@@ -15,7 +15,7 @@ spring:
   security:
     oauth2:
       authorizationserver:
-        issuer: http://localhost:8081
+        issuer: http://ecomhub_auth:8081
   jpa:
     hibernate:
       ddl-auto: none

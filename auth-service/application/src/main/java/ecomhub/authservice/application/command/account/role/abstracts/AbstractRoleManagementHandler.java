@@ -1,11 +1,11 @@
 package ecomhub.authservice.application.command.account.role.abstracts;
 
+import ecomhub.authservice.common.utils.TriConsumer;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.AccountService;
-import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.UUID;
 

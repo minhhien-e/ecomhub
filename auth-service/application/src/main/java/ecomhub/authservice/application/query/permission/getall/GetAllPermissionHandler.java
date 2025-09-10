@@ -6,11 +6,13 @@ import ecomhub.authservice.application.query.abstracts.IQueryHandler;
 import ecomhub.authservice.domain.repository.PermissionRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GetAllPermissionHandler implements IQueryHandler<GetAllPermissionQuery, List<PermissionDto>> {
     private final PermissionRepositoryPort permissionRepository;
 

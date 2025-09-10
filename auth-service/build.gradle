@@ -12,6 +12,11 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
+ext {
+    springVersion = '6.2.10'
+    springDataJpaVersion = '3.3.0'
+    lombokVersion = '1.18.36'
+}
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'

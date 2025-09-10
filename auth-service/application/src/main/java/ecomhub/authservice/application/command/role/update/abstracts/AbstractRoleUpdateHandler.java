@@ -1,12 +1,12 @@
 package ecomhub.authservice.application.command.role.update.abstracts;
 
 import ecomhub.authservice.common.exception.abstracts.UpdateFailureException;
+import ecomhub.authservice.common.utils.TriConsumer;
 import ecomhub.authservice.domain.entity.Account;
 import ecomhub.authservice.domain.entity.Role;
 import ecomhub.authservice.domain.repository.AccountRepositoryPort;
 import ecomhub.authservice.domain.repository.RoleRepositoryPort;
 import ecomhub.authservice.domain.service.abstracts.RoleService;
-import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.UUID;
 
