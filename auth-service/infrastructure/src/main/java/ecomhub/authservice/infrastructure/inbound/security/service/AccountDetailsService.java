@@ -38,7 +38,7 @@ public class AccountDetailsService implements UserDetailsService {
         return User.builder()
                 .username(account.getId().toString())
                 .password(account.getHashedPassword().get().getHashedValue())
-                .roles(account.getRoles()
+                .authorities(account.getRoles()
                         .stream().map(Role::getPermissions)
                         .flatMap(Collection::stream)
                         .map(permission -> permission.getKey().getValue())

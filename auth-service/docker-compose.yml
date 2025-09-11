@@ -1,6 +1,6 @@
 services:
   app:
-    image: minhhien6634/ecomhub:auth-2025-09-10
+    image: minhhien6634/ecomhub:auth-2025-09-11
     container_name: ecomhub_auth
     ports:
       - "8081:8081"

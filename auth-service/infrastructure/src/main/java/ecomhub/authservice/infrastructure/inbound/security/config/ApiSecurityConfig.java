@@ -19,7 +19,7 @@ public class ApiSecurityConfig {
     private static final String[] PUBLIC_API_URLS = {"/api/v1/auth/account/register", "/actuator/**"};
 
     @Bean
-    @Order(2)
+    @Order(3)
     public SecurityFilterChain apiFilterChain(HttpSecurity http,
                                               @Qualifier("corsConfigurationSource") CorsConfigurationSource configurationSource,
                                               JwtAuthenticationConverter converter,
