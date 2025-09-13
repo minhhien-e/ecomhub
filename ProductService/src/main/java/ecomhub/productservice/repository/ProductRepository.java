@@ -66,61 +66,75 @@ public interface ProductRepository extends MongoRepository<Product, UUID> {
     }
 
     default void updateVariantStock(UUID variantId, int quantity, MongoTemplate mongoTemplate) {
-        Query query = new Query(Criteria.where("variants.id").is(variantId));
-        Product product = mongoTemplate.findOne(query, Product.class);
-        if (product == null) {
-            throw new ProductNotFoundException("Product variant");
-        }
+        Product.ProductVariant variant = getVariantOrThrow(variantId, mongoTemplate);
 
-        Product.ProductVariant variant = product.getVariants().stream()
-                .filter(v -> v.getId().equals(variantId))
-                .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product variant"));
-
-        // Trước tiên giải phóng reserve nếu có (giả sử purchase dùng reserve)
-        int reservedToDeduct = Math.min(quantity, variant.getReserveStock() != null ? variant.getReserveStock() : 0);
+        // Giải phóng reserve trước nếu có
+        int reservedToDeduct = Math.min(quantity, safeValue(variant.getReserveStock()));
         int actualStockDeduct = quantity - reservedToDeduct;
-        int newStock = (variant.getStock() != null ? variant.getStock() : 0) - actualStockDeduct;
-        int newReserved = (variant.getReserveStock() != null ? variant.getReserveStock() : 0) - reservedToDeduct;
+        int newStock = safeValue(variant.getStock()) - actualStockDeduct;
+        int newReserved = safeValue(variant.getReserveStock()) - reservedToDeduct;
 
         if (newStock < 0 || newReserved < 0) {
             throw new ProductValidationException("Insufficient stock or reserved quantity");
         }
 
-        Update update = new Update()
+        Update update = baseUpdate()
                 .set("variants.$.stock", newStock)
-                .set("variants.$.reserveStock", newReserved)
-                .set("variants.$.updatedAt", Instant.now())
-                .set("updatedAt", Instant.now());
-        mongoTemplate.updateFirst(
-                new Query(Criteria.where("variants.id").is(variantId)),
-                update,
-                Product.class
-        );
+                .set("variants.$.reserveStock", newReserved);
+
+        applyUpdate(variantId, mongoTemplate, update);
     }
 
     default void reserveVariantStock(UUID variantId, int quantity, MongoTemplate mongoTemplate) {
-        Query query = new Query(Criteria.where("variants.id").is(variantId));
-        Product product = mongoTemplate.findOne(query, Product.class);
-        if (product == null) {
-            throw new ProductNotFoundException("Product variant");
-        }
-
-        Product.ProductVariant variant = product.getVariants().stream()
-                .filter(v -> v.getId().equals(variantId))
-                .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product variant"));
+        Product.ProductVariant variant = getVariantOrThrow(variantId, mongoTemplate);
 
         if (variant.getAvailableStock() < quantity) {
             throw new ProductValidationException("Insufficient available stock");
         }
 
-        int newReserved = (variant.getReserveStock() != null ? variant.getReserveStock() : 0) + quantity;
+        int newReserved = safeValue(variant.getReserveStock()) + quantity;
 
-        Update update = new Update()
-                .set("variants.$.reserveStock", newReserved)
+        Update update = baseUpdate()
+                .set("variants.$.reserveStock", newReserved);
+
+        applyUpdate(variantId, mongoTemplate, update);
+    }
+
+    default void unreserveVariantStock(UUID variantId, int quantity, MongoTemplate mongoTemplate) {
+        Product.ProductVariant variant = getVariantOrThrow(variantId, mongoTemplate);
+
+        int newReserved = safeValue(variant.getReserveStock()) - quantity;
+        if (newReserved < 0) {
+            throw new ProductValidationException("Cannot unreserve more than reserved");
+        }
+
+        Update update = baseUpdate()
+                .set("variants.$.reserveStock", newReserved);
+
+        applyUpdate(variantId, mongoTemplate, update);
+    }
+
+    //helper methods
+    private Product.ProductVariant getVariantOrThrow(UUID variantId, MongoTemplate mongoTemplate) {
+        Query query = new Query(Criteria.where("variants.id").is(variantId));
+        Product product = mongoTemplate.findOne(query, Product.class);
+        if (product == null) {
+            throw new ProductNotFoundException("Product variant");
+        }
+
+        return product.getVariants().stream()
+                .filter(v -> v.getId().equals(variantId))
+                .findFirst()
+                .orElseThrow(() -> new ProductNotFoundException("Product variant"));
+    }
+
+    private Update baseUpdate() {
+        return new Update()
                 .set("variants.$.updatedAt", Instant.now())
                 .set("updatedAt", Instant.now());
+    }
+
+    private void applyUpdate(UUID variantId, MongoTemplate mongoTemplate, Update update) {
         mongoTemplate.updateFirst(
                 new Query(Criteria.where("variants.id").is(variantId)),
                 update,
@@ -128,31 +142,7 @@ public interface ProductRepository extends MongoRepository<Product, UUID> {
         );
     }
 
-    default void unreserveVariantStock(UUID variantId, int quantity, MongoTemplate mongoTemplate) {
-        Query query = new Query(Criteria.where("variants.id").is(variantId));
-        Product product = mongoTemplate.findOne(query, Product.class);
-        if (product == null) {
-            throw new ProductNotFoundException("Product variant");
-        }
-
-        Product.ProductVariant variant = product.getVariants().stream()
-                .filter(v -> v.getId().equals(variantId))
-                .findFirst()
-                .orElseThrow(() -> new ProductNotFoundException("Product variant"));
-
-        int newReserved = (variant.getReserveStock() != null ? variant.getReserveStock() : 0) - quantity;
-        if (newReserved < 0) {
-            throw new ProductValidationException("Cannot unreserve more than reserved");
-        }
-
-        Update update = new Update()
-                .set("variants.$.reserveStock", newReserved)
-                .set("variants.$.updatedAt", Instant.now())
-                .set("updatedAt", Instant.now());
-        mongoTemplate.updateFirst(
-                new Query(Criteria.where("variants.id").is(variantId)),
-                update,
-                Product.class
-        );
+    private int safeValue(Integer value) {
+        return value != null ? value : 0;
     }
 }
