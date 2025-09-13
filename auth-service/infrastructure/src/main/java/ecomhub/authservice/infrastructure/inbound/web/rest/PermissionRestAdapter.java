@@ -8,9 +8,9 @@ import ecomhub.authservice.common.dto.request.permisison.UpdateDescriptionPermis
 import ecomhub.authservice.common.dto.request.permisison.UpdateNamePermissionRequest;
 import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.dto.response.PermissionResponse;
-import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
-import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
-import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.ErrorResponse;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.StandardApiResponses;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.SuccessfulResponse;
 import ecomhub.authservice.infrastructure.inbound.web.mapper.PermissionRequestMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

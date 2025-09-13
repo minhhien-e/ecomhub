@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.config;
+package ecomhub.authservice.infrastructure.inbound.web.swagger.config;
 
 import ecomhub.authservice.common.dto.response.ApiResponse;
 import ecomhub.authservice.common.dto.response.PermissionResponse;

@@ -1,8 +1,8 @@
-package ecomhub.authservice.infrastructure.config;
+package ecomhub.authservice.infrastructure.inbound.web.swagger.config;
 
-import ecomhub.authservice.infrastructure.inbound.web.annotations.ErrorResponse;
-import ecomhub.authservice.infrastructure.inbound.web.annotations.StandardApiResponses;
-import ecomhub.authservice.infrastructure.inbound.web.annotations.SuccessfulResponse;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.ErrorResponse;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.StandardApiResponses;
+import ecomhub.authservice.infrastructure.inbound.web.swagger.annotation.SuccessfulResponse;
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.core.converter.ResolvedSchema;

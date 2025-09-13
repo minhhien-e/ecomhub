@@ -1,4 +1,4 @@
-package ecomhub.authservice.infrastructure.inbound.web.annotations;
+package ecomhub.authservice.infrastructure.inbound.web.swagger.annotation;
 
 import java.lang.annotation.*;
 
