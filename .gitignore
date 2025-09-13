@@ -35,6 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+<<<<<<< HEAD
 
 ### Java ###
 *.class
@@ -77,3 +78,5 @@ Thumbs.db
 
 # Other
 *.swp
+=======
+>>>>>>> 9cfa609de7df95886e5e3a05821c84bb822ded90
