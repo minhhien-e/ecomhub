@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,8 +50,10 @@ public class SecurityBeansConfig {
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
             if (context.getPrincipal() instanceof UsernamePasswordAuthenticationToken userDetails) {
-                context.getClaims().claims((map) -> map.put("permissionKey", userDetails.getAuthorities()));
-                context.getClaims().claim("accountId", ((UserDetails) userDetails.getPrincipal()).getUsername());
+                List<String> authorities = userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList();
+                context.getClaims().claims((map) -> map.put("authorities", authorities));
             }
         };
     }
@@ -60,11 +62,12 @@ public class SecurityBeansConfig {
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults("");
     }
+
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
-            List<String> permissions = jwt.getClaimAsStringList("permissionKey");
+            List<String> permissions = jwt.getClaimAsStringList("authorities");
             if (permissions == null) permissions = Collections.emptyList();
             return permissions.stream()
                     .map(SimpleGrantedAuthority::new)
