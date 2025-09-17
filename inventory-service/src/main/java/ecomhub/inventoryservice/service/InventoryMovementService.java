@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 //@RequiredArgsConstructor
 public class InventoryMovementService {
-
+//sdfsdfsdfsdfsdf
     private final InventoryMovementRepository repository;
     private final ProductServiceClient productServiceClient;
 
