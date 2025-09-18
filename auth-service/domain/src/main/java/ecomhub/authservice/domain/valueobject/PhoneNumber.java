@@ -7,12 +7,13 @@ import ecomhub.authservice.common.utils.StringUtils;
 import java.util.Objects;
 
 public class PhoneNumber {
+    private static final String VIETNAM_PHONE_NUMBER_REGEX = "^(0|\\+84)[3|5|7|8|9]\\d{8}$";
     private final String value;
 
     public PhoneNumber(String value) {
         if (StringUtils.isNullOrBlank(value))
             throw new MissingPhoneNumberException();
-        if (!value.matches("^(0|\\+84)[3|5|7|8|9]\\d{8}$"))
+        if (!value.matches(VIETNAM_PHONE_NUMBER_REGEX))
             throw new InvalidPhoneNumberFormatException(value);
         this.value = value;
     }
