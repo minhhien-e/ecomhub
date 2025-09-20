@@ -1,0 +1,41 @@
+services:
+  app:
+    image: minhhien6634/ecomhub:auth-2025-09-16
+    container_name: ecomhub_auth
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/ecomhub_auth
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: ecomhub_auth_redis
+      SPRING_REDIS_PORT: 6379
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8.0
+    container_name: ecomhub_auth_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ecomhub_auth
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.0
+    container_name: ecomhub_auth_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+
+
+volumes:
+  mysql-data:
+  redis-data:
