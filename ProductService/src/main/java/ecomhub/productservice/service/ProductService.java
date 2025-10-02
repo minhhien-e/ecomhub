@@ -21,6 +21,6 @@ public interface ProductService {
     List<ProductResponse.ProductVariantDTO> getProductVariants(UUID productId);
     void processPurchase(UUID variantId, int quantity);
     void reserveStock(UUID variantId, int quantity);  // Thêm mới
-    void unreserveStock(UUID variantId, int quantity);  // Thêm mới
+    void unReserveStock(UUID variantId, int quantity);  // Thêm mới
     Page<ProductResponse> filterProducts(Map<String, String> filters, String logic, Pageable pageable);
 }

@@ -1,4 +1,4 @@
-package ecomhub.productservice.util;
+package ecomhub.productservice.helper;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -6,7 +6,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Optional;
 import java.util.UUID;
 
-public class SecurityUtils {
+public final class AuthHelper {
+
+    private AuthHelper() {}
 
     public static Optional<UUID> getCurrentUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

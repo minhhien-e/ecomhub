@@ -1,5 +1,5 @@
 server:
-  port: 8090
+  port: 8095
 
 spring:
   application:
@@ -7,10 +7,38 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/ecomhub
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongodb:27017/ecomhub}
       uuid-representation: standard
 
-logging:
-  level:
-    root: INFO
-    ecomhub.productservice: DEBUG
+  # Kafka config (từ MessageQueueService)
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: product-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+  # OAuth2 Resource Server (JWT từ AuthService - adjust port theo AuthService của bạn, giả sử 8081)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081  # Issuer từ AuthService[](http://localhost:8081)
+          jwk-set-uri: http://localhost:8081/.well-known/jwks.json  # JWKS endpoint từ AuthService
+
+# App-specific (JWT fallback nếu cần symmetric)
+app:
+  jwt:
+    secret: your-shared-secret-if-symmetric  # Chỉ dùng nếu không có RSA keys
+
+#logging:
+#  level:
+#    root: INFO
+#    ProductService: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.cloud: DEBUG
+#    org.apache.kafka: WARN

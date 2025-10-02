@@ -131,8 +131,7 @@ public class ProductMapper {
         variantDto.setId(variant.getId().toString());
         variantDto.setSku(variant.getSku());
         variantDto.setPrice(variant.getPrice());
-        variantDto.setStock(variant.getStock());
-        variantDto.setReserveStock(variant.getReserveStock());  // Thêm mapping này
+        variantDto.setAvailableStock(variant.getAvailableStock());
         variantDto.setVariantStatus(variant.getVariantStatus());
         variantDto.setCreatedAt(variant.getCreatedAt());
         variantDto.setUpdatedAt(variant.getUpdatedAt());

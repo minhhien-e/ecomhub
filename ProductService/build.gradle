@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.3'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.3.3'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'ecomhub'
@@ -24,32 +24,48 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2025.0.0")
+    set('springCloudVersion', "2023.0.3")
 }
 
 dependencies {
+    // Reactive Redis cho cache (nếu cần, ví dụ session hoặc cache product)
     implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    // Thêm cái này để dùng JWT với WebFlux Resource Server
+    // Core WebFlux cho reactive API
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Gateway server nếu ProductService cần route (tùy chọn, nếu không thì comment lại)
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway-server-webflux'
+
+    // Eureka client cho service discovery (microservice essential)
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // Security core
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // OAuth2 Resource Server cho JWT verify (từ AuthService)
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // MongoDB reactive
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    // Tests
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // Kafka cho messaging (từ MessageQueueService)
     implementation 'org.springframework.kafka:spring-kafka'
-}
 
+    // Không bật spring-boot-starter-web vì dùng WebFlux (blocking)
+    // implementation 'org.springframework.boot:spring-boot-starter-web'
+}
 
 dependencyManagement {
     imports {

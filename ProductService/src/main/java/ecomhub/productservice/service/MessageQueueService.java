@@ -27,36 +27,3 @@ public class MessageQueueService {
         }
     }
 }
-
-//package ecomhub.productservice.service;
-//
-//import lombok.Getter;
-//import lombok.Setter;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.kafka.core.KafkaTemplate;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.UUID;
-//
-//@Service
-//public class MessageQueueService {
-//    @Autowired
-//    private KafkaTemplate<String, InventoryUpdateMessage> kafkaTemplate;
-//
-//    public void sendInventoryUpdateMessage(UUID variantId, int quantity) {
-//        InventoryUpdateMessage message = new InventoryUpdateMessage(variantId, quantity);
-//        kafkaTemplate.send("inventory-updates", message);
-//    }
-//
-//    @Setter
-//    @Getter
-//    public static class InventoryUpdateMessage {
-//        private UUID variantId;
-//        private int quantity;
-//
-//        public InventoryUpdateMessage(UUID variantId, int quantity) {
-//            this.variantId = variantId;
-//            this.quantity = quantity;
-//        }
-//    }
-//}

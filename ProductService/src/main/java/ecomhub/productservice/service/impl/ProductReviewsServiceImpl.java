@@ -2,11 +2,11 @@ package ecomhub.productservice.service.impl;
 
 import ecomhub.productservice.dto.request.ProductRequest;
 import ecomhub.productservice.dto.response.ProductResponse;
+import ecomhub.productservice.helper.AuthHelper;
 import ecomhub.productservice.mapper.ProductMapper;
 import ecomhub.productservice.model.ProductReviews;
 import ecomhub.productservice.repository.ProductReviewsRepository;
 import ecomhub.productservice.service.ProductReviewsService;
-import ecomhub.productservice.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,10 +24,9 @@ public class ProductReviewsServiceImpl implements ProductReviewsService {
     private final ProductMapper productMapper;
 
     @Override
-    @Transactional
     public void saveReviews(UUID productId, List<ProductRequest.ProductReviewDTO> reviews) {
         if (reviews != null && !reviews.isEmpty()) {
-            UUID userIdFromToken = SecurityUtils.getCurrentUserId().orElse(null);
+            UUID userIdFromToken = AuthHelper.getCurrentUserId().orElse(null);
 
             List<ProductReviews> productReviews = reviews.stream()
                     .map(r -> productMapper.toProductReviewEntity(r, userIdFromToken))

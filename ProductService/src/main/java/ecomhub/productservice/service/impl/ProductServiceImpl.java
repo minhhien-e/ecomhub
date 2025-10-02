@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
     private final ProductReviewsService productReviewsService;
     private final ProductMapper productMapper;
     private final MessageQueueService messageQueueService;
-    private final MongoTemplate mongoTemplate;
 
     @Override
     @Transactional(readOnly = true)
@@ -101,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void processPurchase(UUID variantId, int quantity) {
-        productRepository.updateVariantStock(variantId, quantity, mongoTemplate);
+        productRepository.updateVariantStock(variantId, quantity);
         messageQueueService.sendInventoryUpdateMessage(variantId, quantity);
         log.info("Processed purchase for variant ID: {}", variantId);
     }
@@ -109,14 +107,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void reserveStock(UUID variantId, int quantity) {
-        productRepository.reserveVariantStock(variantId, quantity, mongoTemplate);
+        productRepository.reserveVariantStock(variantId, quantity);
         log.info("Reserved stock for variant ID: {}", variantId);
     }
 
     @Override
     @Transactional
-    public void unreserveStock(UUID variantId, int quantity) {
-        productRepository.unreserveVariantStock(variantId, quantity, mongoTemplate);
+    public void unReserveStock(UUID variantId, int quantity) {
+        productRepository.unReserveVariantStock(variantId, quantity);
         log.info("Unreserved stock for variant ID: {}", variantId);
     }
 
@@ -155,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public Page<ProductResponse> filterProducts(Map<String, String> filters, String logic, Pageable pageable) {
-        Page<Product> page = productRepository.findByDynamicFilters(filters, logic, pageable, mongoTemplate);
+        Page<Product> page = productRepository.findByDynamicFilters(filters, logic, pageable);
         return page.map(product -> productMapper.toResponseDTO(product,
                 productImagesService.getImagesByProductId(product.getId()),
                 productReviewsService.getReviewsByProductId(product.getId())));
