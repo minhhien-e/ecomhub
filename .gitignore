@@ -1,4 +1,8 @@
 ### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -9,11 +13,21 @@ out/
 .factorypath
 .project
 .settings
-.springBeans
-.sts4-cache
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
+
+### STS ###
+.springBeans
+.sts4-cache
+
+### Gradle ###
+HELP.md
+.gradle
+build/
+!gradle/wwrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### NetBeans ###
 /nbproject/private/
