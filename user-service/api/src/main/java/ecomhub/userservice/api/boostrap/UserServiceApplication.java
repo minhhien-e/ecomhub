@@ -3,7 +3,9 @@ package ecomhub.userservice.api.boostrap;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "ecomhub.userservice.api", "ecomhub.userservice.infrastructure", "ecomhub.userservice.application"
+})
 public class UserServiceApplication {
 
     public static void main(String[] args) {

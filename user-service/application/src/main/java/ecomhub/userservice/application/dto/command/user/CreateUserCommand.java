@@ -1,6 +1,15 @@
 package ecomhub.userservice.application.dto.command.user;
 
-import ecomhub.userservice.application.dto.command.base.Command;
+import ecomhub.userservice.application.dto.base.Request;
 
-public record CreateUserCommand(String fullName, String email, String phoneNumber) implements Command<Void> {
+import java.util.List;
+import java.util.UUID;
+
+public record CreateUserCommand(
+        UUID userId,
+        String username,
+        String email,
+        String password,
+        List<String> roles
+) implements Request<Void> {
 }

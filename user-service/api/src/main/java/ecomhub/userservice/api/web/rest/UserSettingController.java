@@ -21,27 +21,27 @@ public class UserSettingController {
     private final CommandExecutor commandExecutor;
     private final QueryExecutor queryExecutor;
 
-    // === Read ===
+    /// Read
     @GetMapping("/")
     public ResponseEntity<ApiResponse<?>> getByUserId() {
-        return queryExecutor.sendQueryWithCurrentUser(UserSettingMapper::fromRequest, new GetUserSettingByUserIdRequest(), HttpStatus.OK);
+        return queryExecutor.sendQueryWithCurrentUser(UserSettingMapper::toQuery, new GetUserSettingByUserIdRequest(), HttpStatus.OK);
     }
 
-    // === Update ===
+    /// Update
     @PatchMapping("/language")
     public ResponseEntity<ApiResponse<?>> updateLanguage(@RequestBody UpdateLanguageRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::fromRequest, request, HttpStatus.OK);
+        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::toCommand, request, HttpStatus.OK);
 
     }
 
     @PatchMapping("/dark-mode")
     public ResponseEntity<ApiResponse<?>> updateDarkMode(@RequestBody UpdateDarkModeRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::fromRequest, request, HttpStatus.OK);
+        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::toCommand, request, HttpStatus.OK);
 
     }
 
     @PatchMapping("/marketing-email")
     public ResponseEntity<ApiResponse<?>> updateMarketingEmail(@RequestBody UpdateMarketingEmailRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::fromRequest, request, HttpStatus.OK);
+        return commandExecutor.sendCommandWithCurrentUser(UserSettingMapper::toCommand, request, HttpStatus.OK);
     }
 }

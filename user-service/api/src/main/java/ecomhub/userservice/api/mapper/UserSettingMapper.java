@@ -13,20 +13,20 @@ import ecomhub.userservice.application.dto.query.usersetting.GetUserSettingByUse
 import java.util.UUID;
 
 public final class UserSettingMapper {
-    public static UpdateLanguageCommand fromRequest(UUID userId, UpdateLanguageRequest request) {
+    public static UpdateLanguageCommand toCommand(UUID userId, UpdateLanguageRequest request) {
         return new UpdateLanguageCommand(userId, request.newLanguage());
     }
 
-    public static UpdateDarkModeCommand fromRequest(UUID userId, UpdateDarkModeRequest request) {
+    public static UpdateDarkModeCommand toCommand(UUID userId, UpdateDarkModeRequest request) {
         return new UpdateDarkModeCommand(userId, request.isDarkMode());
     }
 
-    public static UpdateMarketingEmailCommand fromRequest(UUID userId, UpdateMarketingEmailRequest request) {
+    public static UpdateMarketingEmailCommand toCommand(UUID userId, UpdateMarketingEmailRequest request) {
         return new UpdateMarketingEmailCommand(userId, request.receiveMarketingEmail());
     }
 
-    //Read
-    public static GetUserSettingByUserIdQuery fromRequest(UUID userId, GetUserSettingByUserIdRequest request) {
+    /// Read
+    public static GetUserSettingByUserIdQuery toQuery(UUID userId, GetUserSettingByUserIdRequest request) {
         return new GetUserSettingByUserIdQuery(userId);
     }
 

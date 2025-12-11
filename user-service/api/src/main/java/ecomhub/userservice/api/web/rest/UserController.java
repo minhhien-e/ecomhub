@@ -1,9 +1,7 @@
 package ecomhub.userservice.api.web.rest;
 
 import ecomhub.userservice.api.dto.request.user.*;
-import ecomhub.userservice.api.dto.response.ApiResponse;
-import ecomhub.userservice.api.helper.CommandExecutor;
-import ecomhub.userservice.api.helper.QueryExecutor;
+import ecomhub.userservice.api.helper.RequestExecutor;
 import ecomhub.userservice.api.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,52 +12,58 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
 public class UserController {
-    private final CommandExecutor commandExecutor;
-    private final QueryExecutor queryExecutor;
+    private final RequestExecutor requestExecutor;
 
-    // === Create ===
-    @PostMapping("/")
-    public ResponseEntity<ApiResponse<?>> createUser(@RequestBody CreateUserRequest request) {
-        return commandExecutor.sendCommand(UserMapper::fromRequest, request, HttpStatus.CREATED);
+    /// Create
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody CreateUserRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.CREATED);
     }
 
-    // === Read ===
-    @GetMapping("/")
-    public ResponseEntity<ApiResponse<?>> getById() {
-        return queryExecutor.sendQueryWithCurrentUser(UserMapper::fromRequest, new GetUserByIdRequest(), HttpStatus.OK);
+    /// Read
+    @GetMapping
+    public ResponseEntity<?> getUserById() {
+        var request = new GetUserByIdRequest();
+        return requestExecutor.executeWithCurrentUser(UserMapper::toQuery, request, HttpStatus.OK);
     }
 
-    // === Update ===
-    @PatchMapping("/full-name")
-    public ResponseEntity<ApiResponse<?>> rename(@RequestBody RenameUserRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
+    /// Update
+    @PatchMapping("/avatar")
+    public ResponseEntity<?> changeAvatar(@RequestBody ChangeAvatarRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
+    }
+
+    @PatchMapping("/birth-date")
+    public ResponseEntity<?> changeBirthDate(@RequestBody ChangeBirthDateRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
     }
 
     @PatchMapping("/email")
-    public ResponseEntity<ApiResponse<?>> changeEmail(@RequestBody ChangeEmailRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
-
-    }
-
-    @PatchMapping("/avatar")
-    public ResponseEntity<ApiResponse<?>> changeAvatarUrl(@RequestBody ChangeAvatarRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
-
+    public ResponseEntity<?> changeEmail(@RequestBody ChangeEmailRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
     }
 
     @PatchMapping("/gender")
-    public ResponseEntity<ApiResponse<?>> changeGender(@RequestBody ChangeGenderRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
+    public ResponseEntity<?> changeGender(@RequestBody ChangeGenderRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
     }
 
-    @PatchMapping("/birthdate")
-    public ResponseEntity<ApiResponse<?>> changeBirthDate(@RequestBody ChangeBirthDateRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
-
+    @PatchMapping("/phone-number")
+    public ResponseEntity<?> changePhoneNumber(@RequestBody ChangePhoneNumberRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
     }
 
-    @PatchMapping("/phone")
-    public ResponseEntity<ApiResponse<?>> changePhoneNumber(@RequestBody ChangePhoneNumberRequest request) {
-        return commandExecutor.sendCommandWithCurrentUser(UserMapper::fromRequest, request, HttpStatus.OK);
+    @PatchMapping("/rename")
+    public ResponseEntity<?> renameUser(@RequestBody RenameUserRequest request) {
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
     }
+
+    /// Delete
+    @DeleteMapping
+    public ResponseEntity<?> deleteUser() {
+        var request = new DeleteUserRequest();
+        return requestExecutor.executeWithCurrentUser(UserMapper::toCommand, request, HttpStatus.OK);
+    }
+
+
 }

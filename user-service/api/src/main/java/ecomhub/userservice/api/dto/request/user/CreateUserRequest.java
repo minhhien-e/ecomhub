@@ -1,4 +1,12 @@
 package ecomhub.userservice.api.dto.request.user;
 
-public record CreateUserRequest(String fullName, String email, String phoneNumber) {
+import lombok.Data;
+import java.util.List;
+
+@Data
+public class CreateUserRequest {
+    private String username;
+    private String email;
+    private String password;
+    private List<String> roles;
 }
