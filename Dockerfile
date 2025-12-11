@@ -1,4 +1,3 @@
-# 1) BUILD STAGE
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
@@ -11,7 +10,6 @@ RUN apk add --no-cache dos2unix \
 RUN ./gradlew bootJar -x test
 
 
-# 2) RUNTIME STAGE
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 

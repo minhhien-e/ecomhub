@@ -23,13 +23,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 //api/v1/promotions
 @RestController
-@RequestMapping("/api/promotions")
+@RequestMapping("/api/v1/promotions")
 @RequiredArgsConstructor
 public class PromotionDiscountController {
 
     private final PromotionDiscountService service;
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<PromotionDiscountResponse>>> getAll(
             @PageableDefault(size = 20, sort = "startDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -37,35 +37,35 @@ public class PromotionDiscountController {
         return ResponseUtil.ok(page);
     }
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<PromotionDiscountResponse>> getById(@PathVariable UUID id) {
         PromotionDiscountResponse resp = service.getById(id);
         return ResponseUtil.ok(resp);
     }
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/code/{code}")
     public ResponseEntity<ApiResponse<PromotionDiscountResponse>> getByCode(@PathVariable String code) {
         PromotionDiscountResponse resp = service.getByCode(code);
         return ResponseUtil.ok(resp);
     }
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/active")
     public ResponseEntity<ApiResponse<List<PromotionDiscountResponse>>> getActive() {
         List<PromotionDiscountResponse> resp = service.getActivePromotions();
         return ResponseUtil.ok(resp);
     }
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/expired")
     public ResponseEntity<ApiResponse<List<PromotionDiscountResponse>>> getExpired() {
         List<PromotionDiscountResponse> resp = service.getExpiredPromotions();
         return ResponseUtil.ok(resp);
     }
     //Các khuyến mãi sắp hết hạn trong X ngày (hiện tại là 7)
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/upcoming-expired")
     public ResponseEntity<ApiResponse<List<PromotionDiscountResponse>>> getUpcomingExpired(
             @RequestParam(defaultValue = "7") int days) {  // Mặc định 7 ngày tới
@@ -73,7 +73,7 @@ public class PromotionDiscountController {
         return ResponseUtil.ok(resp);
     }
 
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/status/{status}")
     public ResponseEntity<ApiResponse<Page<PromotionDiscountResponse>>> getByStatus(
             @PathVariable String status,
@@ -83,14 +83,14 @@ public class PromotionDiscountController {
         return ResponseUtil.ok(page);
     }
 
-//    @PreAuthorize("hasAuthority('write')")
+    @PreAuthorize("hasAuthority('write')")
     @PostMapping
     public ResponseEntity<ApiResponse<PromotionDiscountResponse>> create(@RequestBody @Valid PromotionDiscountRequest req) {
         PromotionDiscountResponse resp = service.create(req);
         return ResponseUtil.created(resp);
     }
 
-//    @PreAuthorize("hasAuthority('write')")
+    @PreAuthorize("hasAuthority('write')")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PromotionDiscountResponse>> update(@PathVariable UUID id,
                                                                          @RequestBody @Valid PromotionDiscountRequest req) {
@@ -98,14 +98,14 @@ public class PromotionDiscountController {
         return ResponseUtil.ok(resp);
     }
 
-//    @PreAuthorize("hasAuthority('delete')")
+    @PreAuthorize("hasAuthority('delete')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Object>> delete(@PathVariable UUID id) {
         service.delete(id);
         return ResponseUtil.noContent();
     }
     //Áp dụng khuyến mãi cho giá gốc → trả về giá sau giảm
-//    @PreAuthorize("hasAuthority('read')")
+    @PreAuthorize("hasAuthority('read')")
     @GetMapping("/{id}/apply")
     public ResponseEntity<ApiResponse<PromotionDiscountResponse>> apply(@PathVariable UUID id,
                                                                         @RequestParam Double originalPrice) {
