@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
     private int statusCode;
     private Integer errorCode;  // Chỉ có khi lỗi (600-699), thành công thì null
