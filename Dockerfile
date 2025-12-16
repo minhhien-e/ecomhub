@@ -5,15 +5,12 @@ COPY . .
 
 RUN apk add --no-cache dos2unix \
     && dos2unix gradlew \
-    && chmod +x gradlew
-
-RUN ./gradlew bootJar -x test
-
+    && chmod +x gradlew \
+    && ./gradlew bootJar -x test
 
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Copy JAR từ stage build
 COPY --from=build /app/build/libs/*.jar app.jar
 
 EXPOSE 8088

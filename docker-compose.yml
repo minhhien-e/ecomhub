@@ -3,6 +3,7 @@ version: "3.9"
 services:
   db:
     image: mysql:8.0
+    container_name: promotion-mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: promotiondiscount
@@ -18,15 +19,15 @@ services:
 
   app:
     build: .
+    container_name: promotion-discount-service
     ports:
-      - "8088:8088"
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/promotiondiscount?useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 123456
       EUREKA_CLIENT_ENABLED: "false"
 
 volumes:
