@@ -18,30 +18,45 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PromotionNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleNotFound(PromotionNotFoundException ex) {
-        return ResponseUtil.notFound(404);
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(404)
+                .errorCode(ex.getErrorCode())  // 601
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(PromotionValidationException.class)
     public ResponseEntity<ApiResponse<Object>> handleValidationError(PromotionValidationException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.builder()
-                        .statusCode(400)
-                        .errorCode(0)
-                        .build());
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(400)
+                .errorCode(ex.getErrorCode())  // 602
+                .build();
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Object>> handleBindingErrors(MethodArgumentNotValidException ex) {
-        String msg = ex.getBindingResult().getAllErrors()
+        // Có thể log chi tiết lỗi nếu cần, nhưng response chỉ trả errorCode 600
+        String details = ex.getBindingResult().getAllErrors()
                 .stream()
                 .map(err -> ((FieldError) err).getField() + ": " + err.getDefaultMessage())
                 .collect(Collectors.joining("; "));
-        return ResponseUtil.badRequest();
+        log.warn("Validation error: {}", details);
+
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(400)
+                .errorCode(600)  // 600: Request validation error (@Valid, binding)
+                .build();
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Object>> handleOther(Exception ex) {
         log.error("Unhandled exception", ex);
-        return ResponseUtil.serverError();
+        ApiResponse<Object> response = ApiResponse.builder()
+                .statusCode(500)
+                .errorCode(699)  // 699: Internal server error
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
