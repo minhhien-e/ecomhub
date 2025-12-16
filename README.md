@@ -4,7 +4,9 @@
 Dịch vụ hỗ trợ CRUD, lọc theo trạng thái thời gian (active/expired/upcoming), tính giá cuối sau giảm, bảo mật bằng JWT (`read`, `write`, `delete`), và sẵn sàng tích hợp Kafka.
 
 ---
-
+- Port: **8088** 
+- Database: MySQL chạy trên port 3307 (map từ container 3306)
+- API base URL: `http://localhost:8088/api/v1/promotions`
 ## 1. Giới thiệu
 
 - **Mục đích**: Quản lý vòng đời khuyến mãi và cung cấp API tính giá cuối cho Cart, Order, v.v.
