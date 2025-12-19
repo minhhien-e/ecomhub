@@ -24,7 +24,7 @@ public enum ErrorCode {
     INVALID_QUANTITY(1172, "Số lượng không hợp lệ"),
 
     // 1180–1189: SERVER / SYSTEM
-    INTERNAL_SERVER_ERROR(1181, "Lỗi hệ thống nội bộ"),
+    INTERNAL_SERVER_ERROR(-1, "Lỗi hệ thống nội bộ"),
 
     // 1190–1199: OTHERS
     TOO_MANY_REQUESTS(1191, "Quá nhiều yêu cầu cùng lúc");
