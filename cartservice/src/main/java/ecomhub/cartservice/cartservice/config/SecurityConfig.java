@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/carts/**").authenticated()
-                        .requestMatchers("/api/v1/carti-tem/**").authenticated()
+                        .requestMatchers("/api/v1/cart-item/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->
