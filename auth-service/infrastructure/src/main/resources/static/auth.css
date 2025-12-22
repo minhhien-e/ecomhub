@@ -1,0 +1,484 @@
+/* Amazon Auth Pages - Complete Reusable Styles */
+
+/* Reset và Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #111;
+}
+
+/* Amazon Logo */
+.amazon-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #232f3e;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+}
+
+.amazon-logo::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: 20px;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(45deg, #ff9900, #ffad33);
+    border-radius: 2px;
+}
+
+/* Header */
+.auth-header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #f3f3f3;
+}
+
+/* Main Content Layout */
+.auth-main {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* Auth Container */
+.auth-container {
+    position: relative;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography */
+.auth-title {
+    font-size: 28px;
+    font-weight: 400;
+    color: #111;
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #111;
+    margin-bottom: 15px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 5px;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 5px;
+}
+
+.form-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #a6a6a6;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #e47911;
+    box-shadow: 0 0 3px 2px rgba(228, 121, 17, 0.3);
+}
+
+/* Error States */
+.form-input.error {
+    border-color: #d13212;
+    background-color: #fdf2f2;
+}
+
+.form-input.error:focus {
+    border-color: #d13212;
+    box-shadow: 0 0 3px 2px rgba(209, 50, 18, 0.3);
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    color: #d13212;
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.2;
+}
+
+.error-icon {
+    width: 14px;
+    height: 14px;
+    background-color: #d13212;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+/* Error Container (Top Right) */
+.error-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+#error-box {
+    color: #d13212;
+    background-color: #fdf2f2;
+    border: 1px solid #d13212;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    display: none;
+}
+
+#error-box:not(:empty) {
+    display: block;
+}
+
+/* Buttons */
+.btn {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid;
+}
+
+.btn-primary {
+    background: linear-gradient(to bottom, #f7dfa5, #f0c14b);
+    border-color: #a88734;
+    color: #111;
+    margin-bottom: 20px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to bottom, #f5d78e, #edb932);
+}
+
+.btn-secondary {
+    background: #fff;
+    border-color: #d5d9d9;
+    color: #0f1111;
+    margin-bottom: 10px;
+}
+
+.btn-secondary:hover {
+    background: #f7fafa;
+    border-color: #c7c7c7;
+}
+
+/* Links */
+.link {
+    color: #0066c0;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.link-small {
+    font-size: 12px;
+}
+
+.link-help {
+    color: #0066c0;
+    font-size: 12px;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.link-help:hover {
+    text-decoration: underline;
+}
+
+/* User Info Display */
+.user-info {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-email {
+    font-weight: 700;
+    color: #111;
+}
+
+/* Text Elements */
+.agreement-text {
+    font-size: 12px;
+    color: #111;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.help-text {
+    font-size: 12px;
+    color: #767676;
+    margin-bottom: 10px;
+}
+
+/* Success Message */
+.success-box {
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+    color: #3c763d;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    display: none;
+}
+
+/* Info Box */
+.info-box {
+    display: flex;
+    align-items: flex-start;
+    background-color: #ddd;
+    border: 1px solid #c4c4c4;
+    border-radius: 4px;
+    padding: 8px 10px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    color: #0f1111;
+}
+
+.info-icon {
+    width: 16px;
+    height: 16px;
+    background-color: #007eb9;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+/* Dividers */
+.divider {
+    position: relative;
+    margin: 20px 0;
+    text-align: center;
+    font-size: 12px;
+    color: #767676;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e7e7e7;
+}
+
+.divider-text {
+    background: white;
+    padding: 0 10px;
+    position: relative;
+}
+
+/* Sections */
+.auth-section {
+    border-top: 1px solid #e7e7e7;
+    padding-top: 20px;
+    margin-top: 20px;
+}
+
+/* Footer */
+.auth-footer {
+    background-color: #f3f3f3;
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid #e7e7e7;
+    margin-top: auto;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links .link {
+    font-size: 12px;
+    margin: 0 15px;
+}
+
+.copyright {
+    font-size: 12px;
+    color: #555;
+}
+
+/* Loading State */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.loading {
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translateY(-50%);
+}
+
+@keyframes spin {
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 20px;
+        margin: 0 10px;
+        max-width: none;
+    }
+
+    .auth-title {
+        font-size: 24px;
+        white-space: normal;
+    }
+
+    .footer-links .link {
+        display: block;
+        margin: 5px 0;
+    }
+
+    .form-label-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-label-row .link {
+        margin-top: 5px;
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .error-container {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        min-width: auto;
+    }
+
+    #error-box,
+    .success-box {
+        border-radius: 6px;
+        padding: 14px 18px 14px 45px;
+        font-size: 13px;
+    }
+
+    #error-box::before,
+    .success-box::before {
+        font-size: 16px;
+        left: 14px;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: more) {
+    .form-input {
+        border-color: #000;
+    }
+
+    .form-input:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 2px #000;
+    }
+
+    .btn-primary {
+        background: #ffff00;
+        border-color: #000;
+        color: #000;
+    }
+}
