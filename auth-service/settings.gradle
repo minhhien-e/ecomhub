@@ -1,8 +1,0 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        mavenCentral()
-    }
-}
-rootProject.name = 'auth-service'
-include("infrastructure", "domain","application", "shared")
