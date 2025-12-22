@@ -45,3 +45,4 @@ build/
 .idea/
 .gradle/
 build/
+.env
