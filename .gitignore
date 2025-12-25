@@ -1,22 +1,3 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -25,6 +6,28 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### STS ###
+.springBeans
+.sts4-cache
+
+### Gradle ###
+HELP.md
+.gradle
+build/
+!gradle/wwrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### NetBeans ###
 /nbproject/private/
@@ -35,3 +38,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Mac OS ###
+.DS_Store
+
+.idea/
+.gradle/
+build/
+.env

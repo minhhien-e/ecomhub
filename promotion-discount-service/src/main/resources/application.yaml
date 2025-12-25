@@ -1,0 +1,35 @@
+server:
+  port: ${SERVER_PORT:8088}
+
+spring:
+  application:
+    name: promotion-discount-service
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    schemas: promotiondiscount
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SECURITY_OAUTH2_JWT_ISSUER_URI}
+
+logging:
+  level:
+    org.springframework: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK:DEBUG}
+    org.springframework.web: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB:DEBUG}
+    org.springframework.security: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY:DEBUG}

@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: promotion-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: promotiondiscount
+    volumes:
+      - ./db/migration:/docker-entrypoint-initdb.d
+      - data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: promotion-discount-service
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_ENABLED: "false"
+
+volumes:
+  data:
