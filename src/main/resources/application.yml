@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: saler-service
+  data:
+    mongodb:
+      uri: mongodb://tinhit:florentino@localhost:27017/saler_service
+external:
+  product-service:
+    url: "http://api-product-service-tam-thoi-de-nhu-vay-truoc/products"
